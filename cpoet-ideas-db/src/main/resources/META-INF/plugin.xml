@@ -72,7 +72,7 @@
         >
             <separator/>
             <add-to-group group-id="Console.TableResult.CellEditor.Popup" anchor="after"
-                          relative-to-action="Console.TableResult.ChangeColumnLanguage"/>
+                          relative-to-action="EditorToggleColumnMode"/>
             <group id="CPoetIdea_Console.TableResult.CellEditor.Popup_TEXT"
                    text="Text"
                    popup="true">
