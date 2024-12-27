@@ -42,6 +42,14 @@
                                  instance="cn.cpoet.ideas.ic.setting.IdeasConfigurable"
                                  id="cn.cpoet.ideas.ic.setting.IdeasConfigurable"
                                  displayName="CPoet Ideas"/>
+
+<!--        <intentionAction>-->
+<!--            <className>cn.cpoet.ideas.iu.actions.java.action.AllSetIntentionAction</className>-->
+<!--        </intentionAction>-->
+
+<!--        <intentionAction>-->
+<!--            <className>cn.cpoet.ideas.iu.actions.java.action.AllGetIntentionAction</className>-->
+<!--        </intentionAction>-->
     </extensions>
 
     <actions>

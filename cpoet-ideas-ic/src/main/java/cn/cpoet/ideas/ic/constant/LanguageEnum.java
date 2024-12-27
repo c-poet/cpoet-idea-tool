@@ -26,7 +26,7 @@ public enum LanguageEnum {
     }
 
     public String getName() {
-        return I18nUtil.t("language.$code", desc);
+        return I18nUtil.t("language." + code, desc);
     }
 
     public String getCode() {

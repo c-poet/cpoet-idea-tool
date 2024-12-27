@@ -1,7 +1,7 @@
 package cn.cpoet.ideas.iu.actions.patch.action;
 
-import cn.cpoet.ideas.iu.actions.patch.component.GenPatchPanel;
 import cn.cpoet.ideas.ic.util.I18nUtil;
+import cn.cpoet.ideas.iu.actions.patch.component.GenPatchPanel;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -22,7 +22,6 @@ public class GenPatchPackageAction extends AnAction {
         GenPatchPanel packagePanel = new GenPatchPanel(project, dialogBuilder.getDialogWrapper());
         dialogBuilder.setTitle(I18nUtil.t("actions.patch.GenPatchPackageAction.title"));
         dialogBuilder.setCenterPanel(packagePanel);
-
         dialogBuilder.addAction(packagePanel.buildPreviewAction());
         dialogBuilder.addOkAction().setText(I18nUtil.t("actions.patch.GenPatchPackageAction.generate"));
         dialogBuilder.setOkOperation(packagePanel::generate);
