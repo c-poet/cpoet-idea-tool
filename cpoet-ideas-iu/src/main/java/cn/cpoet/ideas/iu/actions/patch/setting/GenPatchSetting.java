@@ -1,7 +1,9 @@
 package cn.cpoet.ideas.iu.actions.patch.setting;
 
-import cn.cpoet.ideas.iu.actions.patch.constant.GenPatchBuildTypeEnum;
 import cn.cpoet.ideas.ic.constant.IdeasConst;
+import cn.cpoet.ideas.iu.actions.patch.constant.GenPatchBuildTypeEnum;
+import cn.cpoet.ideas.iu.actions.patch.constant.GenPatchTreeFilterTypeEnum;
+import cn.cpoet.ideas.iu.actions.patch.constant.GenPatchProjectTypeEnum;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.components.State;
@@ -24,6 +26,18 @@ public final class GenPatchSetting implements PersistentStateComponent<GenPatchS
 
         /** 面板高度 */
         public int height = 400;
+
+        /** 文件树过滤类型 */
+        public String treeFilterType = GenPatchTreeFilterTypeEnum.PROJECT.getCode();
+
+        /** 输出目录 */
+        public String outputFolder;
+
+        /** 包含路径 */
+        public boolean includePath;
+
+        /** 项目类型 */
+        public String projectType = GenPatchProjectTypeEnum.NONE.getCode();
 
         /** 编译类型 */
         public String buildType = GenPatchBuildTypeEnum.DEFAULT.getCode();

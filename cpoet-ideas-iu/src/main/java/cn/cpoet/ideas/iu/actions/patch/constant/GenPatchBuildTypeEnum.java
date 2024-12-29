@@ -1,6 +1,6 @@
 package cn.cpoet.ideas.iu.actions.patch.constant;
 
-import cn.cpoet.ideas.ic.util.I18nUtil;
+import cn.cpoet.ideas.ic.i18n.I18n;
 
 /**
  * @author CPoet
@@ -27,7 +27,7 @@ public enum GenPatchBuildTypeEnum {
     }
 
     public String getName() {
-        return I18nUtil.t(code, desc);
+        return I18n.t("actions.patch.GenPatchPackageAction.config.buildType." + code, desc);
     }
 
     public String getCode() {

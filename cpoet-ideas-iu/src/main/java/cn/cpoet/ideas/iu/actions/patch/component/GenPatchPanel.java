@@ -1,13 +1,14 @@
 package cn.cpoet.ideas.iu.actions.patch.component;
 
-import cn.cpoet.ideas.iu.actions.patch.constant.GenPatchBuildTypeEnum;
+import cn.cpoet.ideas.ic.i18n.I18n;
 import cn.cpoet.ideas.ic.model.TreeNodeInfo;
-import cn.cpoet.ideas.ic.util.I18nUtil;
 import cn.cpoet.ideas.ic.util.ModuleUtil;
 import cn.cpoet.ideas.ic.util.TreeUtil;
+import cn.cpoet.ideas.iu.actions.patch.constant.GenPatchBuildTypeEnum;
 import cn.cpoet.ideas.iu.actions.patch.model.GenPatch;
 import cn.cpoet.ideas.iu.actions.patch.model.GenPatchItem;
 import cn.cpoet.ideas.iu.actions.patch.setting.GenPatchSetting;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.module.Module;
@@ -59,7 +60,7 @@ public class GenPatchPanel extends JBSplitter {
     private final GenPatchConfPane confPanel;
 
 
-    public GenPatchPanel(Project project, DialogWrapper dialogWrapper) {
+    public GenPatchPanel(Project project, DataContext dataContext, DialogWrapper dialogWrapper) {
         this.project = project;
         this.dialogWrapper = dialogWrapper;
         cn.cpoet.ideas.iu.actions.patch.setting.GenPatchSetting setting = cn.cpoet.ideas.iu.actions.patch.setting.GenPatchSetting.getInstance(project);
@@ -71,7 +72,7 @@ public class GenPatchPanel extends JBSplitter {
                 setting.getState().height = getHeight();
             }
         });
-        treePanel = new GenPatchTreePanel(project);
+        treePanel = new GenPatchTreePanel(project, dataContext);
         checkedCount = new AtomicInteger(getTreeCheckedNodes().length);
         addCheckboxTreeListener();
         setFirstComponent(treePanel);
@@ -204,7 +205,7 @@ public class GenPatchPanel extends JBSplitter {
     }
 
     public Action buildPreviewAction() {
-        previewAction = new TextAction(I18nUtil.t("actions.patch.GenPatchPackageAction.preview")) {
+        previewAction = new TextAction(I18n.t("actions.patch.GenPatchPackageAction.preview")) {
 
             private static final long serialVersionUID = 1542378595944056560L;
 

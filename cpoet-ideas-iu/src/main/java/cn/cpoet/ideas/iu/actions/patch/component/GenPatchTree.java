@@ -1,12 +1,13 @@
 package cn.cpoet.ideas.iu.actions.patch.component;
 
+import cn.cpoet.ideas.ic.component.FilterCheckboxTree;
+import cn.cpoet.ideas.ic.component.FilterCheckedTreeNode;
 import cn.cpoet.ideas.ic.model.TreeNodeInfo;
 import cn.cpoet.ideas.ic.util.TreeUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.ui.CheckboxTree;
 import com.intellij.ui.CheckedTreeNode;
 import com.intellij.ui.ColoredTreeCellRenderer;
 
@@ -17,11 +18,11 @@ import javax.swing.*;
  *
  * @author CPoet
  */
-public class GenPatchTree extends CheckboxTree {
+public class GenPatchTree extends FilterCheckboxTree {
 
     public GenPatchTree(Project project) {
         super(new GenPatchPackageTreeCellRenderer(), TreeUtil.buildWithProject(project, (obj) -> {
-            CheckedTreeNode checkedTreeNode = new CheckedTreeNode();
+            FilterCheckedTreeNode checkedTreeNode = new FilterCheckedTreeNode();
             checkedTreeNode.setChecked(false);
             return checkedTreeNode;
         }));

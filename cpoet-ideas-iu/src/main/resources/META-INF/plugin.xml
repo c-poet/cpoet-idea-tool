@@ -33,8 +33,6 @@
     <depends>com.intellij.modules.java</depends>
     <depends>com.intellij.database</depends>
 
-    <resource-bundle>messages.cpoet-ideas</resource-bundle>
-
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
@@ -43,13 +41,13 @@
                                  id="cn.cpoet.ideas.ic.setting.IdeasConfigurable"
                                  displayName="CPoet Ideas"/>
 
-<!--        <intentionAction>-->
-<!--            <className>cn.cpoet.ideas.iu.actions.java.action.AllSetIntentionAction</className>-->
-<!--        </intentionAction>-->
+        <!--        <intentionAction>-->
+        <!--            <className>cn.cpoet.ideas.iu.actions.java.action.AllSetIntentionAction</className>-->
+        <!--        </intentionAction>-->
 
-<!--        <intentionAction>-->
-<!--            <className>cn.cpoet.ideas.iu.actions.java.action.AllGetIntentionAction</className>-->
-<!--        </intentionAction>-->
+        <!--        <intentionAction>-->
+        <!--            <className>cn.cpoet.ideas.iu.actions.java.action.AllGetIntentionAction</className>-->
+        <!--        </intentionAction>-->
     </extensions>
 
     <actions>
@@ -70,6 +68,11 @@
 
             <group id="CPoetIdea_EditorPopupMenu_BASE64"
                    text="Base64"
+                   popup="true">
+            </group>
+
+            <group id="CPoetIdea_EditorPopupMenu_PATCH"
+                   text="Patch"
                    popup="true">
             </group>
         </group>
@@ -150,7 +153,7 @@
                 class="cn.cpoet.ideas.iu.actions.patch.action.GenPatchPackageAction"
                 text="Generate Patch Package"
                 description="Generate Patch package">
-            <add-to-group group-id="CPoetIdea_EditorPopupMenu"/>
+            <add-to-group group-id="CPoetIdea_EditorPopupMenu_PATCH"/>
         </action>
     </actions>
 </idea-plugin>

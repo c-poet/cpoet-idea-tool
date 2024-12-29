@@ -1,12 +1,19 @@
 package cn.cpoet.ideas.iu.actions.patch.component;
 
+import cn.cpoet.ideas.ic.component.CustomComboBox;
 import cn.cpoet.ideas.ic.component.SimpleHPanel;
 import cn.cpoet.ideas.ic.component.TitledPanel;
-import cn.cpoet.ideas.ic.util.I18nUtil;
+import cn.cpoet.ideas.ic.i18n.I18n;
+import cn.cpoet.ideas.ic.model.TreeNodeInfo;
+import cn.cpoet.ideas.iu.actions.patch.constant.GenPatchTreeFilterTypeEnum;
+import cn.cpoet.ideas.iu.actions.patch.setting.GenPatchSetting;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.ComboBox;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.CheckedTreeNode;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.components.JBLabel;
@@ -17,6 +24,8 @@ import com.intellij.util.ui.tree.TreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.event.ItemEvent;
+
 /**
  * 生成补丁树面板
  *
@@ -24,38 +33,92 @@ import org.jetbrains.annotations.Nullable;
  */
 public class GenPatchTreePanel extends JBSplitter {
 
+    private final Project project;
     private final GenPatchTree tree;
+    private final DataContext dataContext;
 
-    public GenPatchTreePanel(Project project) {
+    public GenPatchTreePanel(Project project, DataContext dataContext) {
         super(true);
+        this.project = project;
+        this.dataContext = dataContext;
         tree = new GenPatchTree(project);
-        buildTreePanel();
+        GenPatchSetting setting = GenPatchSetting.getInstance(project);
+        buildTreePanel(setting);
         buildDescriptionPanel();
     }
 
-    private void buildTreePanel() {
+    private void buildTreePanel(GenPatchSetting setting) {
+        GenPatchSetting.State state = setting.getState();
         BorderLayoutPanel treePanel = JBUI.Panels.simplePanel();
-
         BorderLayoutPanel toolbarBorderLayoutPanel = JBUI.Panels.simplePanel();
         ActionToolbar actionToolbar = ActionManager.getInstance().createActionToolbar("Project file tree toolbar", getTreeToolbarActionGroup(), true);
         actionToolbar.setTargetComponent(toolbarBorderLayoutPanel);
         toolbarBorderLayoutPanel.addToLeft(actionToolbar.getComponent());
 
-        SimpleHPanel simpleHPanel = new SimpleHPanel();
-        simpleHPanel.add(new JBLabel("Filter:"));
-        ComboBox<Object> objectComboBox = new ComboBox<>();
-        objectComboBox.addItem("Project files");
-        objectComboBox.addItem("Change files");
-        objectComboBox.addItem("Selected files");
-        objectComboBox.setFocusable(false);
-        simpleHPanel.add(objectComboBox);
-        toolbarBorderLayoutPanel.addToRight(simpleHPanel);
-
+        SimpleHPanel treeFilterPanel = new SimpleHPanel();
+        treeFilterPanel.add(new JBLabel(I18n.t("actions.patch.GenPatchPackageAction.treeFilterType.label")));
+        CustomComboBox<GenPatchTreeFilterTypeEnum> treeFilterTypeComboBox = new CustomComboBox<>();
+        for (GenPatchTreeFilterTypeEnum item : GenPatchTreeFilterTypeEnum.values()) {
+            treeFilterTypeComboBox.addItem(item);
+        }
+        treeFilterTypeComboBox.setSelectedItem(state.treeFilterType);
+        treeFilterTypeComboBox.customText(GenPatchTreeFilterTypeEnum::getTitle);
+        treeFilterTypeComboBox.setFocusable(false);
+        treeFilterTypeComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                doFilterTree((GenPatchTreeFilterTypeEnum) e.getItem());
+                setting.getState().treeFilterType = ((GenPatchTreeFilterTypeEnum) e.getItem()).getCode();
+            }
+        });
+        treeFilterPanel.add(treeFilterTypeComboBox);
+        toolbarBorderLayoutPanel.addToRight(treeFilterPanel);
         treePanel.addToTop(toolbarBorderLayoutPanel);
-
         JBScrollPane treeScrollPane = new JBScrollPane(tree);
         treePanel.addToCenter(treeScrollPane);
         setFirstComponent(treePanel);
+    }
+
+    private void doFilterTree(GenPatchTreeFilterTypeEnum filterType) {
+        switch (filterType) {
+            case EDITOR:
+                doFilterTreeEditor();
+                break;
+            case CHANGE:
+                doFilterTreeChange();
+                break;
+            case SELECTED:
+                doFilterTreeSelected();
+                break;
+            case PROJECT:
+            default:
+                tree.removeFilter();
+        }
+    }
+
+    private void doFilterTreeEditor() {
+        FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
+        tree.applyFilter((node -> {
+            TreeNodeInfo nodeInfo = (TreeNodeInfo) node.getUserObject();
+            if (nodeInfo.getObject() instanceof VirtualFile) {
+                return fileEditorManager.isFileOpen((VirtualFile) nodeInfo.getObject());
+            }
+            return false;
+        }));
+    }
+
+    private void doFilterTreeChange() {
+        FileDocumentManager fileDocumentManager = FileDocumentManager.getInstance();
+        tree.applyFilter(node -> {
+            TreeNodeInfo nodeInfo = (TreeNodeInfo) node.getUserObject();
+            if (nodeInfo.getObject() instanceof VirtualFile) {
+                return fileDocumentManager.isFileModified((VirtualFile) nodeInfo.getObject());
+            }
+            return false;
+        });
+    }
+
+    private void doFilterTreeSelected() {
+        tree.applyFilter(CheckedTreeNode::isChecked);
     }
 
     private ActionGroup getTreeToolbarActionGroup() {
@@ -66,14 +129,12 @@ public class GenPatchTreePanel extends JBSplitter {
                         new AnAction(null, "Expand all", AllIcons.Actions.Expandall) {
                             @Override
                             public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
-                                // TODO BY CPoet 执行过慢，后续优化
                                 TreeUtil.expandAll(tree);
                             }
                         },
                         new AnAction(null, "Collapse all", AllIcons.Actions.Collapseall) {
                             @Override
                             public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
-                                // TODO BY CPoet 执行过慢，后续优化
                                 TreeUtil.collapseAll(tree, -1);
                             }
                         }
@@ -83,7 +144,7 @@ public class GenPatchTreePanel extends JBSplitter {
     }
 
     private void buildDescriptionPanel() {
-        TitledPanel descTitledPanel = new TitledPanel(I18nUtil.t("actions.patch.GenPatchPackageAction.description.title"));
+        TitledPanel descTitledPanel = new TitledPanel(I18n.t("actions.patch.GenPatchPackageAction.description.title"));
         EditorTextField patchInfoEditor = new EditorTextField();
         descTitledPanel.add(patchInfoEditor);
         setSecondComponent(descTitledPanel);
