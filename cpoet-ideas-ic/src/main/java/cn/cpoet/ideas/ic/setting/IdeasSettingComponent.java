@@ -2,12 +2,11 @@ package cn.cpoet.ideas.ic.setting;
 
 import cn.cpoet.ideas.ic.component.CustomComboBox;
 import cn.cpoet.ideas.ic.constant.LanguageEnum;
-import cn.cpoet.ideas.ic.util.I18nUtil;
+import cn.cpoet.ideas.ic.i18n.I18n;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.util.ui.FormBuilder;
 
 import javax.swing.*;
-import java.util.stream.Stream;
 
 /**
  * 插件配置组件
@@ -22,8 +21,8 @@ public class IdeasSettingComponent {
 
     public IdeasSettingComponent() {
         selectLanguageComboBox = buildSelectLanguageComboBox();
-        mainPanel = FormBuilder.createFormBuilder()
-                .addLabeledComponent(I18nUtil.t("settings.SelectLanguage.label"), selectLanguageComboBox)
+        mainPanel = FormBuilder.createFormBuilder().setFormLeftIndent(20)
+                .addLabeledComponent(I18n.t("settings.SelectLanguage.label"), selectLanguageComboBox)
                 .addComponentFillVertically(new JPanel(), 0)
                 .getPanel();
     }
@@ -31,7 +30,6 @@ public class IdeasSettingComponent {
     private ComboBox<LanguageEnum> buildSelectLanguageComboBox() {
         CustomComboBox<LanguageEnum> comboBox = new CustomComboBox<>();
         comboBox.customText(LanguageEnum::getName);
-        Stream.of(LanguageEnum.values()).forEach(comboBox::addItem);
         for (LanguageEnum value : LanguageEnum.values()) {
             comboBox.addItem(value);
         }

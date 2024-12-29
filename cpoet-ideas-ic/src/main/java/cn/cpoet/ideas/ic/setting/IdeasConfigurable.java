@@ -1,8 +1,8 @@
 package cn.cpoet.ideas.ic.setting;
 
 import cn.cpoet.ideas.ic.constant.LanguageEnum;
+import cn.cpoet.ideas.ic.i18n.I18n;
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.util.NlsContexts;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -17,7 +17,7 @@ public class IdeasConfigurable implements Configurable {
     private IdeasSettingComponent settingComponent;
 
     @Override
-    public @NlsContexts.ConfigurableName String getDisplayName() {
+    public String getDisplayName() {
         return "CPoet Ideas";
     }
 
@@ -36,7 +36,12 @@ public class IdeasConfigurable implements Configurable {
     @Override
     public void apply() {
         IdeasSetting.State state = IdeasSetting.getInstance().getState();
+        // 判断是否需要重新加载语言
+        String oldLanguage = state.language;
         state.language = settingComponent.getLanguage().getCode();
+        if (!oldLanguage.equals(state.language)) {
+            I18n.updateLocale();
+        }
     }
 
     @Override

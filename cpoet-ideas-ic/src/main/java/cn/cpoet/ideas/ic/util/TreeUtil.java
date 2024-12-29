@@ -59,7 +59,7 @@ public abstract class TreeUtil {
         return moduleNode;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     public static <T extends DefaultMutableTreeNode> T buildWithFile(VirtualFile file, Function<Object, T> func) {
         // 文件直接返回节点
         if (!file.isDirectory()) {

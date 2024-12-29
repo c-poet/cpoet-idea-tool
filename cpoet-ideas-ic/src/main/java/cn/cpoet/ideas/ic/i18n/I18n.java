@@ -1,29 +1,28 @@
-package cn.cpoet.ideas.ic.util;
+package cn.cpoet.ideas.ic.i18n;
 
 import cn.cpoet.ideas.ic.setting.IdeasSetting;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.ServiceLoader;
 
 /**
  * 国际化工具
  *
  * @author CPoet
  */
-public class I18nUtil {
+public abstract class I18n {
 
     private static final String I18N_FILE_PREFIX = "messages/cpoet-ideas";
 
-    private static ResourceBundle resourceBundle;
+    private static I18nChain i18NChain;
 
     static {
         initLocale();
     }
 
-    private I18nUtil() {
+    private I18n() {
     }
 
     /**
@@ -45,12 +44,8 @@ public class I18nUtil {
      * @return 值
      */
     @NotNull
-    public static String t(String name, String defaultMessage) {
-        try {
-            return Objects.toString(resourceBundle.getString(name), "");
-        } catch (Exception ignored) {
-        }
-        return defaultMessage;
+    public static String t(String name, @NotNull String defaultMessage) {
+        return i18NChain.getMessage(name, defaultMessage);
     }
 
     /**
@@ -72,14 +67,21 @@ public class I18nUtil {
     }
 
     private static void initLocale() {
-        Locale locale = new Locale(getLanguage());
-        setLocale(locale);
+        i18NChain = new I18nChain(null, I18N_FILE_PREFIX);
+        ServiceLoader<I18nService> loader = ServiceLoader.load(I18nService.class, I18n.class.getClassLoader());
+        for (I18nService next : loader) {
+            String[] prefix = next.getPrefix();
+            if (prefix != null) {
+                for (String pre : prefix) {
+                    i18NChain = new I18nChain(i18NChain, pre);
+                }
+            }
+        }
+        updateLocale();
     }
 
-    private static void setLocale(Locale locale) {
-        if (resourceBundle != null && Objects.equals(resourceBundle.getLocale(), locale)) {
-            return;
-        }
-        resourceBundle = ResourceBundle.getBundle(I18N_FILE_PREFIX, locale);
+    public static void updateLocale() {
+        Locale locale = new Locale(getLanguage());
+        i18NChain.setLocale(locale);
     }
 }

@@ -1,6 +1,6 @@
 package cn.cpoet.ideas.ic.constant;
 
-import cn.cpoet.ideas.ic.util.I18nUtil;
+import cn.cpoet.ideas.ic.i18n.I18n;
 
 /**
  * 支持的国际化语言枚举
@@ -26,7 +26,7 @@ public enum LanguageEnum {
     }
 
     public String getName() {
-        return I18nUtil.t("language." + code, desc);
+        return I18n.t("language." + code, desc);
     }
 
     public String getCode() {
