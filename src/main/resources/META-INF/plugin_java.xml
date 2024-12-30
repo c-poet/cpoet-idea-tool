@@ -1,0 +1,24 @@
+<idea-plugin>
+    <actions>
+        <action id="OpenOutputFileAction_java"
+                class="cn.cpoet.ideas.actions.file.action.OpenOutputFileAction"
+                text="Open Output File"
+                description="Open Output file">
+            <add-to-group group-id="CPoetIdea_EditorPopupMenu_FILE"/>
+        </action>
+
+        <action id="OpenOutputFileInExplorerAction_java"
+                class="cn.cpoet.ideas.actions.file.action.OpenOutputFileInExplorerAction"
+                text="Open Output In Explorer"
+                description="Open output file in explorer">
+            <add-to-group group-id="CPoetIdea_EditorPopupMenu_FILE"/>
+        </action>
+
+        <action id="GenPatchPackageAction_java"
+                class="cn.cpoet.ideas.actions.patch.action.GenPatchPackageAction"
+                text="Generate Patch Package"
+                description="Generate Patch package">
+            <add-to-group group-id="CPoetIdea_EditorPopupMenu_PATCH"/>
+        </action>
+    </actions>
+</idea-plugin>
