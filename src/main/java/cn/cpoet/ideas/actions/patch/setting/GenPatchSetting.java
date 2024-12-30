@@ -1,7 +1,6 @@
 package cn.cpoet.ideas.actions.patch.setting;
 
 import cn.cpoet.ideas.actions.patch.constant.GenPatchBuildTypeEnum;
-import cn.cpoet.ideas.actions.patch.constant.GenPatchProjectTypeEnum;
 import cn.cpoet.ideas.actions.patch.constant.GenPatchTreeFilterTypeEnum;
 import cn.cpoet.ideas.constant.IdeasConst;
 import com.intellij.openapi.components.PersistentStateComponent;
@@ -35,9 +34,6 @@ public final class GenPatchSetting implements PersistentStateComponent<GenPatchS
 
         /** 包含路径 */
         public boolean includePath;
-
-        /** 项目类型 */
-        public String projectType = GenPatchProjectTypeEnum.NONE.getCode();
 
         /** 编译类型 */
         public String buildType = GenPatchBuildTypeEnum.DEFAULT.getCode();

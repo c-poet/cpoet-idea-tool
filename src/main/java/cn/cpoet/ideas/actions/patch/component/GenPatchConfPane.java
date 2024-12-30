@@ -1,8 +1,7 @@
 package cn.cpoet.ideas.actions.patch.component;
 
-import cn.cpoet.ideas.actions.patch.setting.GenPatchSetting;
 import cn.cpoet.ideas.actions.patch.constant.GenPatchBuildTypeEnum;
-import cn.cpoet.ideas.actions.patch.constant.GenPatchProjectTypeEnum;
+import cn.cpoet.ideas.actions.patch.setting.GenPatchSetting;
 import cn.cpoet.ideas.component.CustomComboBox;
 import cn.cpoet.ideas.component.ScrollVPane;
 import cn.cpoet.ideas.component.TitledPanel;
@@ -70,19 +69,6 @@ public class GenPatchConfPane extends ScrollVPane {
             }
         });
         formBuilder.addLabeledComponent(I18n.t("actions.patch.GenPatchPackageAction.config.outputFolder"), outputFolderTextField);
-
-        CustomComboBox<GenPatchProjectTypeEnum> projectTypeComboBox = new CustomComboBox<>();
-        for (GenPatchProjectTypeEnum item : GenPatchProjectTypeEnum.values()) {
-            projectTypeComboBox.addItem(item);
-        }
-        projectTypeComboBox.customText(GenPatchProjectTypeEnum::getTitle);
-        projectTypeComboBox.setSelectedItem(GenPatchProjectTypeEnum.ofCode(state.projectType));
-        projectTypeComboBox.addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                setting.getState().projectType = ((GenPatchProjectTypeEnum) e.getItem()).getCode();
-            }
-        });
-        formBuilder.addLabeledComponent(I18n.t("actions.patch.GenPatchPackageAction.config.projectType.label"), projectTypeComboBox);
 
         // 包含路径
         JBCheckBox includePathCheckBox = new JBCheckBox(I18n.t("actions.patch.GenPatchPackageAction.config.includePath"), state.includePath);

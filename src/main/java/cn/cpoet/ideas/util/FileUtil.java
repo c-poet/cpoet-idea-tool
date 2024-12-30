@@ -18,25 +18,6 @@ public abstract class FileUtil {
     }
 
     /**
-     * 在资源管理器中打开目录
-     *
-     * @param folder 目录
-     */
-    public static void openFolder(VirtualFile folder) {
-        String folderPath = FilenameUtils.separatorsToSystem(folder.getPath());
-        openFolder(folderPath);
-    }
-
-    /**
-     * 在资源管理器中打开目录
-     *
-     * @param folderPath 目录路径
-     */
-    public static void openFolder(String folderPath) {
-
-    }
-
-    /**
      * 在资源管理器中选中文件
      *
      * @param file 文件

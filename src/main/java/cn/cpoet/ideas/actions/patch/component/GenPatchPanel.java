@@ -1,9 +1,11 @@
 package cn.cpoet.ideas.actions.patch.component;
 
 import cn.cpoet.ideas.actions.patch.constant.GenPatchBuildTypeEnum;
+import cn.cpoet.ideas.actions.patch.constant.GenPatchConst;
 import cn.cpoet.ideas.actions.patch.model.GenPatch;
 import cn.cpoet.ideas.actions.patch.model.GenPatchItem;
 import cn.cpoet.ideas.actions.patch.setting.GenPatchSetting;
+import cn.cpoet.ideas.exception.IdeasException;
 import cn.cpoet.ideas.i18n.I18n;
 import cn.cpoet.ideas.model.FileInfo;
 import cn.cpoet.ideas.model.TreeNodeInfo;
@@ -212,7 +214,7 @@ public class GenPatchPanel extends JBSplitter {
     }
 
     protected String doGenerate(GenPatch patch) {
-        String filePath = patch.getOutputFolder() + "/" + patch.getFileName() + ".zip";
+        String filePath = FilenameUtils.concat(patch.getOutputFolder(), patch.getFileName() + GenPatchConst.PATCH_FULL_FILE_EXT);
         try (FileOutputStream fileOutputStream = new FileOutputStream(filePath);
              ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
             List<GenPatchItem> items = patch.getItems();
@@ -234,7 +236,7 @@ public class GenPatchPanel extends JBSplitter {
             zipOutputStream.putNextEntry(zipEntry);
             zipOutputStream.write(bytes);
         } catch (IOException e) {
-            throw new RuntimeException("补丁包生成失败", e);
+            throw new IdeasException("Patch generate fail", e);
         }
         dialogWrapper.disposeIfNeeded();
         return filePath;
