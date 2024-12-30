@@ -48,6 +48,8 @@
         <!--        <intentionAction>-->
         <!--            <className>cn.cpoet.ideas.iu.actions.java.action.AllGetIntentionAction</className>-->
         <!--        </intentionAction>-->
+        <notificationGroup id="CPOET_IDEA_NOTIFICATION_BALLOON"
+                           displayType="BALLOON"/>
     </extensions>
 
     <actions>

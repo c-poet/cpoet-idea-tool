@@ -103,9 +103,6 @@ public class GenPatchConfPane extends ScrollVPane {
 
     public void buildAfterGenerate(GenPatchSetting setting) {
         FormBuilder formBuilder = createFormBuilder();
-        // JBCheckBox cleanBuildFileCheckBox = new JBCheckBox(I18n.t("actions.patch.GenPatchPackageAction.config.cleanBuildFile"), setting.getState().cleanBuildFile);
-        // cleanBuildFileCheckBox.addActionListener((event) -> setting.getState().cleanBuildFile = !setting.getState().cleanBuildFile);
-        // formBuilder.addComponent(cleanBuildFileCheckBox);
         JBCheckBox openOutputFolderCheckBox = new JBCheckBox(I18n.t("actions.patch.GenPatchPackageAction.config.openOutputFolder"), setting.getState().openOutputFolder);
         openOutputFolderCheckBox.addActionListener((event) -> setting.getState().openOutputFolder = !setting.getState().openOutputFolder);
         formBuilder.addComponent(openOutputFolderCheckBox);

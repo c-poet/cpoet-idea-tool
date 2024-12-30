@@ -23,6 +23,7 @@ version = "0.1.4"
 intellij {
 
     version.set("2022.1")
+//    version.set("2023.3.4")
     type.set("IU")
 
     plugins.set(listOf(
@@ -35,8 +36,8 @@ intellij {
 tasks {
     // Set the JVM compatibility versions
     withType<JavaCompile> {
-        sourceCompatibility = "11"
         targetCompatibility = "11"
+        sourceCompatibility = "11"
         options.encoding = "UTF-8"
     }
 

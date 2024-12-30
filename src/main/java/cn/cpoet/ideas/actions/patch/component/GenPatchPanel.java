@@ -14,14 +14,16 @@ import cn.cpoet.ideas.model.TreeNodeInfo;
 import cn.cpoet.ideas.util.ModuleUtil;
 import cn.cpoet.ideas.util.StrUtil;
 import cn.cpoet.ideas.util.TreeUtil;
+import com.intellij.notification.NotificationGroupManager;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.spring.SpringLibraryUtil;
 import com.intellij.spring.SpringManager;
 import com.intellij.spring.contexts.model.SpringModel;
-import com.intellij.spring.model.utils.SpringCommonUtils;
 import com.intellij.task.ProjectTaskManager;
 import com.intellij.ui.CheckboxTreeListener;
 import com.intellij.ui.CheckedTreeNode;
@@ -235,7 +237,7 @@ public class GenPatchPanel extends JBSplitter {
         GenPatch patch = new GenPatch();
         patch.setOutputFolder(state.outputFolder);
         patch.setFileName(confPanel.getFileName());
-        if (SpringCommonUtils.hasSpringFacets(project)) {
+        if (SpringLibraryUtil.hasSpringLibrary(project)) {
             patch.setProjectType(GenPatchProjectTypeEnum.SPRING);
         } else {
             patch.setProjectType(GenPatchProjectTypeEnum.NONE);
@@ -275,6 +277,12 @@ public class GenPatchPanel extends JBSplitter {
                         cn.cpoet.ideas.util.FileUtil.selectFile(patchPath);
                     }
                     dialogWrapper.close(DialogWrapper.OK_EXIT_CODE);
+                })
+                .onError(e -> {
+                    NotificationGroupManager.getInstance()
+                            .getNotificationGroup("CPOET_IDEA_NOTIFICATION_BALLOON")
+                            .createNotification(e.getMessage(), NotificationType.ERROR)
+                            .notify(project);
                 })
                 .onProcessed(patch -> dialogWrapper.setOKActionEnabled(true));
     }

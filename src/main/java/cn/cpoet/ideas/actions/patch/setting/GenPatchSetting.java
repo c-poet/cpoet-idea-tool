@@ -38,9 +38,6 @@ public final class GenPatchSetting implements PersistentStateComponent<GenPatchS
         /** 编译类型 */
         public String buildType = GenPatchBuildTypeEnum.DEFAULT.getCode();
 
-        /** 生成后清理文件 */
-        public boolean cleanBuildFile;
-
         /** 生成后打开输出的目录 */
         public boolean openOutputFolder = true;
     }
