@@ -1,7 +1,5 @@
 package cn.cpoet.ideas.iu.actions.patch.model;
 
-import com.intellij.openapi.vfs.VirtualFile;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,7 +11,10 @@ import java.util.List;
 public class GenPatch {
 
     /** 补丁输出路径 */
-    private VirtualFile outputPath;
+    private String outputFolder;
+
+    /** 补丁文件名 */
+    private String fileName;
 
     /** 补丁说明内容 */
     private StringBuilder desc = new StringBuilder();
@@ -21,12 +22,20 @@ public class GenPatch {
     /** 补丁内容 */
     private List<GenPatchItem> items = new LinkedList<>();
 
-    public VirtualFile getOutputPath() {
-        return outputPath;
+    public String getOutputFolder() {
+        return outputFolder;
     }
 
-    public void setOutputPath(VirtualFile outputPath) {
-        this.outputPath = outputPath;
+    public void setOutputFolder(String outputFolder) {
+        this.outputFolder = outputFolder;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public StringBuilder getDesc() {

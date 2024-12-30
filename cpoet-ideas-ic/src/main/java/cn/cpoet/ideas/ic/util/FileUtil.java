@@ -85,12 +85,23 @@ public abstract class FileUtil {
      * @return 输出路径
      */
     public static String getOutputFilePath(VirtualFile root, VirtualFile file) {
-        String filePath = file.getPath().substring(root.getPath().length());
+        String filePath = getRelativePath(root.getPath(), file.getPath());
         String ext = FileBuildTypeExtEnum.findBuildExt(FilenameUtils.getExtension(filePath));
         if (StringUtils.isNotEmpty(ext)) {
             filePath = FilenameUtils.removeExtension(filePath) + FilenameUtils.EXTENSION_SEPARATOR + ext;
         }
         return filePath;
+    }
+
+    /**
+     * 获取相对路径
+     *
+     * @param rootPath 根路径
+     * @param filePath 文件路径
+     * @return 相对路径
+     */
+    public static String getRelativePath(String rootPath, String filePath) {
+        return filePath.substring(rootPath.length());
     }
 
     /**

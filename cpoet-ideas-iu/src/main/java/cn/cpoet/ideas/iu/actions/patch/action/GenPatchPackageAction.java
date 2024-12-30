@@ -19,14 +19,13 @@ public class GenPatchPackageAction extends AnAction {
     public void actionPerformed(AnActionEvent e) {
         Project project = e.getRequiredData(CommonDataKeys.PROJECT);
         DialogBuilder dialogBuilder = new DialogBuilder(project);
-        GenPatchPanel packagePanel = new GenPatchPanel(project, e.getDataContext(), dialogBuilder.getDialogWrapper());
+        GenPatchPanel packagePanel = new GenPatchPanel(project, dialogBuilder.getDialogWrapper());
         dialogBuilder.setTitle(I18n.t("actions.patch.GenPatchPackageAction.title"));
         dialogBuilder.setCenterPanel(packagePanel);
-        dialogBuilder.addAction(packagePanel.buildPreviewAction());
+        dialogBuilder.addAction(packagePanel.getPreviewAction());
         dialogBuilder.addOkAction().setText(I18n.t("actions.patch.GenPatchPackageAction.generate"));
         dialogBuilder.setOkOperation(packagePanel::generate);
         dialogBuilder.addCancelAction().setText(I18n.t("actions.patch.GenPatchPackageAction.cancel"));
-
         dialogBuilder.showNotModal();
     }
 }

@@ -1,5 +1,6 @@
 package cn.cpoet.ideas.ic.util;
 
+import cn.cpoet.ideas.ic.model.FileInfo;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -15,6 +16,12 @@ public abstract class ModuleUtil {
     }
 
     public static VirtualFile getOutputFile(Module module, VirtualFile sourceFile) {
+        return getFileInfo(module, sourceFile).getOutputFile();
+    }
+
+    public static FileInfo getFileInfo(Module module, VirtualFile sourceFile) {
+        FileInfo fileInfo = new FileInfo();
+        fileInfo.setSourceFile(sourceFile);
         ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
         VirtualFile[] sourceRoots = moduleRootManager.getSourceRoots();
         for (VirtualFile sourceRoot : sourceRoots) {
@@ -26,9 +33,12 @@ public abstract class ModuleUtil {
                 if (outputFile == null) {
                     outputFile = FileUtil.getFileInRoot(compilerModuleExtension.getCompilerOutputPathForTests(), outputFilePath);
                 }
-                return outputFile;
+                fileInfo.setSourceRoot(sourceRoot);
+                fileInfo.setOutputFile(outputFile);
+                fileInfo.setOutputRelativePath(outputFilePath);
+                break;
             }
         }
-        return null;
+        return fileInfo;
     }
 }

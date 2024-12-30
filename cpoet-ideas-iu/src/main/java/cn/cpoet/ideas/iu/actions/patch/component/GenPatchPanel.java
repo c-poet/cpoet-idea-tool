@@ -1,6 +1,7 @@
 package cn.cpoet.ideas.iu.actions.patch.component;
 
 import cn.cpoet.ideas.ic.i18n.I18n;
+import cn.cpoet.ideas.ic.model.FileInfo;
 import cn.cpoet.ideas.ic.model.TreeNodeInfo;
 import cn.cpoet.ideas.ic.util.ModuleUtil;
 import cn.cpoet.ideas.ic.util.TreeUtil;
@@ -8,13 +9,9 @@ import cn.cpoet.ideas.iu.actions.patch.constant.GenPatchBuildTypeEnum;
 import cn.cpoet.ideas.iu.actions.patch.model.GenPatch;
 import cn.cpoet.ideas.iu.actions.patch.model.GenPatchItem;
 import cn.cpoet.ideas.iu.actions.patch.setting.GenPatchSetting;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.fileChooser.FileChooser;
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.ex.MessagesEx;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.task.ProjectTaskManager;
@@ -22,7 +19,11 @@ import com.intellij.ui.CheckboxTreeListener;
 import com.intellij.ui.CheckedTreeNode;
 import com.intellij.ui.JBSplitter;
 import com.intellij.util.ui.JBDimension;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.concurrency.Promise;
+import org.jetbrains.concurrency.Promises;
 
 import javax.swing.*;
 import javax.swing.text.TextAction;
@@ -46,6 +47,7 @@ import java.util.zip.ZipOutputStream;
  * @author CPoet
  */
 public class GenPatchPanel extends JBSplitter {
+
     /** 项目信息 */
     private final Project project;
     /** 预览操作 */
@@ -60,10 +62,10 @@ public class GenPatchPanel extends JBSplitter {
     private final GenPatchConfPane confPanel;
 
 
-    public GenPatchPanel(Project project, DataContext dataContext, DialogWrapper dialogWrapper) {
+    public GenPatchPanel(Project project, DialogWrapper dialogWrapper) {
         this.project = project;
         this.dialogWrapper = dialogWrapper;
-        cn.cpoet.ideas.iu.actions.patch.setting.GenPatchSetting setting = cn.cpoet.ideas.iu.actions.patch.setting.GenPatchSetting.getInstance(project);
+        GenPatchSetting setting = GenPatchSetting.getInstance(project);
         setPreferredSize(new JBDimension(setting.getState().width, setting.getState().height));
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -72,16 +74,16 @@ public class GenPatchPanel extends JBSplitter {
                 setting.getState().height = getHeight();
             }
         });
-        treePanel = new GenPatchTreePanel(project, dataContext);
+        buildPreviewAction();
+        treePanel = new GenPatchTreePanel(project);
+        setFirstComponent(treePanel);
+        confPanel = new GenPatchConfPane(project, this);
+        setSecondComponent(confPanel);
         checkedCount = new AtomicInteger(getTreeCheckedNodes().length);
         addCheckboxTreeListener();
-        setFirstComponent(treePanel);
-        confPanel = new GenPatchConfPane(project);
-        setSecondComponent(confPanel);
     }
 
     private void addCheckboxTreeListener() {
-        dialogWrapper.setOKActionEnabled(checkedCount.get() > 0);
         treePanel.getTree().addCheckboxTreeListener(new CheckboxTreeListener() {
             @Override
             public void nodeStateChanged(@NotNull CheckedTreeNode node) {
@@ -90,90 +92,127 @@ public class GenPatchPanel extends JBSplitter {
                 } else {
                     checkedCount.decrementAndGet();
                 }
-                dialogWrapper.setOKActionEnabled(checkedCount.get() > 0);
+                updateBtnStatus();
             }
         });
+        updateBtnStatus();
     }
 
-    public void generate() {
-        VirtualFile patchOutputPath = getPatchOutputPath();
-        if (patchOutputPath == null) {
-            return;
-        }
-        dialogWrapper.setOKActionEnabled(false);
-        TreeNodeInfo[] checkedNodes = getTreeCheckedNodes();
-        cn.cpoet.ideas.iu.actions.patch.setting.GenPatchSetting setting = cn.cpoet.ideas.iu.actions.patch.setting.GenPatchSetting.getInstance(project);
+    protected Promise<GenPatch> getGenPatch() {
+        GenPatchSetting setting = GenPatchSetting.getInstance(project);
         GenPatchBuildTypeEnum buildTypeEnum = GenPatchBuildTypeEnum.ofCode(setting.getState().buildType);
-        if (buildTypeEnum == GenPatchBuildTypeEnum.PROJECT) {
-            ProjectTaskManager.getInstance(project).rebuildAllModules()
-                    .onProcessed(ret -> {
-                        if (!ret.hasErrors()) {
-                            doGenerate(patchOutputPath, setting, checkedNodes);
-                        }
-                        dialogWrapper.setOKActionEnabled(true);
-                    });
-        } else if (buildTypeEnum == GenPatchBuildTypeEnum.MODULE) {
-            Set<Module> modules = new HashSet<>();
-            for (TreeNodeInfo checkedNode : checkedNodes) {
-                Module module = TreeUtil.findModule(checkedNode);
-                if (module != null) {
-                    modules.add(module);
-                }
+        switch (buildTypeEnum) {
+            case PROJECT:
+                return getGenPatchProject(setting);
+            case MODULE:
+                return getGenPatchModule(setting);
+            case FILE:
+                return getGenPatchFile(setting);
+            default:
+                TreeNodeInfo[] checkedNodes = getTreeCheckedNodes();
+                return Promises.runAsync(() -> doGetGenPatch(setting, checkedNodes));
+        }
+    }
+
+    protected Promise<GenPatch> getGenPatchProject(GenPatchSetting setting) {
+        return ProjectTaskManager.getInstance(project)
+                .rebuildAllModules()
+                .then(result -> doGetGenPatch(setting, getTreeCheckedNodes()));
+    }
+
+    protected Promise<GenPatch> getGenPatchModule(GenPatchSetting setting) {
+        TreeNodeInfo[] checkedNodes = getTreeCheckedNodes();
+        Set<Module> modules = new HashSet<>();
+        for (TreeNodeInfo checkedNode : checkedNodes) {
+            Module module = TreeUtil.findModule(checkedNode);
+            if (module != null) {
+                modules.add(module);
             }
-            ProjectTaskManager.getInstance(project).rebuild(modules.toArray(Module[]::new))
-                    .onProcessed(ret -> {
-                        if (!ret.hasErrors()) {
-                            doGenerate(patchOutputPath, setting, checkedNodes);
-                        }
-                        dialogWrapper.setOKActionEnabled(true);
-                    });
-        } else if (buildTypeEnum == GenPatchBuildTypeEnum.FILE) {
-            VirtualFile[] files = Arrays.stream(checkedNodes).map(nodeInfo -> (VirtualFile) nodeInfo.getObject()).toArray(VirtualFile[]::new);
-            ProjectTaskManager.getInstance(project).compile(files).onProcessed(ret -> {
-                if (!ret.hasErrors()) {
-                    doGenerate(patchOutputPath, setting, checkedNodes);
-                }
-                dialogWrapper.setOKActionEnabled(true);
-            });
-        } else {
-            doGenerate(patchOutputPath, setting, checkedNodes);
-            dialogWrapper.setOKActionEnabled(true);
         }
+        return ProjectTaskManager.getInstance(project)
+                .rebuild(modules.toArray(Module[]::new))
+                .then(ret -> doGetGenPatch(setting, checkedNodes));
     }
 
-    protected VirtualFile getPatchOutputPath() {
-        VirtualFile folder = FileChooser.chooseFile(FileChooserDescriptorFactory.createSingleFolderDescriptor(), project, null);
-        if (folder == null) {
-            MessagesEx.error(project, "Please select directory").showNow();
-        }
-        return folder;
+    protected Promise<GenPatch> getGenPatchFile(GenPatchSetting setting) {
+        TreeNodeInfo[] checkedNodes = getTreeCheckedNodes();
+        VirtualFile[] files = Arrays.stream(checkedNodes)
+                .map(nodeInfo -> (VirtualFile) nodeInfo.getObject())
+                .toArray(VirtualFile[]::new);
+        return ProjectTaskManager.getInstance(project)
+                .compile(files)
+                .then(result -> doGetGenPatch(setting, checkedNodes));
     }
 
-    protected void doGenerate(VirtualFile outputPath, cn.cpoet.ideas.iu.actions.patch.setting.GenPatchSetting setting, TreeNodeInfo[] treeNodeInfos) {
-        cn.cpoet.ideas.iu.actions.patch.model.GenPatch patch = new cn.cpoet.ideas.iu.actions.patch.model.GenPatch();
-        patch.setOutputPath(outputPath);
-        patch.getDesc().append("替换路径:");
+    protected GenPatch doGetGenPatch(GenPatchSetting setting, TreeNodeInfo[] treeNodeInfos) {
+        GenPatchSetting.State state = setting.getState();
+        GenPatch genPatch = new GenPatch();
+        genPatch.setOutputFolder(state.outputFolder);
+        genPatch.setFileName(confPanel.getFileName());
+        genPatch.getDesc().append("路径:");
         for (TreeNodeInfo checkedNode : treeNodeInfos) {
             Module module = TreeUtil.findModule(checkedNode);
-            VirtualFile outputFile = ModuleUtil.getOutputFile(module, (VirtualFile) checkedNode.getObject());
-            if (outputFile != null) {
-                VirtualFile sourceFile = (VirtualFile) checkedNode.getObject();
-                cn.cpoet.ideas.iu.actions.patch.model.GenPatchItem patchItem = new cn.cpoet.ideas.iu.actions.patch.model.GenPatchItem();
+            FileInfo fileInfo = ModuleUtil.getFileInfo(module, (VirtualFile) checkedNode.getObject());
+            if (fileInfo.getOutputFile() != null) {
+                VirtualFile sourceFile = fileInfo.getSourceFile();
+                VirtualFile outputFile = fileInfo.getOutputFile();
+                GenPatchItem patchItem = new GenPatchItem();
                 patchItem.setModule(module);
                 patchItem.setSourceFile(sourceFile);
                 patchItem.setOutputFile(outputFile);
-                patch.getDesc()
+                genPatch.getDesc()
                         .append("\n").append(outputFile.getName())
-                        .append("\t\t").append(module.getName())
-                        .append("\t\t").append(sourceFile.getPath());
-                patch.getItems().add(patchItem);
+                        .append("\t").append(module.getName())
+                        .append("\t").append(FilenameUtils.getFullPathNoEndSeparator(fileInfo.getOutputRelativePath()));
+                genPatch.getItems().add(patchItem);
             }
         }
-        doGenerate(setting, patch);
+        return genPatch;
     }
 
-    protected void doGenerate(GenPatchSetting setting, GenPatch patch) {
-        String filePath = patch.getOutputPath().getPath() + "/aaa.zip";
+    protected TreeNodeInfo[] getTreeCheckedNodes() {
+        GenPatchTree tree = treePanel.getTree();
+        return tree.getCheckedNodes(TreeNodeInfo.class, (nodeInfo) -> true);
+    }
+
+    protected void buildPreviewAction() {
+        previewAction = new TextAction(I18n.t("actions.patch.GenPatchPackageAction.preview")) {
+            private static final long serialVersionUID = 1542378595944056560L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                preview();
+            }
+        };
+        previewAction.setEnabled(false);
+    }
+
+    public Action getPreviewAction() {
+        return previewAction;
+    }
+
+    public void generate() {
+        dialogWrapper.setOKActionEnabled(false);
+        GenPatchSetting.State state = GenPatchSetting.getInstance(project).getState();
+        getGenPatch()
+                .then(this::doGenerate)
+                .onSuccess((path) -> {
+                    if (state.openOutputFolder) {
+                        String patchPath = FilenameUtils.separatorsToSystem(path);
+                        cn.cpoet.ideas.ic.util.FileUtil.selectFile(patchPath);
+                    }
+                })
+                .onProcessed(patch -> dialogWrapper.setOKActionEnabled(true));
+    }
+
+    public void preview() {
+        getGenPatch().onSuccess(patch -> {
+            System.out.println(patch);
+        });
+    }
+
+    protected String doGenerate(GenPatch patch) {
+        String filePath = patch.getOutputFolder() + "/" + patch.getFileName() + ".zip";
         try (FileOutputStream fileOutputStream = new FileOutputStream(filePath);
              ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
             List<cn.cpoet.ideas.iu.actions.patch.model.GenPatchItem> items = patch.getItems();
@@ -195,31 +234,22 @@ public class GenPatchPanel extends JBSplitter {
             zipOutputStream.putNextEntry(zipEntry);
             zipOutputStream.write(bytes);
         } catch (IOException e) {
+            throw new RuntimeException("补丁包生成失败", e);
         }
-        dialogWrapper.close(DialogWrapper.OK_EXIT_CODE);
+        dialogWrapper.disposeIfNeeded();
+        return filePath;
     }
 
-    protected TreeNodeInfo[] getTreeCheckedNodes() {
-        GenPatchTree tree = treePanel.getTree();
-        return tree.getCheckedNodes(TreeNodeInfo.class, (nodeInfo) -> true);
-    }
-
-    public Action buildPreviewAction() {
-        previewAction = new TextAction(I18n.t("actions.patch.GenPatchPackageAction.preview")) {
-
-            private static final long serialVersionUID = 1542378595944056560L;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                preview();
-            }
-        };
-        previewAction.setEnabled(false);
-        return previewAction;
-    }
-
-
-    public void preview() {
-
+    void updateBtnStatus() {
+        GenPatchSetting.State state = GenPatchSetting.getInstance(project).getState();
+        if (checkedCount.get() > 0
+                && StringUtils.isNotBlank(state.outputFolder)
+                && StringUtils.isNotBlank(confPanel.getFileName())) {
+            dialogWrapper.setOKActionEnabled(true);
+            previewAction.setEnabled(true);
+        } else {
+            dialogWrapper.setOKActionEnabled(false);
+            previewAction.setEnabled(false);
+        }
     }
 }

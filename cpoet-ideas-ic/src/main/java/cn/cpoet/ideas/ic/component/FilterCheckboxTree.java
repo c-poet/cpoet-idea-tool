@@ -1,7 +1,9 @@
 package cn.cpoet.ideas.ic.component;
 
+import cn.cpoet.ideas.ic.model.TreeNodeInfo;
 import com.intellij.ui.CheckboxTree;
 import com.intellij.ui.CheckedTreeNode;
+import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -66,5 +68,15 @@ public class FilterCheckboxTree extends CheckboxTree {
     @Override
     public <T> T[] getCheckedNodes(Class<? extends T> nodeType, @Nullable Tree.NodeFilter<? super T> filter) {
         return super.getCheckedNodes(nodeType, filter);
+    }
+
+    @Override
+    protected void installSpeedSearch() {
+        new TreeSpeedSearch(this, treePath -> {
+            CheckedTreeNode treeNode = (CheckedTreeNode) treePath.getLastPathComponent();
+            return treeNode.getUserObject() instanceof TreeNodeInfo
+                    ? ((TreeNodeInfo) treeNode.getUserObject()).getName()
+                    : treeNode.toString();
+        }, true);
     }
 }

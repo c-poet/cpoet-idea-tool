@@ -30,8 +30,10 @@ public class GenPatchConfPane extends ScrollVPane {
 
     private final Project project;
     private JBTextField fileNameField;
+    private final GenPatchPanel parent;
 
-    public GenPatchConfPane(Project project) {
+    public GenPatchConfPane(Project project, GenPatchPanel parent) {
+        this.parent = parent;
         this.project = project;
         setBorder(JBUI.Borders.empty());
         GenPatchSetting setting = GenPatchSetting.getInstance(project);
@@ -47,6 +49,12 @@ public class GenPatchConfPane extends ScrollVPane {
         // 设置默认的标题，后续提取到配置中
         String date = DateFormatUtils.format(System.currentTimeMillis(), "yyyyMMdd");
         fileNameField.setText(date + "_" + project.getName());
+        fileNameField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent event) {
+                parent.updateBtnStatus();
+            }
+        });
         formBuilder.addLabeledComponent(I18n.t("actions.patch.GenPatchPackageAction.config.fileName"), fileNameField);
 
         // 选择输出的目录
@@ -58,12 +66,10 @@ public class GenPatchConfPane extends ScrollVPane {
             @Override
             protected void textChanged(@NotNull DocumentEvent event) {
                 setting.getState().outputFolder = outputFolderTextField.getText();
+                parent.updateBtnStatus();
             }
         });
         formBuilder.addLabeledComponent(I18n.t("actions.patch.GenPatchPackageAction.config.outputFolder"), outputFolderTextField);
-        // 包含路径
-        JBCheckBox includePathCheckBox = new JBCheckBox(I18n.t("actions.patch.GenPatchPackageAction.config.includePath"), state.includePath);
-        includePathCheckBox.addActionListener(e -> setting.getState().includePath = !setting.getState().includePath);
 
         CustomComboBox<GenPatchProjectTypeEnum> projectTypeComboBox = new CustomComboBox<>();
         for (GenPatchProjectTypeEnum item : GenPatchProjectTypeEnum.values()) {
@@ -77,6 +83,11 @@ public class GenPatchConfPane extends ScrollVPane {
             }
         });
         formBuilder.addLabeledComponent(I18n.t("actions.patch.GenPatchPackageAction.config.projectType.label"), projectTypeComboBox);
+
+        // 包含路径
+        JBCheckBox includePathCheckBox = new JBCheckBox(I18n.t("actions.patch.GenPatchPackageAction.config.includePath"), state.includePath);
+        includePathCheckBox.addActionListener(e -> setting.getState().includePath = !setting.getState().includePath);
+        formBuilder.addComponent(includePathCheckBox);
 
         TitledPanel titledPanel = new TitledPanel(I18n.t("actions.patch.GenPatchPackageAction.config.generalTitle"));
         titledPanel.add(formBuilder.getPanel());

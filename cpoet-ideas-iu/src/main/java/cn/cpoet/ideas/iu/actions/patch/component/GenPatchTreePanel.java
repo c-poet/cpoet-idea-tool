@@ -35,12 +35,10 @@ public class GenPatchTreePanel extends JBSplitter {
 
     private final Project project;
     private final GenPatchTree tree;
-    private final DataContext dataContext;
 
-    public GenPatchTreePanel(Project project, DataContext dataContext) {
+    public GenPatchTreePanel(Project project) {
         super(true);
         this.project = project;
-        this.dataContext = dataContext;
         tree = new GenPatchTree(project);
         GenPatchSetting setting = GenPatchSetting.getInstance(project);
         buildTreePanel(setting);
@@ -126,13 +124,13 @@ public class GenPatchTreePanel extends JBSplitter {
             @Override
             public AnAction @NotNull [] getChildren(@Nullable AnActionEvent anActionEvent) {
                 return new AnAction[]{
-                        new AnAction(null, "Expand all", AllIcons.Actions.Expandall) {
+                        new AnAction("Expand All", null, AllIcons.Actions.Expandall) {
                             @Override
                             public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
                                 TreeUtil.expandAll(tree);
                             }
                         },
-                        new AnAction(null, "Collapse all", AllIcons.Actions.Collapseall) {
+                        new AnAction("Collapse All", null, AllIcons.Actions.Collapseall) {
                             @Override
                             public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
                                 TreeUtil.collapseAll(tree, -1);
