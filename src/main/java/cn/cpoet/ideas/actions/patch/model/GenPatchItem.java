@@ -1,6 +1,5 @@
 package cn.cpoet.ideas.actions.patch.model;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;
 
 /**
@@ -8,8 +7,11 @@ import com.intellij.openapi.vfs.VirtualFile;
  */
 public class GenPatchItem {
 
+    /** 文件相对路径（不含文件名） */
+    private String fullPath;
+
     /** 文件所在的模块 */
-    private Module module;
+    private GenPatchModule patchModule;
 
     /** 源文件 */
     private VirtualFile sourceFile;
@@ -17,12 +19,20 @@ public class GenPatchItem {
     /** 输出文件 */
     private VirtualFile outputFile;
 
-    public Module getModule() {
-        return module;
+    public String getFullPath() {
+        return fullPath;
     }
 
-    public void setModule(Module module) {
-        this.module = module;
+    public void setFullPath(String fullPath) {
+        this.fullPath = fullPath;
+    }
+
+    public GenPatchModule getPatchModule() {
+        return patchModule;
+    }
+
+    public void setPatchModule(GenPatchModule patchModule) {
+        this.patchModule = patchModule;
     }
 
     public VirtualFile getSourceFile() {

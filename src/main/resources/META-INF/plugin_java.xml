@@ -1,4 +1,6 @@
 <idea-plugin>
+    <depends>com.intellij.spring</depends>
+
     <actions>
         <action id="OpenOutputFileAction_java"
                 class="cn.cpoet.ideas.actions.file.action.OpenOutputFileAction"

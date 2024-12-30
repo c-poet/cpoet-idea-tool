@@ -98,4 +98,22 @@ public abstract class FileUtil {
         }
         return null;
     }
+
+    /**
+     * 移出路径开始的分隔符
+     *
+     * @param path 路径
+     * @return 移出路径开始分隔符的路径
+     */
+    public static String removeStartSeparator(String path) {
+        if (path != null && !path.isEmpty()) {
+            if (path.startsWith("/")) {
+                return path.substring(1);
+            }
+            if (path.startsWith("\\")) {
+                return path.substring(2);
+            }
+        }
+        return path;
+    }
 }

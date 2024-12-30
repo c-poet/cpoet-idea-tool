@@ -27,7 +27,8 @@ intellij {
 
     plugins.set(listOf(
             "com.intellij.database",
-            "com.intellij.java"
+            "com.intellij.java",
+            "com.intellij.spring"
     ))
 }
 

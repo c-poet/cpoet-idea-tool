@@ -35,6 +35,7 @@ public class GenPatchTreePanel extends JBSplitter {
 
     private final Project project;
     private final GenPatchTree tree;
+    private EditorTextField patchDescEditor;
 
     public GenPatchTreePanel(Project project) {
         super(true);
@@ -143,9 +144,14 @@ public class GenPatchTreePanel extends JBSplitter {
 
     private void buildDescriptionPanel() {
         TitledPanel descTitledPanel = new TitledPanel(I18n.t("actions.patch.GenPatchPackageAction.description.title"));
-        EditorTextField patchInfoEditor = new EditorTextField();
-        descTitledPanel.add(patchInfoEditor);
+        patchDescEditor = new EditorTextField();
+        patchDescEditor.setOneLineMode(false);
+        descTitledPanel.add(patchDescEditor);
         setSecondComponent(descTitledPanel);
+    }
+
+    public String getPatchDesc() {
+        return patchDescEditor.getText();
     }
 
     public GenPatchTree getTree() {

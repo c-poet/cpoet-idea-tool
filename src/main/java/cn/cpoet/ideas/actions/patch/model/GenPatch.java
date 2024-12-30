@@ -1,5 +1,7 @@
 package cn.cpoet.ideas.actions.patch.model;
 
+import cn.cpoet.ideas.actions.patch.constant.GenPatchProjectTypeEnum;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,6 +17,9 @@ public class GenPatch {
 
     /** 补丁文件名 */
     private String fileName;
+
+    /** 项目类型 */
+    private GenPatchProjectTypeEnum projectType;
 
     /** 补丁说明内容 */
     private StringBuilder desc = new StringBuilder();
@@ -36,6 +41,14 @@ public class GenPatch {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public GenPatchProjectTypeEnum getProjectType() {
+        return projectType;
+    }
+
+    public void setProjectType(GenPatchProjectTypeEnum projectType) {
+        this.projectType = projectType;
     }
 
     public StringBuilder getDesc() {
