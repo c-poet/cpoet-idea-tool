@@ -12,11 +12,12 @@ import cn.cpoet.ideas.i18n.I18n;
 import cn.cpoet.ideas.model.FileInfo;
 import cn.cpoet.ideas.model.TreeNodeInfo;
 import cn.cpoet.ideas.util.ModuleUtil;
-import cn.cpoet.ideas.util.StrUtil;
+import cn.cpoet.ideas.util.NotificationUtil;
 import cn.cpoet.ideas.util.TreeUtil;
-import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.io.FileUtil;
@@ -157,7 +158,7 @@ public class GenPatchPanel extends JBSplitter {
         GenPatchSetting.State state = setting.getState();
         GenPatch patch = createGenPatch();
         String patchDesc = treePanel.getPatchDesc();
-        if (StrUtil.isNotEmpty(patchDesc)) {
+        if (StringUtils.isNotBlank(patchDesc)) {
             patch.getDesc().append(patchDesc).append("\n\n");
         }
         patch.getDesc().append("Files path:");
@@ -259,7 +260,6 @@ public class GenPatchPanel extends JBSplitter {
                 preview();
             }
         };
-        previewAction.setEnabled(false);
     }
 
     public Action getPreviewAction() {
@@ -269,28 +269,33 @@ public class GenPatchPanel extends JBSplitter {
     public void generate() {
         dialogWrapper.setOKActionEnabled(false);
         GenPatchSetting.State state = setting.getState();
-        getGenPatch()
+        BackgroundableProcessIndicator processIndicator = new BackgroundableProcessIndicator(project, "Generate patch",
+                null, null, false);
+        ProgressManager progressManager = ProgressManager.getInstance();
+        progressManager.runProcess(() -> getGenPatch()
                 .then(this::doGenerate)
                 .onSuccess((path) -> {
                     if (state.openOutputFolder) {
                         String patchPath = FilenameUtils.separatorsToSystem(path);
                         cn.cpoet.ideas.util.FileUtil.selectFile(patchPath);
                     }
-                    dialogWrapper.close(DialogWrapper.OK_EXIT_CODE);
+                    state.lastFileNamePrefix = confPanel.getFileNamePrefix();
+                    state.lastFileName = confPanel.getFileName();
+                    processIndicator.setText("Generate success");
                 })
                 .onError(e -> {
-                    NotificationGroupManager.getInstance()
-                            .getNotificationGroup("CPOET_IDEA_NOTIFICATION_BALLOON")
+                    NotificationUtil.getBalloonGroup()
                             .createNotification(e.getMessage(), NotificationType.ERROR)
                             .notify(project);
                 })
-                .onProcessed(patch -> dialogWrapper.setOKActionEnabled(true));
+                .onProcessed(patch -> {
+                    processIndicator.stop();
+                    dialogWrapper.setOKActionEnabled(true);
+                }), processIndicator);
+
     }
 
     public void preview() {
-        getGenPatch().onSuccess(patch -> {
-            System.out.println(patch);
-        });
     }
 
     protected String doGenerate(GenPatch patch) {

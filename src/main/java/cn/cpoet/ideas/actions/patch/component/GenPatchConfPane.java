@@ -14,6 +14,7 @@ import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBUI;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +29,7 @@ import java.awt.event.ItemEvent;
 public class GenPatchConfPane extends ScrollVPane {
 
     private final Project project;
+    private String fileNamePrefix;
     private JBTextField fileNameField;
     private final GenPatchPanel parent;
 
@@ -45,9 +47,16 @@ public class GenPatchConfPane extends ScrollVPane {
         GenPatchSetting.State state = setting.getState();
         FormBuilder formBuilder = createFormBuilder();
         fileNameField = new JBTextField();
-        // 设置默认的标题，后续提取到配置中
-        String date = DateFormatUtils.format(System.currentTimeMillis(), "yyyyMMdd");
-        fileNameField.setText(date + "_" + project.getName());
+        fileNamePrefix = DateFormatUtils.format(System.currentTimeMillis(), "yyyyMMdd") + "_";
+        if (StringUtils.isNotBlank(state.lastFileName)) {
+            if (StringUtils.isNotBlank(state.lastFileNamePrefix) && state.lastFileName.startsWith(state.lastFileNamePrefix)) {
+                fileNameField.setText(fileNamePrefix + state.lastFileName.substring(state.lastFileNamePrefix.length()));
+            } else {
+                fileNameField.setText(state.lastFileName);
+            }
+        } else {
+            fileNameField.setText(fileNamePrefix + project.getName());
+        }
         fileNameField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent event) {
@@ -113,6 +122,10 @@ public class GenPatchConfPane extends ScrollVPane {
 
     protected FormBuilder createFormBuilder() {
         return FormBuilder.createFormBuilder().setFormLeftIndent(20);
+    }
+
+    public String getFileNamePrefix() {
+        return fileNamePrefix;
     }
 
     public String getFileName() {

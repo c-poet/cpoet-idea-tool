@@ -13,26 +13,6 @@ public abstract class StrUtil {
     }
 
     /**
-     * 判断字符串是否不为空
-     *
-     * @param text 字符串
-     * @return 是否不为空
-     */
-    public static boolean isNotEmpty(CharSequence text) {
-        return !isEmpty(text);
-    }
-
-    /**
-     * 判断字符串是否为空
-     *
-     * @param text 字符串
-     * @return 字符串是否为空
-     */
-    public static boolean isEmpty(CharSequence text) {
-        return text == null || text.length() == 0;
-    }
-
-    /**
      * 驼峰转下划线
      *
      * @param text 文本

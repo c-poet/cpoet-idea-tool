@@ -40,14 +40,6 @@
                                  instance="cn.cpoet.ideas.setting.IdeasConfigurable"
                                  id="cn.cpoet.ideas.setting.IdeasConfigurable"
                                  displayName="CPoet Ideas"/>
-
-        <!--        <intentionAction>-->
-        <!--            <className>cn.cpoet.ideas.iu.actions.java.action.AllSetIntentionAction</className>-->
-        <!--        </intentionAction>-->
-
-        <!--        <intentionAction>-->
-        <!--            <className>cn.cpoet.ideas.iu.actions.java.action.AllGetIntentionAction</className>-->
-        <!--        </intentionAction>-->
         <notificationGroup id="CPOET_IDEA_NOTIFICATION_BALLOON"
                            displayType="BALLOON"/>
     </extensions>
@@ -58,11 +50,6 @@
                popup="true">
             <separator/>
             <add-to-group group-id="EditorPopupMenu" relative-to-action="EditorToggleColumnMode" anchor="after"/>
-            <group id="CPoetIdea_EditorPopupMenu_FILE"
-                   text="File"
-                   popup="true">
-            </group>
-
             <group id="CPoetIdea_EditorPopupMenu_TEXT"
                    text="Text"
                    popup="true">
@@ -70,11 +57,6 @@
 
             <group id="CPoetIdea_EditorPopupMenu_BASE64"
                    text="Base64"
-                   popup="true">
-            </group>
-
-            <group id="CPoetIdea_EditorPopupMenu_PATCH"
-                   text="Patch"
                    popup="true">
             </group>
         </group>

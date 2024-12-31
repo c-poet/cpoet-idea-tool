@@ -22,7 +22,7 @@ public class GenPatchPackageAction extends AnAction {
         GenPatchPanel packagePanel = new GenPatchPanel(project, dialogBuilder.getDialogWrapper());
         dialogBuilder.setTitle(I18n.t("actions.patch.GenPatchPackageAction.title"));
         dialogBuilder.setCenterPanel(packagePanel);
-        dialogBuilder.addAction(packagePanel.getPreviewAction());
+        // dialogBuilder.addAction(packagePanel.getPreviewAction());
         dialogBuilder.addOkAction().setText(I18n.t("actions.patch.GenPatchPackageAction.generate"));
         dialogBuilder.setOkOperation(packagePanel::generate);
         dialogBuilder.addCancelAction().setText(I18n.t("actions.patch.GenPatchPackageAction.cancel"));

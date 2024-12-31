@@ -26,6 +26,12 @@ public final class GenPatchSetting implements PersistentStateComponent<GenPatchS
         /** 面板高度 */
         public int height = 400;
 
+        /** 记录最后一次操作的文件名 */
+        public String lastFileName;
+
+        /** 最后一次生成的文件名前缀 */
+        public String lastFileNamePrefix;
+
         /** 文件树过滤类型 */
         public String treeFilterType = GenPatchTreeFilterTypeEnum.PROJECT.getCode();
 

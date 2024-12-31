@@ -1,6 +1,6 @@
 package cn.cpoet.ideas.i18n;
 
-import cn.cpoet.ideas.util.StrUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -45,7 +45,7 @@ final class I18nChain {
     @NotNull
     public String getMessage(String name, @NotNull String defaultMessage) {
         String message = doGetMessage(name);
-        return StrUtil.isEmpty(message) ? defaultMessage : message;
+        return StringUtils.isEmpty(message) ? defaultMessage : message;
     }
 
     private String doGetMessage(String name) {

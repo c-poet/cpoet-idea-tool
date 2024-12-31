@@ -1,7 +1,34 @@
 <idea-plugin>
+
     <depends>com.intellij.spring</depends>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <!--        <intentionAction>-->
+        <!--            <className>cn.cpoet.ideas.iu.actions.java.action.AllSetIntentionAction</className>-->
+        <!--        </intentionAction>-->
+
+        <!--        <intentionAction>-->
+        <!--            <className>cn.cpoet.ideas.iu.actions.java.action.AllGetIntentionAction</className>-->
+        <!--        </intentionAction>-->
+    </extensions>
+
     <actions>
+        <group id="CPoetIdea_EditorPopupMenu_FILE"
+               text="File"
+               popup="true">
+            <add-to-group group-id="CPoetIdea_EditorPopupMenu"
+                          relative-to-action="CPoetIdea_EditorPopupMenu_TEXT"
+                          anchor="before"/>
+        </group>
+
+        <group id="CPoetIdea_EditorPopupMenu_PATCH"
+               text="Patch"
+               popup="true">
+            <add-to-group group-id="CPoetIdea_EditorPopupMenu"
+                          relative-to-action="CPoetIdea_EditorPopupMenu_BASE64"
+                          anchor="after"/>
+        </group>
+
         <action id="OpenOutputFileAction_java"
                 class="cn.cpoet.ideas.actions.file.action.OpenOutputFileAction"
                 text="Open Output File"
