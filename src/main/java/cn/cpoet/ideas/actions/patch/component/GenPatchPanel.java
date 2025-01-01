@@ -15,6 +15,8 @@ import cn.cpoet.ideas.util.ModuleUtil;
 import cn.cpoet.ideas.util.NotificationUtil;
 import cn.cpoet.ideas.util.TreeUtil;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.util.PotemkinProgress;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.io.FileUtil;
@@ -266,21 +268,48 @@ public class GenPatchPanel extends JBSplitter {
     }
 
     public void generate() {
+        ProgressIndicator indicator = startGenerateIndicator();
         GenPatchSetting.State state = setting.getState();
+        indicator.setFraction(0.1);
+        indicator.setText("Generate Patch info");
         getGenPatch()
-                .then(this::doGenerate)
+                .then(patch -> {
+                    indicator.setText("Generate patch");
+                    indicator.setFraction(0.5);
+                    return doGenerate(patch);
+                })
                 .onSuccess((path) -> {
+                    indicator.setText("Generate after");
+                    indicator.setFraction(0.8);
                     if (state.openOutputFolder) {
                         String patchPath = FilenameUtils.separatorsToSystem(path);
-                        cn.cpoet.ideas.util.FileUtil.selectFile(patchPath);
+                        if (state.compress) {
+                            cn.cpoet.ideas.util.FileUtil.selectFile(patchPath);
+                        } else {
+                            cn.cpoet.ideas.util.FileUtil.openFolder(patchPath);
+                        }
                     }
                     state.lastFileNamePrefix = confPanel.getFileNamePrefix();
                     state.lastFileName = confPanel.getFileName();
+                    indicator.setFraction(0.98);
                 })
                 .onError(e -> {
                     LOGGER.error("生成补丁失败: {}", e.getMessage(), e);
                     NotificationUtil.initBalloonError(e.getMessage()).notify(project);
-                });
+                })
+                .onProcessed(ret -> stopGenerateIndicator(indicator));
+    }
+
+    protected ProgressIndicator startGenerateIndicator() {
+        PotemkinProgress progress = new PotemkinProgress("Generating", project, dialogWrapper.getContentPanel(), null);
+        dialogWrapper.getWindow().setEnabled(false);
+        progress.start();
+        return progress;
+    }
+
+    protected void stopGenerateIndicator(ProgressIndicator progress) {
+        progress.stop();
+        dialogWrapper.getWindow().setEnabled(true);
     }
 
     public void preview() {

@@ -18,6 +18,24 @@ public abstract class FileUtil {
     }
 
     /**
+     * 在资源管理器中打开目录
+     *
+     * @param path 目录路径
+     */
+    public static void openFolder(String path) {
+        if (OS.isLinux()) {
+            if (!OSUtil.execCommand(OSExplorerConst.LINUX_GNOME, path)
+                    && !OSUtil.execCommand(OSExplorerConst.LINUX_NAUTILUS, path)) {
+                OSUtil.execCommand(OSExplorerConst.LINUX_KDE, path);
+            }
+        } else if (OS.isMacOSX()) {
+            OSUtil.execCommand(OSExplorerConst.MACOS, path);
+        } else {
+            OSUtil.execCommand(OSExplorerConst.WINDOWS, path);
+        }
+    }
+
+    /**
      * 在资源管理器中选中文件
      *
      * @param file 文件

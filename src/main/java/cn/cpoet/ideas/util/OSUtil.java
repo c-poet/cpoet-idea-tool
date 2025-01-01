@@ -14,11 +14,13 @@ public abstract class OSUtil {
      *
      * @param commandAndArgs 命令及参数
      */
-    public static void execCommand(String... commandAndArgs) {
+    public static boolean execCommand(String... commandAndArgs) {
         Runtime runtime = Runtime.getRuntime();
         try {
             runtime.exec(commandAndArgs);
+            return true;
         } catch (Exception ignored) {
         }
+        return false;
     }
 }

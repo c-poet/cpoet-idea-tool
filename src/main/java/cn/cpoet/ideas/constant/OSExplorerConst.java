@@ -15,6 +15,9 @@ public interface OSExplorerConst {
     /** Linux Gnome桌面 */
     String LINUX_GNOME = "files";
 
+    /** NAUTILUS */
+    String LINUX_NAUTILUS = "nautilus";
+
     /** Linux KDE桌面 */
     String LINUX_KDE = "dolphin";
 }
