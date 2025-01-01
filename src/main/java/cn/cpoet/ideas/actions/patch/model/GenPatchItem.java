@@ -2,6 +2,8 @@ package cn.cpoet.ideas.actions.patch.model;
 
 import com.intellij.openapi.vfs.VirtualFile;
 
+import java.util.List;
+
 /**
  * @author CPoet
  */
@@ -18,6 +20,9 @@ public class GenPatchItem {
 
     /** 输出文件 */
     private VirtualFile outputFile;
+
+    /** 附加输出文件：例如JAVA内部类 */
+    private List<VirtualFile> attachOutputFiles;
 
     public String getFullPath() {
         return fullPath;
@@ -49,5 +54,13 @@ public class GenPatchItem {
 
     public void setOutputFile(VirtualFile outputFile) {
         this.outputFile = outputFile;
+    }
+
+    public List<VirtualFile> getAttachOutputFiles() {
+        return attachOutputFiles;
+    }
+
+    public void setAttachOutputFiles(List<VirtualFile> attachOutputFiles) {
+        this.attachOutputFiles = attachOutputFiles;
     }
 }

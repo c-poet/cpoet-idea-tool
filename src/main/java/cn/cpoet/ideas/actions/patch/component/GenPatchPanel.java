@@ -202,11 +202,28 @@ public class GenPatchPanel extends JBSplitter {
                         }
                         patch.getDesc().append("\t\t").append(patchItem.getFullPath());
                     }
+                    handleGenPatchItemAttachOutputFiles(patchItem);
                     patch.getItems().add(patchItem);
                 }
             }
         }
         return patch;
+    }
+
+    protected void handleGenPatchItemAttachOutputFiles(GenPatchItem patchItem) {
+        VirtualFile outputFile = patchItem.getOutputFile();
+        if ("class".equals(outputFile.getExtension())) {
+            String filePrefix = outputFile.getNameWithoutExtension() + "$";
+            VirtualFile[] children = outputFile.getParent().getChildren();
+            for (VirtualFile child : children) {
+                if (child.getName().startsWith(filePrefix)) {
+                    if (patchItem.getAttachOutputFiles() == null) {
+                        patchItem.setAttachOutputFiles(new LinkedList<>());
+                    }
+                    patchItem.getAttachOutputFiles().add(child);
+                }
+            }
+        }
     }
 
     protected Map<GenPatchModule, List<TreeNodeInfo>> getModuleFilesMapping(GenPatch patch, TreeNodeInfo[] treeNodeInfos) {
@@ -323,22 +340,24 @@ public class GenPatchPanel extends JBSplitter {
         String path = FilenameUtils.concat(patch.getOutputFolder(), patch.getFileName());
         List<GenPatchItem> items = patch.getItems();
         for (GenPatchItem item : items) {
-            String filePath;
+            String filePath = path;
             if (state.includePath) {
-                filePath = FilenameUtils.concat(item.getPatchModule().getModule().getName(), item.getFullPath());
-                filePath = FilenameUtils.concat(filePath, item.getOutputFile().getName());
-            } else {
-                filePath = item.getOutputFile().getName();
+                filePath = FilenameUtils.concat(filePath, item.getPatchModule().getModule().getName());
+                filePath = FilenameUtils.concat(filePath, item.getFullPath());
             }
-            filePath = FilenameUtils.concat(path, filePath);
-            doWritePatchItemToFile(item, filePath);
+            doWritePatchItemToFile(item.getOutputFile(), FilenameUtils.concat(filePath, item.getOutputFile().getName()));
+            if (CollectionUtils.isNotEmpty(item.getAttachOutputFiles())) {
+                for (VirtualFile attach : item.getAttachOutputFiles()) {
+                    doWritePatchItemToFile(attach, FilenameUtils.concat(filePath, attach.getName()));
+                }
+            }
         }
         doWriteReadmeFileToFile(patch, path);
         return path;
     }
 
-    protected void doWritePatchItemToFile(GenPatchItem patchItem, String filePath) {
-        try (InputStream in = patchItem.getOutputFile().getInputStream()) {
+    protected void doWritePatchItemToFile(VirtualFile file, String filePath) {
+        try (InputStream in = file.getInputStream()) {
             byte[] bytes = FileUtil.loadBytes(in);
             FileUtil.writeToFile(new File(filePath), bytes);
         } catch (Exception e) {
@@ -363,6 +382,11 @@ public class GenPatchPanel extends JBSplitter {
             List<GenPatchItem> items = patch.getItems();
             for (GenPatchItem item : items) {
                 doWritePatchItemToZip(zipOutputStream, item);
+                if (CollectionUtils.isNotEmpty(item.getAttachOutputFiles())) {
+                    for (VirtualFile attach : item.getAttachOutputFiles()) {
+                        doWritePatchItemToZip(zipOutputStream, item, attach);
+                    }
+                }
             }
             doWriteReadmeFileToZip(zipOutputStream, patch);
         } catch (IOException e) {
@@ -386,8 +410,12 @@ public class GenPatchPanel extends JBSplitter {
 
     protected void doWritePatchItemToZip(ZipOutputStream zipOutputStream, GenPatchItem patchItem) {
         VirtualFile outputFile = patchItem.getOutputFile();
-        try (InputStream inputStream = outputFile.getInputStream()) {
-            ZipEntry zipEntry = createZipEntry(patchItem);
+        doWritePatchItemToZip(zipOutputStream, patchItem, outputFile);
+    }
+
+    protected void doWritePatchItemToZip(ZipOutputStream zipOutputStream, GenPatchItem patchItem, VirtualFile file) {
+        try (InputStream inputStream = file.getInputStream()) {
+            ZipEntry zipEntry = createZipEntry(patchItem, file);
             byte[] bytes = FileUtil.loadBytes(inputStream);
             zipEntry.setSize(bytes.length);
             zipOutputStream.putNextEntry(zipEntry);
@@ -397,18 +425,17 @@ public class GenPatchPanel extends JBSplitter {
         }
     }
 
-    protected ZipEntry createZipEntry(GenPatchItem patchItem) {
+    protected ZipEntry createZipEntry(GenPatchItem patchItem, VirtualFile file) {
         GenPatchSetting.State state = setting.getState();
-        VirtualFile outputFile = patchItem.getOutputFile();
         GenPatchModule patchModule = patchItem.getPatchModule();
         ZipEntry zipEntry;
         if (state.includePath) {
-            String filePath = patchModule.getModule().getName() + "/" + patchItem.getFullPath() + "/" + outputFile.getName();
+            String filePath = patchModule.getModule().getName() + "/" + patchItem.getFullPath() + "/" + file.getName();
             zipEntry = new ZipEntry(filePath);
         } else {
-            zipEntry = new ZipEntry(outputFile.getName());
+            zipEntry = new ZipEntry(file.getName());
         }
-        zipEntry.setComment(outputFile.getPath());
+        zipEntry.setComment(file.getPath());
         return zipEntry;
     }
 
