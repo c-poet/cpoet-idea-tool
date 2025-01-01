@@ -16,8 +16,6 @@ import cn.cpoet.ideas.util.NotificationUtil;
 import cn.cpoet.ideas.util.TreeUtil;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.io.FileUtil;
@@ -260,6 +258,7 @@ public class GenPatchPanel extends JBSplitter {
                 preview();
             }
         };
+        previewAction.setEnabled(false);
     }
 
     public Action getPreviewAction() {
@@ -267,12 +266,8 @@ public class GenPatchPanel extends JBSplitter {
     }
 
     public void generate() {
-        dialogWrapper.setOKActionEnabled(false);
         GenPatchSetting.State state = setting.getState();
-        BackgroundableProcessIndicator processIndicator = new BackgroundableProcessIndicator(project, "Generate patch",
-                null, null, false);
-        ProgressManager progressManager = ProgressManager.getInstance();
-        progressManager.runProcess(() -> getGenPatch()
+        getGenPatch()
                 .then(this::doGenerate)
                 .onSuccess((path) -> {
                     if (state.openOutputFolder) {
@@ -281,18 +276,12 @@ public class GenPatchPanel extends JBSplitter {
                     }
                     state.lastFileNamePrefix = confPanel.getFileNamePrefix();
                     state.lastFileName = confPanel.getFileName();
-                    processIndicator.setText("Generate success");
                 })
                 .onError(e -> {
                     NotificationUtil.getBalloonGroup()
                             .createNotification(e.getMessage(), NotificationType.ERROR)
                             .notify(project);
-                })
-                .onProcessed(patch -> {
-                    processIndicator.stop();
-                    dialogWrapper.setOKActionEnabled(true);
-                }), processIndicator);
-
+                });
     }
 
     public void preview() {
@@ -361,10 +350,8 @@ public class GenPatchPanel extends JBSplitter {
                 && StringUtils.isNotBlank(state.outputFolder)
                 && StringUtils.isNotBlank(confPanel.getFileName())) {
             dialogWrapper.setOKActionEnabled(true);
-            previewAction.setEnabled(true);
         } else {
             dialogWrapper.setOKActionEnabled(false);
-            previewAction.setEnabled(false);
         }
     }
 }
