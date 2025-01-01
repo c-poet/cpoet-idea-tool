@@ -79,6 +79,11 @@ public class GenPatchConfPane extends ScrollVPane {
         });
         formBuilder.addLabeledComponent(I18n.t("actions.patch.GenPatchPackageAction.config.outputFolder"), outputFolderTextField);
 
+        // 是否编译
+        JBCheckBox compressCheckBox = new JBCheckBox(I18n.t("actions.patch.GenPatchPackageAction.config.compress"), state.compress);
+        compressCheckBox.addActionListener(e -> setting.getState().compress = !setting.getState().compress);
+        formBuilder.addComponent(compressCheckBox);
+
         // 包含路径
         JBCheckBox includePathCheckBox = new JBCheckBox(I18n.t("actions.patch.GenPatchPackageAction.config.includePath"), state.includePath);
         includePathCheckBox.addActionListener(e -> setting.getState().includePath = !setting.getState().includePath);

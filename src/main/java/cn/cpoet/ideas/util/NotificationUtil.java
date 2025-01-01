@@ -1,7 +1,9 @@
 package cn.cpoet.ideas.util;
 
+import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationGroupManager;
+import com.intellij.notification.NotificationType;
 
 /**
  * 通知工具
@@ -17,5 +19,13 @@ public abstract class NotificationUtil {
 
     public static NotificationGroup getBalloonGroup() {
         return NotificationGroupManager.getInstance().getNotificationGroup(GROUP_BALLOON);
+    }
+
+    public static Notification initBalloonError(String content) {
+        return getBalloonGroup().createNotification(content, NotificationType.ERROR);
+    }
+
+    public static Notification initBalloonError(String title, String content) {
+        return getBalloonGroup().createNotification(title, content, NotificationType.ERROR);
     }
 }

@@ -14,7 +14,6 @@ import cn.cpoet.ideas.model.TreeNodeInfo;
 import cn.cpoet.ideas.util.ModuleUtil;
 import cn.cpoet.ideas.util.NotificationUtil;
 import cn.cpoet.ideas.util.TreeUtil;
-import com.intellij.notification.NotificationType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -34,12 +33,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.concurrency.Promise;
 import org.jetbrains.concurrency.Promises;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.text.TextAction;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +56,8 @@ import java.util.zip.ZipOutputStream;
  * @author CPoet
  */
 public class GenPatchPanel extends JBSplitter {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(GenPatchPanel.class);
 
     /** 项目信息 */
     private final Project project;
@@ -96,11 +100,7 @@ public class GenPatchPanel extends JBSplitter {
         treePanel.getTree().addCheckboxTreeListener(new CheckboxTreeListener() {
             @Override
             public void nodeStateChanged(@NotNull CheckedTreeNode node) {
-                if (node.isChecked()) {
-                    checkedCount.incrementAndGet();
-                } else {
-                    checkedCount.decrementAndGet();
-                }
+                checkedCount.getAndAdd(node.isChecked() ? 1 : -1);
                 updateBtnStatus();
             }
         });
@@ -278,9 +278,8 @@ public class GenPatchPanel extends JBSplitter {
                     state.lastFileName = confPanel.getFileName();
                 })
                 .onError(e -> {
-                    NotificationUtil.getBalloonGroup()
-                            .createNotification(e.getMessage(), NotificationType.ERROR)
-                            .notify(project);
+                    LOGGER.error("生成补丁失败: {}", e.getMessage(), e);
+                    NotificationUtil.initBalloonError(e.getMessage()).notify(project);
                 });
     }
 
@@ -288,21 +287,62 @@ public class GenPatchPanel extends JBSplitter {
     }
 
     protected String doGenerate(GenPatch patch) {
+        GenPatchSetting.State state = setting.getState();
+        if (state.compress) {
+            return doGenerateCompress(patch);
+        }
+        String path = FilenameUtils.concat(patch.getOutputFolder(), patch.getFileName());
+        List<GenPatchItem> items = patch.getItems();
+        for (GenPatchItem item : items) {
+            String filePath;
+            if (state.includePath) {
+                filePath = FilenameUtils.concat(item.getPatchModule().getModule().getName(), item.getFullPath());
+                filePath = FilenameUtils.concat(filePath, item.getOutputFile().getName());
+            } else {
+                filePath = item.getOutputFile().getName();
+            }
+            filePath = FilenameUtils.concat(path, filePath);
+            doWritePatchItemToFile(item, filePath);
+        }
+        doWriteReadmeFileToFile(patch, path);
+        return path;
+    }
+
+    protected void doWritePatchItemToFile(GenPatchItem patchItem, String filePath) {
+        try (InputStream in = patchItem.getOutputFile().getInputStream()) {
+            byte[] bytes = FileUtil.loadBytes(in);
+            FileUtil.writeToFile(new File(filePath), bytes);
+        } catch (Exception e) {
+            throw new IdeasException("Save file fail", e);
+        }
+    }
+
+    protected void doWriteReadmeFileToFile(GenPatch patch, String path) {
+        try {
+            String filePath = FilenameUtils.concat(path, "README.txt");
+            byte[] bytes = patch.getDesc().toString().getBytes();
+            FileUtil.writeToFile(new File(filePath), bytes);
+        } catch (Exception e) {
+            throw new IdeasException("Save README file fail", e);
+        }
+    }
+
+    protected String doGenerateCompress(GenPatch patch) {
         String filePath = FilenameUtils.concat(patch.getOutputFolder(), patch.getFileName() + GenPatchConst.PATCH_FULL_FILE_EXT);
         try (FileOutputStream fileOutputStream = new FileOutputStream(filePath);
              ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
             List<GenPatchItem> items = patch.getItems();
             for (GenPatchItem item : items) {
-                writePatchItem(zipOutputStream, item);
+                doWritePatchItemToZip(zipOutputStream, item);
             }
-            writeReadmeFile(zipOutputStream, patch);
+            doWriteReadmeFileToZip(zipOutputStream, patch);
         } catch (IOException e) {
             throw new IdeasException("Patch generate fail", e);
         }
         return filePath;
     }
 
-    protected void writeReadmeFile(ZipOutputStream zipOutputStream, GenPatch patch) {
+    protected void doWriteReadmeFileToZip(ZipOutputStream zipOutputStream, GenPatch patch) {
         try {
             byte[] bytes = patch.getDesc().toString().getBytes();
             ZipEntry zipEntry = new ZipEntry("README.txt");
@@ -315,7 +355,7 @@ public class GenPatchPanel extends JBSplitter {
         }
     }
 
-    protected void writePatchItem(ZipOutputStream zipOutputStream, GenPatchItem patchItem) {
+    protected void doWritePatchItemToZip(ZipOutputStream zipOutputStream, GenPatchItem patchItem) {
         VirtualFile outputFile = patchItem.getOutputFile();
         try (InputStream inputStream = outputFile.getInputStream()) {
             ZipEntry zipEntry = createZipEntry(patchItem);
