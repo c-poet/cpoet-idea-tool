@@ -83,12 +83,11 @@ public class FilterCheckboxTree extends CheckboxTree {
     }
 
     protected void regOriginNodeExpand(FilterCheckedTreeNode node) {
-        node.getAndInitTreePath();
-        if (isExpanded(node.getTreePath())) {
+        if (isExpanded(node.getAndInitTreePath())) {
             if (originTreePathExpandSet == null) {
                 originTreePathExpandSet = new LinkedHashSet<>();
             }
-            originTreePathExpandSet.add(node.getTreePath());
+            originTreePathExpandSet.add(node.getAndInitTreePath());
         }
     }
 
@@ -119,7 +118,7 @@ public class FilterCheckboxTree extends CheckboxTree {
             return;
         }
         TreePath originTreePath = node.getOriginNode().getAndInitTreePath();
-        if (isExpanded(node.getTreePath())) {
+        if (isExpanded(node.getAndInitTreePath())) {
             originTreePathExpandSet.add(originTreePath);
         } else {
             originTreePathExpandSet.remove(originTreePath);
