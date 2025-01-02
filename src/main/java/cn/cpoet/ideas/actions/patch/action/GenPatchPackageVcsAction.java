@@ -7,7 +7,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogBuilder;
-import com.intellij.openapi.vcs.AbstractVcs;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,10 +22,6 @@ public class GenPatchPackageVcsAction extends AnAction {
         // 判断当前是否存在VCS
         Project project = e.getRequiredData(CommonDataKeys.PROJECT);
         ProjectLevelVcsManager vcsManager = ProjectLevelVcsManager.getInstance(project);
-        AbstractVcs[] allActiveVcss = vcsManager.getAllActiveVcss();
-        System.out.println(allActiveVcss);
-        AbstractVcs[] allSupportedVcss = vcsManager.getAllSupportedVcss();
-        System.out.println(allSupportedVcss);
         if (!vcsManager.hasActiveVcss()) {
             e.getPresentation().setEnabledAndVisible(false);
         }
