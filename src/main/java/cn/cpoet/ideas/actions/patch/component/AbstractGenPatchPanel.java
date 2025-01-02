@@ -24,7 +24,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.concurrency.Promise;
 import org.jetbrains.concurrency.Promises;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
@@ -37,6 +40,8 @@ import java.util.zip.ZipOutputStream;
  * @author CPoet
  */
 public abstract class AbstractGenPatchPanel extends JBSplitter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractGenPatchPanel.class);
 
     protected final Project project;
     protected final GenPatchSetting setting;
@@ -51,7 +56,7 @@ public abstract class AbstractGenPatchPanel extends JBSplitter {
         if (state.compress) {
             return doGenerateCompress(patch);
         }
-        String path = FilenameUtils.concat(patch.getOutputFolder(), patch.getFileName());
+        String path = getWriteFilePath(patch);
         List<GenPatchItem> items = patch.getItems();
         for (GenPatchItem item : items) {
             String filePath = path;
@@ -64,6 +69,25 @@ public abstract class AbstractGenPatchPanel extends JBSplitter {
         }
         doWriteReadmeFileToFile(patch, path);
         return path;
+    }
+
+    protected String getWriteFilePath(GenPatch patch) {
+        String path = FilenameUtils.concat(patch.getOutputFolder(), patch.getFileName());
+        File file = new File(path);
+        if (!file.exists()) {
+            return path;
+        }
+        if (setting.getState().cover) {
+            if (!file.delete()) {
+                LOGGER.error("File deletion failed: {}", file.getPath());
+            }
+            return path;
+        }
+        int i = 0;
+        do {
+            file = new File(path + "(" + i++ + ")");
+        } while (file.exists());
+        return file.getPath();
     }
 
     protected void doWriteAttachOutputFilesToFile(GenPatchItem patchItem, String filePath) {
@@ -80,7 +104,7 @@ public abstract class AbstractGenPatchPanel extends JBSplitter {
     }
 
     protected String doGenerateCompress(GenPatch patch) {
-        String filePath = FilenameUtils.concat(patch.getOutputFolder(), patch.getFileName() + GenPatchConst.PATCH_FULL_FILE_EXT);
+        String filePath = getWriteFileName(patch);
         try (FileOutputStream fileOutputStream = new FileOutputStream(filePath);
              ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
             List<GenPatchItem> items = patch.getItems();
@@ -93,6 +117,25 @@ public abstract class AbstractGenPatchPanel extends JBSplitter {
             throw new IdeasException("Patch generate fail", e);
         }
         return filePath;
+    }
+
+    protected String getWriteFileName(GenPatch patch) {
+        String filePath = FilenameUtils.concat(patch.getOutputFolder(), patch.getFileName());
+        File file = new File(filePath + GenPatchConst.PATCH_FULL_FILE_EXT);
+        if (!file.exists()) {
+            return file.getPath();
+        }
+        if (setting.getState().cover) {
+            if (!file.delete()) {
+                LOGGER.warn("File deletion failed:{}", file.getPath());
+            }
+            return file.getPath();
+        }
+        int i = 0;
+        do {
+            file = new File(filePath + "(" + i++ + ")" + GenPatchConst.PATCH_FULL_FILE_EXT);
+        } while (file.exists());
+        return file.getPath();
     }
 
     protected void doWriteAttachOutputFilesToZip(ZipOutputStream zipOutputStream, GenPatchItem item) {

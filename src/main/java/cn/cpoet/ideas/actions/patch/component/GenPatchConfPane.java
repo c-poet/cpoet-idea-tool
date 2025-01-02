@@ -79,6 +79,10 @@ public class GenPatchConfPane extends ScrollVPane {
         });
         formBuilder.addLabeledComponent(I18n.t("actions.patch.GenPatchPackageAction.config.outputFolder"), outputFolderTextField);
 
+        JBCheckBox coverCheckBox = new JBCheckBox(I18n.t("actions.patch.GenPatchPackageAction.config.cover"), state.cover);
+        coverCheckBox.addActionListener(e -> setting.getState().cover = !setting.getState().cover);
+        formBuilder.addComponent(coverCheckBox);
+
         // 是否编译
         JBCheckBox compressCheckBox = new JBCheckBox(I18n.t("actions.patch.GenPatchPackageAction.config.compress"), state.compress);
         compressCheckBox.addActionListener(e -> setting.getState().compress = !setting.getState().compress);

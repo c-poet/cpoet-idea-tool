@@ -44,6 +44,9 @@ public final class GenPatchSetting implements PersistentStateComponent<GenPatchS
         /** 是否压缩 */
         public boolean compress = true;
 
+        /** 存在文件或者目录的情况下是否覆盖 */
+        public boolean cover = true;
+
         /** 编译类型 */
         public String buildType = GenPatchBuildTypeEnum.DEFAULT.getCode();
 
