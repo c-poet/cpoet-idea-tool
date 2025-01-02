@@ -45,9 +45,18 @@
 
         <action id="GenPatchPackageAction_java"
                 class="cn.cpoet.ideas.actions.patch.action.GenPatchPackageAction"
-                text="Generate Patch Package"
+                text="Generate Patch"
                 description="Generate Patch package">
             <add-to-group group-id="CPoetIdea_EditorPopupMenu_PATCH"/>
+        </action>
+
+        <action id="GenPatchPackageVcsAction_java"
+                class="cn.cpoet.ideas.actions.patch.action.GenPatchPackageVcsAction"
+                text="Generate Patch(VCS)"
+                description="Generate Patch package by VCS">
+            <add-to-group group-id="CPoetIdea_EditorPopupMenu_PATCH"
+                          relative-to-action="GenPatchPackageAction_java"
+                          anchor="after"/>
         </action>
     </actions>
 </idea-plugin>

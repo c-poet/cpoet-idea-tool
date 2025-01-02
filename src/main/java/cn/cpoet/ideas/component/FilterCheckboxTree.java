@@ -1,6 +1,7 @@
 package cn.cpoet.ideas.component;
 
 import cn.cpoet.ideas.model.TreeNodeInfo;
+import cn.cpoet.ideas.util.TreeUtil;
 import com.intellij.ui.CheckboxTree;
 import com.intellij.ui.CheckedTreeNode;
 import com.intellij.ui.TreeSpeedSearch;
@@ -67,7 +68,7 @@ public class FilterCheckboxTree extends CheckboxTree {
 
     @Override
     public <T> T[] getCheckedNodes(Class<? extends T> nodeType, @Nullable Tree.NodeFilter<? super T> filter) {
-        return super.getCheckedNodes(nodeType, filter);
+        return TreeUtil.getCheckedNodes(nodeType, filter, rootNode);
     }
 
     @Override

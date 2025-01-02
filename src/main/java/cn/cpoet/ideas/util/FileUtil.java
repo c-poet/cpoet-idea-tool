@@ -2,10 +2,16 @@ package cn.cpoet.ideas.util;
 
 import cn.cpoet.ideas.constant.FileBuildTypeExtEnum;
 import cn.cpoet.ideas.constant.OSExplorerConst;
+import cn.cpoet.ideas.exception.IdeasException;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.util.OS;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * 文件操作工具
@@ -13,6 +19,11 @@ import org.jdesktop.swingx.util.OS;
  * @author CPoet
  */
 public abstract class FileUtil {
+
+    /** Unix路径分隔符 */
+    public final static String UNIX_SEPARATOR = "/";
+    /** Windows路径分隔符 */
+    public final static String WINDOWS_SEPARATOR = "\\";
 
     private FileUtil() {
     }
@@ -125,13 +136,77 @@ public abstract class FileUtil {
      */
     public static String removeStartSeparator(String path) {
         if (path != null && !path.isEmpty()) {
-            if (path.startsWith("/")) {
-                return path.substring(1);
+            if (path.startsWith(UNIX_SEPARATOR)) {
+                return path.substring(UNIX_SEPARATOR.length());
             }
-            if (path.startsWith("\\")) {
-                return path.substring(2);
+            if (path.startsWith(WINDOWS_SEPARATOR)) {
+                return path.substring(WINDOWS_SEPARATOR.length());
             }
         }
         return path;
+    }
+
+    /**
+     * 获取目录下满足条件的文件列表
+     *
+     * @param file   目录文件
+     * @param filter 过滤
+     * @return 文件列表
+     */
+    public static VirtualFile[] getChildren(VirtualFile file, Predicate<VirtualFile> filter) {
+        if (file == null || !file.isDirectory()) {
+            return new VirtualFile[0];
+        }
+        return Stream.of(file.getChildren())
+                .filter(filter)
+                .toArray(VirtualFile[]::new);
+    }
+
+    /**
+     * 写入文件
+     *
+     * @param originFile 源文件
+     * @param filePath   目标文件路径
+     */
+    public static void writeToFile(VirtualFile originFile, String filePath) {
+        writeToFile(originFile, new File(filePath));
+    }
+
+    /**
+     * 写入文件
+     *
+     * @param originFile 源文件
+     * @param toFile     目标文件
+     */
+    public static void writeToFile(VirtualFile originFile, File toFile) {
+        try (InputStream in = originFile.getInputStream()) {
+            writeToFile(com.intellij.openapi.util.io.FileUtil.loadBytes(in), toFile);
+        } catch (Exception e) {
+            throw new IdeasException("Read Or Write file fail", e);
+        }
+    }
+
+    /**
+     * 写入文件
+     *
+     * @param data     数据
+     * @param filePath 文件路径
+     */
+    public static void writeToFile(byte[] data, String filePath) {
+        writeToFile(data, new File(filePath));
+    }
+
+    /**
+     * 写入文件
+     *
+     * @param data 数据
+     * @param file 文件路径
+     */
+    public static void writeToFile(byte[] data, File file) {
+        try {
+            com.intellij.openapi.util.io.FileUtil.writeToFile(file, data);
+        } catch (Exception e) {
+            throw new IdeasException("Write file fail", e);
+        }
     }
 }

@@ -6,8 +6,14 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.CheckedTreeNode;
+import com.intellij.ui.treeStructure.Tree;
+import com.intellij.util.ArrayUtil;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -88,7 +94,7 @@ public abstract class TreeUtil {
             T childNode = (T) fileNode.getChildAt(0);
             TreeNodeInfo nodeInfo = (TreeNodeInfo) childNode.getUserObject();
             if (((VirtualFile) nodeInfo.getObject()).isDirectory()) {
-                nodeInfo.setName(file.getName() + "/" + nodeInfo.getName());
+                nodeInfo.setName(file.getName() + FileUtil.UNIX_SEPARATOR + nodeInfo.getName());
                 return childNode;
             }
         }
@@ -102,5 +108,56 @@ public abstract class TreeUtil {
             ((TreeNodeInfo) childObj).setParent((TreeNodeInfo) parentObj);
         }
         patent.add(child);
+    }
+
+    /**
+     * 获取当前满足条件并选中的节点
+     *
+     * @param nodeType 用户类型
+     * @param filter   自定义过滤
+     * @param node     树节点
+     * @param <T>      用户类型
+     * @return 选中的树节点
+     */
+    public static <T> T[] getCheckedNodes(Class<T> nodeType, final Tree.NodeFilter<? super T> filter, CheckedTreeNode node) {
+        ArrayList<T> collects = new ArrayList<>();
+        collectCheckedNodes(nodeType, filter, node, collects);
+        T[] result = ArrayUtil.newArray(nodeType, collects.size());
+        collects.toArray(result);
+        return result;
+    }
+
+    /**
+     * 收集满足要求的选中的树节点信息
+     *
+     * @param nodeType 用户类型
+     * @param filter   自定义过滤
+     * @param node     树节点
+     * @param collects 收集列表
+     * @param <T>      用户类型
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> void collectCheckedNodes(Class<T> nodeType,
+                                                final Tree.NodeFilter<? super T> filter,
+                                                CheckedTreeNode node,
+                                                List<T> collects) {
+        if (node.isLeaf()) {
+            Object userObject = node.getUserObject();
+            if (node.isChecked()
+                    && userObject != null
+                    && nodeType.isAssignableFrom(userObject.getClass())) {
+                if (filter != null && !filter.accept((T) userObject)) {
+                    return;
+                }
+                collects.add((T) userObject);
+            }
+        } else {
+            for (int i = 0; i < node.getChildCount(); ++i) {
+                TreeNode child = node.getChildAt(i);
+                if (child instanceof CheckedTreeNode) {
+                    collectCheckedNodes(nodeType, filter, (CheckedTreeNode) child, collects);
+                }
+            }
+        }
     }
 }
