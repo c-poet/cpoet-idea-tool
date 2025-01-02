@@ -30,7 +30,11 @@ public class FilterCheckboxTree extends CheckboxTree {
     }
 
     public void applyFilter(@NotNull Predicate<CheckedTreeNode> filter) {
-        FilterCheckedTreeNode filterNode = filter(rootNode, filter);
+        FilterCheckedTreeNode curRootNode = (FilterCheckedTreeNode) treeModel.getRoot();
+        if (curRootNode != rootNode) {
+            handleOriginNodeExpand(curRootNode);
+        }
+        FilterCheckedTreeNode filterNode = filter(rootNode, filter, curRootNode == rootNode);
         List<TreePath> expandTreePaths = null;
         if (CollectionUtils.isNotEmpty(originTreePathExpandSet)) {
             expandTreePaths = new LinkedList<>();
@@ -59,7 +63,7 @@ public class FilterCheckboxTree extends CheckboxTree {
         }
     }
 
-    protected FilterCheckedTreeNode filter(FilterCheckedTreeNode node, Predicate<CheckedTreeNode> filter) {
+    protected FilterCheckedTreeNode filter(FilterCheckedTreeNode node, Predicate<CheckedTreeNode> filter, boolean isRegExpand) {
         if (node.isLeaf()) {
             if (filter.test(node)) {
                 return cloneNode(node);
@@ -67,11 +71,13 @@ public class FilterCheckboxTree extends CheckboxTree {
                 return null;
             }
         }
-        regOriginNodeExpand(node);
+        if (isRegExpand) {
+            regOriginNodeExpand(node);
+        }
         FilterCheckedTreeNode newNode = cloneNode(node);
         Enumeration<TreeNode> children = node.children();
         while (children.hasMoreElements()) {
-            FilterCheckedTreeNode newChildNode = filter((FilterCheckedTreeNode) children.nextElement(), filter);
+            FilterCheckedTreeNode newChildNode = filter((FilterCheckedTreeNode) children.nextElement(), filter, isRegExpand);
             if (newChildNode != null) {
                 newNode.add(newChildNode);
             }
@@ -84,10 +90,7 @@ public class FilterCheckboxTree extends CheckboxTree {
 
     protected void regOriginNodeExpand(FilterCheckedTreeNode node) {
         if (isExpanded(node.getAndInitTreePath())) {
-            if (originTreePathExpandSet == null) {
-                originTreePathExpandSet = new LinkedHashSet<>();
-            }
-            originTreePathExpandSet.add(node.getAndInitTreePath());
+            getAndInitOriginTreePathExpandSet().add(node.getAndInitTreePath());
         }
     }
 
@@ -99,9 +102,6 @@ public class FilterCheckboxTree extends CheckboxTree {
 
     public void removeFilter() {
         if (treeModel.getRoot() != rootNode) {
-            if (originTreePathExpandSet == null) {
-                originTreePathExpandSet = new LinkedHashSet<>();
-            }
             handleOriginNodeExpand((FilterCheckedTreeNode) treeModel.getRoot());
             ((DefaultTreeModel) treeModel).setRoot(rootNode);
             if (CollectionUtils.isNotEmpty(originTreePathExpandSet)) {
@@ -119,14 +119,21 @@ public class FilterCheckboxTree extends CheckboxTree {
         }
         TreePath originTreePath = node.getOriginNode().getAndInitTreePath();
         if (isExpanded(node.getAndInitTreePath())) {
-            originTreePathExpandSet.add(originTreePath);
+            getAndInitOriginTreePathExpandSet().add(originTreePath);
         } else {
-            originTreePathExpandSet.remove(originTreePath);
+            getAndInitOriginTreePathExpandSet().remove(originTreePath);
         }
         Enumeration<TreeNode> children = node.children();
         while (children.hasMoreElements()) {
             handleOriginNodeExpand((FilterCheckedTreeNode) children.nextElement());
         }
+    }
+
+    protected Set<TreePath> getAndInitOriginTreePathExpandSet() {
+        if (originTreePathExpandSet == null) {
+            originTreePathExpandSet = new LinkedHashSet<>();
+        }
+        return originTreePathExpandSet;
     }
 
     @Override
