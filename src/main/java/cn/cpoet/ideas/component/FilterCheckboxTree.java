@@ -100,9 +100,10 @@ public class FilterCheckboxTree extends CheckboxTree {
 
     public void removeFilter() {
         if (treeModel.getRoot() != rootNode) {
-            if (CollectionUtils.isNotEmpty(originTreePathExpandSet)) {
-                handleOriginNodeExpand((FilterCheckedTreeNode) treeModel.getRoot());
+            if (originTreePathExpandSet == null) {
+                originTreePathExpandSet = new LinkedHashSet<>();
             }
+            handleOriginNodeExpand((FilterCheckedTreeNode) treeModel.getRoot());
             ((DefaultTreeModel) treeModel).setRoot(rootNode);
             if (CollectionUtils.isNotEmpty(originTreePathExpandSet)) {
                 for (TreePath treePath : originTreePathExpandSet) {
@@ -123,11 +124,9 @@ public class FilterCheckboxTree extends CheckboxTree {
         } else {
             originTreePathExpandSet.remove(originTreePath);
         }
-        if (CollectionUtils.isNotEmpty(originTreePathExpandSet)) {
-            Enumeration<TreeNode> children = node.children();
-            while (children.hasMoreElements()) {
-                handleOriginNodeExpand((FilterCheckedTreeNode) children.nextElement());
-            }
+        Enumeration<TreeNode> children = node.children();
+        while (children.hasMoreElements()) {
+            handleOriginNodeExpand((FilterCheckedTreeNode) children.nextElement());
         }
     }
 
