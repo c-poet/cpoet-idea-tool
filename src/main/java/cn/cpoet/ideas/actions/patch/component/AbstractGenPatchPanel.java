@@ -20,6 +20,7 @@ import com.intellij.spring.contexts.model.SpringModel;
 import com.intellij.task.ProjectTaskManager;
 import com.intellij.ui.JBSplitter;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.concurrency.Promise;
@@ -78,8 +79,10 @@ public abstract class AbstractGenPatchPanel extends JBSplitter {
             return path;
         }
         if (setting.getState().cover) {
-            if (!file.delete()) {
-                LOGGER.error("File deletion failed: {}", file.getPath());
+            try {
+                FileUtils.deleteDirectory(file);
+            } catch (Exception e) {
+                LOGGER.error("File deletion failed: {}", file.getPath(), e);
             }
             return path;
         }
