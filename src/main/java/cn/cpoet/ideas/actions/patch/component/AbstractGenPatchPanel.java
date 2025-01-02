@@ -220,7 +220,8 @@ public abstract class AbstractGenPatchPanel extends JBSplitter {
                             if (patchModule.isApp()) {
                                 patch.getDesc().append("\t\t").append(SpringUtil.SB_CLASSES_PATH);
                             } else {
-                                patch.getDesc().append("\t\t").append(SpringUtil.SB_LIB_PATH).append(module.getName());
+                                patch.getDesc().append("\t\t").append(SpringUtil.SB_LIB_PATH)
+                                        .append(FileUtil.UNIX_SEPARATOR).append(module.getName());
                             }
                         } else {
                             patch.getDesc().append("\t\t").append(module.getName());
