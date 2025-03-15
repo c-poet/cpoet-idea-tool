@@ -1,7 +1,7 @@
 package cn.cpoet.tool.actions.patch.action;
 
 import cn.cpoet.tool.actions.patch.component.GenPatchPanel;
-import cn.cpoet.tool.i18n.I18n;
+import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -20,12 +20,12 @@ public class GenPatchPackageAction extends AnAction {
         Project project = e.getRequiredData(CommonDataKeys.PROJECT);
         DialogBuilder dialogBuilder = new DialogBuilder(project);
         GenPatchPanel packagePanel = new GenPatchPanel(project, dialogBuilder.getDialogWrapper());
-        dialogBuilder.setTitle(I18n.t("actions.patch.GenPatchPackageAction.title"));
+        dialogBuilder.setTitle(I18nUtil.t("actions.patch.GenPatchPackageAction.title"));
         dialogBuilder.setCenterPanel(packagePanel);
         dialogBuilder.addAction(packagePanel.getPreviewAction());
-        dialogBuilder.addOkAction().setText(I18n.t("actions.patch.GenPatchPackageAction.generate"));
+        dialogBuilder.addOkAction().setText(I18nUtil.t("actions.patch.GenPatchPackageAction.generate"));
         dialogBuilder.setOkOperation(packagePanel::generate);
-        dialogBuilder.addCancelAction().setText(I18n.t("actions.patch.GenPatchPackageAction.cancel"));
+        dialogBuilder.addCancelAction().setText(I18nUtil.t("actions.patch.GenPatchPackageAction.cancel"));
         dialogBuilder.showNotModal();
     }
 }

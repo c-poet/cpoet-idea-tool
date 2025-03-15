@@ -2,7 +2,7 @@ package cn.cpoet.tool.setting;
 
 import cn.cpoet.tool.component.CustomComboBox;
 import cn.cpoet.tool.constant.LanguageEnum;
-import cn.cpoet.tool.i18n.I18n;
+import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.util.ui.FormBuilder;
 
@@ -22,7 +22,7 @@ public class SettingComponent {
     public SettingComponent() {
         selectLanguageComboBox = buildSelectLanguageComboBox();
         mainPanel = FormBuilder.createFormBuilder().setFormLeftIndent(20)
-                .addLabeledComponent(I18n.t("settings.SelectLanguage.label"), selectLanguageComboBox)
+                .addLabeledComponent(I18nUtil.t("settings.SelectLanguage.label"), selectLanguageComboBox)
                 .addComponentFillVertically(new JPanel(), 0)
                 .getPanel();
     }

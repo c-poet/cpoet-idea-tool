@@ -5,7 +5,7 @@ import cn.cpoet.tool.actions.patch.setting.GenPatchSetting;
 import cn.cpoet.tool.component.CustomComboBox;
 import cn.cpoet.tool.component.SimpleHPanel;
 import cn.cpoet.tool.component.TitledPanel;
-import cn.cpoet.tool.i18n.I18n;
+import cn.cpoet.tool.util.I18nUtil;
 import cn.cpoet.tool.model.TreeNodeInfo;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
@@ -55,7 +55,7 @@ public class GenPatchTreePanel extends JBSplitter {
         toolbarBorderLayoutPanel.addToLeft(actionToolbar.getComponent());
 
         SimpleHPanel treeFilterPanel = new SimpleHPanel();
-        treeFilterPanel.add(new JBLabel(I18n.t("actions.patch.GenPatchPackageAction.treeFilterType.label")));
+        treeFilterPanel.add(new JBLabel(I18nUtil.t("actions.patch.GenPatchPackageAction.treeFilterType.label")));
         CustomComboBox<GenPatchTreeFilterTypeEnum> treeFilterTypeComboBox = new CustomComboBox<>();
         for (GenPatchTreeFilterTypeEnum item : GenPatchTreeFilterTypeEnum.values()) {
             treeFilterTypeComboBox.addItem(item);
@@ -143,7 +143,7 @@ public class GenPatchTreePanel extends JBSplitter {
     }
 
     private void buildDescriptionPanel() {
-        TitledPanel descTitledPanel = new TitledPanel(I18n.t("actions.patch.GenPatchPackageAction.description.title"));
+        TitledPanel descTitledPanel = new TitledPanel(I18nUtil.t("actions.patch.GenPatchPackageAction.description.title"));
         patchDescEditor = new EditorTextField();
         patchDescEditor.setOneLineMode(false);
         descTitledPanel.add(patchDescEditor);

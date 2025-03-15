@@ -1,7 +1,7 @@
 package cn.cpoet.tool.setting;
 
 import cn.cpoet.tool.constant.LanguageEnum;
-import cn.cpoet.tool.i18n.I18n;
+import cn.cpoet.tool.util.I18nUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -39,7 +39,7 @@ public class Configurable implements com.intellij.openapi.options.Configurable {
         String oldLanguage = state.language;
         state.language = settingComponent.getLanguage().getCode();
         if (!oldLanguage.equals(state.language)) {
-            I18n.updateLocale();
+            I18nUtil.updateLocale();
         }
     }
 

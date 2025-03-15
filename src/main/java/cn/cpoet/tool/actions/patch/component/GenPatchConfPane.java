@@ -5,7 +5,7 @@ import cn.cpoet.tool.actions.patch.setting.GenPatchSetting;
 import cn.cpoet.tool.component.CustomComboBox;
 import cn.cpoet.tool.component.ScrollVPane;
 import cn.cpoet.tool.component.TitledPanel;
-import cn.cpoet.tool.i18n.I18n;
+import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -63,11 +63,11 @@ public class GenPatchConfPane extends ScrollVPane {
                 parent.updateBtnStatus();
             }
         });
-        formBuilder.addLabeledComponent(I18n.t("actions.patch.GenPatchPackageAction.config.fileName"), fileNameField);
+        formBuilder.addLabeledComponent(I18nUtil.t("actions.patch.GenPatchPackageAction.config.fileName"), fileNameField);
 
         // 选择输出的目录
         TextFieldWithBrowseButton outputFolderTextField = new TextFieldWithBrowseButton();
-        outputFolderTextField.addBrowseFolderListener(I18n.t("actions.patch.GenPatchPackageAction.config.outputFolder")
+        outputFolderTextField.addBrowseFolderListener(I18nUtil.t("actions.patch.GenPatchPackageAction.config.outputFolder")
                 , null, project, FileChooserDescriptorFactory.createSingleFolderDescriptor());
         outputFolderTextField.setText(state.outputFolder);
         outputFolderTextField.getTextField().getDocument().addDocumentListener(new DocumentAdapter() {
@@ -77,23 +77,23 @@ public class GenPatchConfPane extends ScrollVPane {
                 parent.updateBtnStatus();
             }
         });
-        formBuilder.addLabeledComponent(I18n.t("actions.patch.GenPatchPackageAction.config.outputFolder"), outputFolderTextField);
+        formBuilder.addLabeledComponent(I18nUtil.t("actions.patch.GenPatchPackageAction.config.outputFolder"), outputFolderTextField);
 
-        JBCheckBox coverCheckBox = new JBCheckBox(I18n.t("actions.patch.GenPatchPackageAction.config.cover"), state.cover);
+        JBCheckBox coverCheckBox = new JBCheckBox(I18nUtil.t("actions.patch.GenPatchPackageAction.config.cover"), state.cover);
         coverCheckBox.addActionListener(e -> setting.getState().cover = !setting.getState().cover);
         formBuilder.addComponent(coverCheckBox);
 
         // 是否编译
-        JBCheckBox compressCheckBox = new JBCheckBox(I18n.t("actions.patch.GenPatchPackageAction.config.compress"), state.compress);
+        JBCheckBox compressCheckBox = new JBCheckBox(I18nUtil.t("actions.patch.GenPatchPackageAction.config.compress"), state.compress);
         compressCheckBox.addActionListener(e -> setting.getState().compress = !setting.getState().compress);
         formBuilder.addComponent(compressCheckBox);
 
         // 包含路径
-        JBCheckBox includePathCheckBox = new JBCheckBox(I18n.t("actions.patch.GenPatchPackageAction.config.includePath"), state.includePath);
+        JBCheckBox includePathCheckBox = new JBCheckBox(I18nUtil.t("actions.patch.GenPatchPackageAction.config.includePath"), state.includePath);
         includePathCheckBox.addActionListener(e -> setting.getState().includePath = !setting.getState().includePath);
         formBuilder.addComponent(includePathCheckBox);
 
-        TitledPanel titledPanel = new TitledPanel(I18n.t("actions.patch.GenPatchPackageAction.config.generalTitle"));
+        TitledPanel titledPanel = new TitledPanel(I18nUtil.t("actions.patch.GenPatchPackageAction.config.generalTitle"));
         titledPanel.add(formBuilder.getPanel());
         add2View(titledPanel);
     }
@@ -113,18 +113,18 @@ public class GenPatchConfPane extends ScrollVPane {
                 setting.getState().buildType = buildTypeEnum.getCode();
             }
         });
-        formBuilder.addLabeledComponent(I18n.t("actions.patch.GenPatchPackageAction.config.buildType.label"), buildTypeComboBox);
-        TitledPanel configTitledPanel = new TitledPanel(I18n.t("actions.patch.GenPatchPackageAction.config.beforeTitle"));
+        formBuilder.addLabeledComponent(I18nUtil.t("actions.patch.GenPatchPackageAction.config.buildType.label"), buildTypeComboBox);
+        TitledPanel configTitledPanel = new TitledPanel(I18nUtil.t("actions.patch.GenPatchPackageAction.config.beforeTitle"));
         configTitledPanel.add(formBuilder.getPanel());
         add2View(configTitledPanel);
     }
 
     public void buildAfterGenerate(GenPatchSetting setting) {
         FormBuilder formBuilder = createFormBuilder();
-        JBCheckBox openOutputFolderCheckBox = new JBCheckBox(I18n.t("actions.patch.GenPatchPackageAction.config.openOutputFolder"), setting.getState().openOutputFolder);
+        JBCheckBox openOutputFolderCheckBox = new JBCheckBox(I18nUtil.t("actions.patch.GenPatchPackageAction.config.openOutputFolder"), setting.getState().openOutputFolder);
         openOutputFolderCheckBox.addActionListener((event) -> setting.getState().openOutputFolder = !setting.getState().openOutputFolder);
         formBuilder.addComponent(openOutputFolderCheckBox);
-        TitledPanel titledPanel = new TitledPanel(I18n.t("actions.patch.GenPatchPackageAction.config.afterTitle"));
+        TitledPanel titledPanel = new TitledPanel(I18nUtil.t("actions.patch.GenPatchPackageAction.config.afterTitle"));
         titledPanel.add(formBuilder.getPanel());
         add2View(titledPanel);
     }

@@ -1,7 +1,7 @@
 package cn.cpoet.tool.actions.patch.constant;
 
 
-import cn.cpoet.tool.i18n.I18n;
+import cn.cpoet.tool.util.I18nUtil;
 import cn.cpoet.tool.util.EnumUtil;
 
 /**
@@ -41,7 +41,7 @@ public enum GenPatchTreeFilterTypeEnum {
     }
 
     public String getTitle() {
-        return I18n.t("actions.patch.GenPatchPackageAction.treeFilterType." + code, desc);
+        return I18nUtil.t("actions.patch.GenPatchPackageAction.treeFilterType." + code, desc);
     }
 
     public static GenPatchTreeFilterTypeEnum ofCode(String code) {

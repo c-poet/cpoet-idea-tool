@@ -1,28 +1,30 @@
-package cn.cpoet.tool.i18n;
+package cn.cpoet.tool.util;
 
 import cn.cpoet.tool.setting.Setting;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
-import java.util.ServiceLoader;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * 国际化工具
  *
  * @author CPoet
  */
-public abstract class I18n {
+public abstract class I18nUtil {
 
     private static final String I18N_FILE_PREFIX = "messages/cpoet-tool";
 
-    private static I18nChain i18NChain;
+    /** I18n资源 */
+    private static ResourceBundle resourceBundle;
 
     static {
         initLocale();
     }
 
-    private I18n() {
+    private I18nUtil() {
     }
 
     /**
@@ -45,7 +47,11 @@ public abstract class I18n {
      */
     @NotNull
     public static String t(String name, @NotNull String defaultMessage) {
-        return i18NChain.getMessage(name, defaultMessage);
+        try {
+            return resourceBundle.getString(name);
+        } catch (Exception ignored) {
+        }
+        return defaultMessage;
     }
 
     /**
@@ -67,21 +73,14 @@ public abstract class I18n {
     }
 
     private static void initLocale() {
-        i18NChain = new I18nChain(null, I18N_FILE_PREFIX);
-        ServiceLoader<I18nService> loader = ServiceLoader.load(I18nService.class, I18n.class.getClassLoader());
-        for (I18nService next : loader) {
-            String[] prefix = next.getPrefix();
-            if (prefix != null) {
-                for (String pre : prefix) {
-                    i18NChain = new I18nChain(i18NChain, pre);
-                }
-            }
-        }
         updateLocale();
     }
 
     public static void updateLocale() {
         Locale locale = new Locale(getLanguage());
-        i18NChain.setLocale(locale);
+        if (resourceBundle != null && Objects.equals(resourceBundle.getLocale(), locale)) {
+            return;
+        }
+        resourceBundle = ResourceBundle.getBundle(I18N_FILE_PREFIX, locale);
     }
 }

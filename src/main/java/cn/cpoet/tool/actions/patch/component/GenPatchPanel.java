@@ -1,7 +1,7 @@
 package cn.cpoet.tool.actions.patch.component;
 
 import cn.cpoet.tool.actions.patch.setting.GenPatchSetting;
-import cn.cpoet.tool.i18n.I18n;
+import cn.cpoet.tool.util.I18nUtil;
 import cn.cpoet.tool.model.TreeNodeInfo;
 import cn.cpoet.tool.util.NotificationUtil;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -77,7 +77,7 @@ public class GenPatchPanel extends AbstractGenPatchPanel {
     }
 
     protected void buildPreviewAction() {
-        previewAction = new TextAction(I18n.t("actions.patch.GenPatchPackageAction.preview")) {
+        previewAction = new TextAction(I18nUtil.t("actions.patch.GenPatchPackageAction.preview")) {
             private static final long serialVersionUID = 1542378595944056560L;
 
             @Override

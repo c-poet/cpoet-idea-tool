@@ -1,7 +1,7 @@
 package cn.cpoet.tool.actions.patch.action;
 
 import cn.cpoet.tool.actions.patch.component.GenPatchVcsPanel;
-import cn.cpoet.tool.i18n.I18n;
+import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -32,10 +32,10 @@ public class GenPatchPackageVcsAction extends AnAction {
         Project project = e.getRequiredData(CommonDataKeys.PROJECT);
         DialogBuilder dialogBuilder = new DialogBuilder(project);
         GenPatchVcsPanel genPatchVcsPanel = new GenPatchVcsPanel(project);
-        dialogBuilder.setTitle(I18n.t("actions.patch.GenPatchPackageAction.title"));
+        dialogBuilder.setTitle(I18nUtil.t("actions.patch.GenPatchPackageAction.title"));
         dialogBuilder.setCenterPanel(genPatchVcsPanel);
-        dialogBuilder.addOkAction().setText(I18n.t("actions.patch.GenPatchPackageAction.generate"));
-        dialogBuilder.addCancelAction().setText(I18n.t("actions.patch.GenPatchPackageAction.cancel"));
+        dialogBuilder.addOkAction().setText(I18nUtil.t("actions.patch.GenPatchPackageAction.generate"));
+        dialogBuilder.addCancelAction().setText(I18nUtil.t("actions.patch.GenPatchPackageAction.cancel"));
         dialogBuilder.showNotModal();
     }
 }
