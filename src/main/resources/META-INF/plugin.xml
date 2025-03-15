@@ -6,7 +6,7 @@
     <name>CPoet Tool</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="llzero54@foxmail.com" url="https://www.cpoet.cn">王国富(CPoet)</vendor>
+    <vendor email="llzero54@foxmail.com" url="https://www.cpoet.cn">CPoet</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
