@@ -1,7 +1,7 @@
 <idea-plugin>
     <actions>
         <group id="CPoetIdea_Console.TableResult.CellEditor.Popup"
-               text="CPoet Ideas"
+               text="CPoet Tool"
                popup="true"
                searchable="false"
         >
@@ -20,35 +20,35 @@
         </group>
 
         <action id="UUIDGenerateAction_database"
-                class="cn.cpoet.ideas.actions.common.action.UUIDGenerateAction"
+                class="cn.cpoet.tool.actions.common.action.UUIDGenerateAction"
                 text="Generate UUID"
                 description="Generate UUID">
             <add-to-group group-id="CPoetIdea_Console.TableResult.CellEditor.Popup_TEXT"/>
         </action>
 
         <action id="ConvertToCamelAction_database"
-                class="cn.cpoet.ideas.actions.common.action.ConvertToCamelAction"
+                class="cn.cpoet.tool.actions.common.action.ConvertToCamelAction"
                 text="Convert To Camel"
                 description="Convert to Camel text">
             <add-to-group group-id="CPoetIdea_Console.TableResult.CellEditor.Popup_TEXT"/>
         </action>
 
         <action id="ConvertToUnderlineAction_database"
-                class="cn.cpoet.ideas.actions.common.action.ConvertToUnderlineAction"
+                class="cn.cpoet.tool.actions.common.action.ConvertToUnderlineAction"
                 text="Convert To Underline"
                 description="Convert to Underline text">
             <add-to-group group-id="CPoetIdea_Console.TableResult.CellEditor.Popup_TEXT"/>
         </action>
 
         <action id="Base64EncodeAction_database"
-                class="cn.cpoet.ideas.actions.common.action.Base64EncodeAction"
+                class="cn.cpoet.tool.actions.common.action.Base64EncodeAction"
                 text="Encode"
                 description="Encode base64">
             <add-to-group group-id="CPoetIdea_Console.TableResult.CellEditor.Popup_BASE64"/>
         </action>
 
         <action id="Base64DecodeAction_database"
-                class="cn.cpoet.ideas.actions.common.action.Base64DecodeAction"
+                class="cn.cpoet.tool.actions.common.action.Base64DecodeAction"
                 text="Decode"
                 description="Decode base64">
             <add-to-group group-id="CPoetIdea_Console.TableResult.CellEditor.Popup_BASE64"/>

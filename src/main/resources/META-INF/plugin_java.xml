@@ -4,11 +4,11 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!--        <intentionAction>-->
-        <!--            <className>cn.cpoet.ideas.iu.actions.java.action.AllSetIntentionAction</className>-->
+        <!--            <className>cn.cpoet.tool.iu.actions.java.action.AllSetIntentionAction</className>-->
         <!--        </intentionAction>-->
 
         <!--        <intentionAction>-->
-        <!--            <className>cn.cpoet.ideas.iu.actions.java.action.AllGetIntentionAction</className>-->
+        <!--            <className>cn.cpoet.tool.iu.actions.java.action.AllGetIntentionAction</className>-->
         <!--        </intentionAction>-->
     </extensions>
 
@@ -30,28 +30,28 @@
         </group>
 
         <action id="OpenOutputFileAction_java"
-                class="cn.cpoet.ideas.actions.file.action.OpenOutputFileAction"
+                class="cn.cpoet.tool.actions.file.action.OpenOutputFileAction"
                 text="Open Output File"
                 description="Open Output file">
             <add-to-group group-id="CPoetIdea_EditorPopupMenu_FILE"/>
         </action>
 
         <action id="OpenOutputFileInExplorerAction_java"
-                class="cn.cpoet.ideas.actions.file.action.OpenOutputFileInExplorerAction"
+                class="cn.cpoet.tool.actions.file.action.OpenOutputFileInExplorerAction"
                 text="Open Output In Explorer"
                 description="Open output file in explorer">
             <add-to-group group-id="CPoetIdea_EditorPopupMenu_FILE"/>
         </action>
 
         <action id="GenPatchPackageAction_java"
-                class="cn.cpoet.ideas.actions.patch.action.GenPatchPackageAction"
+                class="cn.cpoet.tool.actions.patch.action.GenPatchPackageAction"
                 text="Generate Patch"
                 description="Generate Patch package">
             <add-to-group group-id="CPoetIdea_EditorPopupMenu_PATCH"/>
         </action>
 
         <action id="GenPatchPackageVcsAction_java"
-                class="cn.cpoet.ideas.actions.patch.action.GenPatchPackageVcsAction"
+                class="cn.cpoet.tool.actions.patch.action.GenPatchPackageVcsAction"
                 text="Generate Patch(VCS)"
                 description="Generate Patch package by VCS">
             <add-to-group group-id="CPoetIdea_EditorPopupMenu_PATCH"

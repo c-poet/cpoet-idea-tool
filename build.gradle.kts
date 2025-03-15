@@ -14,7 +14,7 @@ plugins {
     id("org.jetbrains.intellij") version "1.16.1"
 }
 
-group = "cn.cpoet.ideas"
+group = "cn.cpoet.tool"
 version = "0.1.4"
 
 

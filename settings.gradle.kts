@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "cpoet-ideas"
+rootProject.name = "cpoet-tool"
