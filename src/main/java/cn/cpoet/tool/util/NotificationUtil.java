@@ -12,7 +12,7 @@ import com.intellij.notification.NotificationType;
  */
 public abstract class NotificationUtil {
 
-    private final static String GROUP_BALLOON = "CPOET_IDEA_NOTIFICATION_BALLOON";
+    private final static String GROUP_BALLOON = "CPOET_TOOL_NOTIFICATION_BALLOON";
 
     private NotificationUtil() {
     }

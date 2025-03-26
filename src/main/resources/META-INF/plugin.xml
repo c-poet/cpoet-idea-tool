@@ -40,22 +40,22 @@
                                  instance="cn.cpoet.tool.setting.Configurable"
                                  id="cn.cpoet.tool.setting.Configurable"
                                  displayName="CPoet Tool"/>
-        <notificationGroup id="CPOET_IDEA_NOTIFICATION_BALLOON"
+        <notificationGroup id="CPOET_TOOL_NOTIFICATION_BALLOON"
                            displayType="BALLOON"/>
     </extensions>
 
     <actions>
-        <group id="CPoetIdea_EditorPopupMenu"
+        <group id="CPoetTool_EditorPopupMenu"
                text="CPoet Tool"
                popup="true">
             <separator/>
             <add-to-group group-id="EditorPopupMenu" relative-to-action="EditorToggleColumnMode" anchor="after"/>
-            <group id="CPoetIdea_EditorPopupMenu_TEXT"
+            <group id="CPoetTool_EditorPopupMenu_TEXT"
                    text="Text"
                    popup="true">
             </group>
 
-            <group id="CPoetIdea_EditorPopupMenu_BASE64"
+            <group id="CPoetTool_EditorPopupMenu_BASE64"
                    text="Base64"
                    popup="true">
             </group>
@@ -65,35 +65,35 @@
                 class="cn.cpoet.tool.actions.common.action.UUIDGenerateAction"
                 text="Generate UUID"
                 description="Generate UUID">
-            <add-to-group group-id="CPoetIdea_EditorPopupMenu_TEXT"/>
+            <add-to-group group-id="CPoetTool_EditorPopupMenu_TEXT"/>
         </action>
 
         <action id="ConvertToCamelAction"
                 class="cn.cpoet.tool.actions.common.action.ConvertToCamelAction"
                 text="Convert To Camel"
                 description="Convert to Camel text">
-            <add-to-group group-id="CPoetIdea_EditorPopupMenu_TEXT"/>
+            <add-to-group group-id="CPoetTool_EditorPopupMenu_TEXT"/>
         </action>
 
         <action id="ConvertToUnderlineAction"
                 class="cn.cpoet.tool.actions.common.action.ConvertToUnderlineAction"
                 text="Convert To Underline"
                 description="Convert to Underline text">
-            <add-to-group group-id="CPoetIdea_EditorPopupMenu_TEXT"/>
+            <add-to-group group-id="CPoetTool_EditorPopupMenu_TEXT"/>
         </action>
 
         <action id="Base64EncodeAction"
                 class="cn.cpoet.tool.actions.common.action.Base64EncodeAction"
                 text="Encode"
                 description="Encode base64">
-            <add-to-group group-id="CPoetIdea_EditorPopupMenu_BASE64"/>
+            <add-to-group group-id="CPoetTool_EditorPopupMenu_BASE64"/>
         </action>
 
         <action id="Base64DecodeAction"
                 class="cn.cpoet.tool.actions.common.action.Base64DecodeAction"
                 text="Decode"
                 description="Decode base64">
-            <add-to-group group-id="CPoetIdea_EditorPopupMenu_BASE64"/>
+            <add-to-group group-id="CPoetTool_EditorPopupMenu_BASE64"/>
         </action>
     </actions>
 </idea-plugin>
