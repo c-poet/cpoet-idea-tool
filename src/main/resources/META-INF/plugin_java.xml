@@ -13,48 +13,32 @@
     </extensions>
 
     <actions>
-        <group id="CPoetTool_EditorPopupMenu_FILE"
-               text="File"
-               popup="true">
-            <add-to-group group-id="CPoetTool_EditorPopupMenu"
-                          relative-to-action="CPoetTool_EditorPopupMenu_TEXT"
-                          anchor="before"/>
-        </group>
-
-        <group id="CPoetTool_EditorPopupMenu_PATCH"
-               text="Patch"
-               popup="true">
-            <add-to-group group-id="CPoetTool_EditorPopupMenu"
-                          relative-to-action="CPoetTool_EditorPopupMenu_BASE64"
-                          anchor="after"/>
-        </group>
-
         <action id="OpenOutputFileAction_java"
                 class="cn.cpoet.tool.actions.file.action.OpenOutputFileAction"
                 text="Open Output File"
                 description="Open Output file">
-            <add-to-group group-id="CPoetTool_EditorPopupMenu_FILE"/>
+            <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
         </action>
 
         <action id="OpenOutputFileInExplorerAction_java"
                 class="cn.cpoet.tool.actions.file.action.OpenOutputFileInExplorerAction"
                 text="Open Output In Explorer"
                 description="Open output file in explorer">
-            <add-to-group group-id="CPoetTool_EditorPopupMenu_FILE"/>
+            <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
         </action>
 
         <action id="GenPatchPackageAction_java"
                 class="cn.cpoet.tool.actions.patch.action.GenPatchPackageAction"
                 text="Generate Patch"
                 description="Generate Patch package">
-            <add-to-group group-id="CPoetTool_EditorPopupMenu_PATCH"/>
+            <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
         </action>
 
         <action id="GenPatchPackageVcsAction_java"
                 class="cn.cpoet.tool.actions.patch.action.GenPatchPackageVcsAction"
                 text="Generate Patch(VCS)"
                 description="Generate Patch package by VCS">
-            <add-to-group group-id="CPoetTool_EditorPopupMenu_PATCH"
+            <add-to-group group-id="CPoetTool_EditorPopupMenu"
                           relative-to-action="GenPatchPackageAction_java"
                           anchor="after"/>
         </action>
