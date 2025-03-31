@@ -9,11 +9,11 @@ import javax.swing.*;
  *
  * @author CPoet
  */
-public class ScrollVPane extends JBScrollPane {
+public class ScrollVPanel extends JBScrollPane {
 
     private final SimpleVPanel viewPanel;
 
-    public ScrollVPane() {
+    public ScrollVPanel() {
         viewPanel = new SimpleVPanel();
         setViewportView(viewPanel);
     }

@@ -1,7 +1,7 @@
 package cn.cpoet.tool.actions.patch;
 
 import cn.cpoet.tool.component.CustomComboBox;
-import cn.cpoet.tool.component.ScrollVPane;
+import cn.cpoet.tool.component.ScrollVPanel;
 import cn.cpoet.tool.component.TitledPanel;
 import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
@@ -24,14 +24,14 @@ import java.awt.event.ItemEvent;
  *
  * @author CPoet
  */
-public class GenPatchConfPane extends ScrollVPane {
+public class GenPatchConfPanel extends ScrollVPanel {
 
     private final Project project;
     private String fileNamePrefix;
     private JBTextField fileNameField;
     private final GenPatchPanel parent;
 
-    public GenPatchConfPane(Project project, GenPatchPanel parent) {
+    public GenPatchConfPanel(Project project, GenPatchPanel parent) {
         this.parent = parent;
         this.project = project;
         setBorder(JBUI.Borders.empty());

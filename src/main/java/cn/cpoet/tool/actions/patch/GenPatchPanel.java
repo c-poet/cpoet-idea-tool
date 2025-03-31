@@ -55,7 +55,7 @@ public class GenPatchPanel extends JBSplitter {
     private final GenPatchSetting setting;
     private final DialogWrapper dialogWrapper;
     private final AtomicInteger checkedCount;
-    private final GenPatchConfPane confPanel;
+    private final GenPatchConfPanel confPanel;
     private final GenPatchTreePanel treePanel;
 
 
@@ -74,7 +74,7 @@ public class GenPatchPanel extends JBSplitter {
         buildPreviewAction();
         treePanel = new GenPatchTreePanel(project);
         setFirstComponent(treePanel);
-        confPanel = new GenPatchConfPane(project, this);
+        confPanel = new GenPatchConfPanel(project, this);
         setSecondComponent(confPanel);
         checkedCount = new AtomicInteger(getTreeCheckedNodes().length);
         addCheckboxTreeListener();
