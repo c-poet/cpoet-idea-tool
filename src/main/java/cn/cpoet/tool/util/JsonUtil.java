@@ -58,4 +58,20 @@ public class JsonUtil {
             throw new ToolException("Data deserialization failed", e);
         }
     }
+
+    public static String writeAsString(Object obj) {
+        try {
+            return getObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new ToolException("Data serialization failed", e);
+        }
+    }
+
+    public static byte[] writeAsBytes(Object obj) {
+        try {
+            return getObjectMapper().writeValueAsBytes(obj);
+        } catch (Exception e) {
+            throw new ToolException("Data serialization failed", e);
+        }
+    }
 }
