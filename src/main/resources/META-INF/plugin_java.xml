@@ -33,14 +33,5 @@
                 description="Generate Patch package">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
         </action>
-
-        <action id="GenPatchPackageVcsAction_java"
-                class="cn.cpoet.tool.actions.patch.action.GenPatchPackageVcsAction"
-                text="Generate Patch(VCS)"
-                description="Generate Patch package by VCS">
-            <add-to-group group-id="CPoetTool_EditorPopupMenu"
-                          relative-to-action="GenPatchPackageAction_java"
-                          anchor="after"/>
-        </action>
     </actions>
 </idea-plugin>
