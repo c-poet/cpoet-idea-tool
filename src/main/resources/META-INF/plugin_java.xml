@@ -13,25 +13,30 @@
     </extensions>
 
     <actions>
-        <action id="OpenOutputFileAction_java"
-                class="cn.cpoet.tool.actions.file.OpenOutputFileAction"
-                text="Open Output File"
-                description="Open Output file">
+        <group id="CPoetTool_EditorPopupMenu_File">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
-        </action>
+            <separator />
+            <action id="OpenOutputFileAction_java"
+                    class="cn.cpoet.tool.actions.file.OpenOutputFileAction"
+                    text="Open Output File"
+                    description="Open Output file">
+            </action>
 
-        <action id="OpenOutputFileInExplorerAction_java"
-                class="cn.cpoet.tool.actions.file.OpenOutputFileInExplorerAction"
-                text="Open Output In Explorer"
-                description="Open output file in explorer">
-            <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
-        </action>
+            <action id="OpenOutputFileInExplorerAction_java"
+                    class="cn.cpoet.tool.actions.file.OpenOutputFileInExplorerAction"
+                    text="Open Output In Explorer"
+                    description="Open output file in explorer">
+            </action>
+        </group>
 
-        <action id="GenPatchPackageAction_java"
-                class="cn.cpoet.tool.actions.patch.GenPatchPackageAction"
-                text="Generate Patch"
-                description="Generate Patch package">
+        <group id="CPoetTool_EditorPopupMenu_Patch">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
-        </action>
+            <separator />
+            <action id="GenPatchPackageAction_java"
+                    class="cn.cpoet.tool.actions.patch.GenPatchPackageAction"
+                    text="Generate Patch"
+                    description="Generate Patch package">
+            </action>
+        </group>
     </actions>
 </idea-plugin>

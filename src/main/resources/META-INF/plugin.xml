@@ -52,39 +52,42 @@
             <add-to-group group-id="EditorPopupMenu" relative-to-action="EditorToggleColumnMode" anchor="after"/>
         </group>
 
-        <action id="UUIDGenerateAction"
-                class="cn.cpoet.tool.actions.common.UUIDGenerateAction"
-                text="Generate UUID"
-                description="Generate UUID">
+        <group id="CPoetTool_EditorPopupMenu_Text">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
-        </action>
 
-        <action id="ConvertToCamelAction"
-                class="cn.cpoet.tool.actions.common.ConvertToCamelAction"
-                text="Convert To Camel"
-                description="Convert to Camel text">
-            <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
-        </action>
+            <action id="UUIDGenerateAction"
+                    class="cn.cpoet.tool.actions.common.UUIDGenerateAction"
+                    text="Generate UUID"
+                    description="Generate UUID">
+            </action>
 
-        <action id="ConvertToUnderlineAction"
-                class="cn.cpoet.tool.actions.common.ConvertToUnderlineAction"
-                text="Convert To Underline"
-                description="Convert to Underline text">
-            <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
-        </action>
+            <separator/>
 
-        <action id="Base64EncodeAction"
-                class="cn.cpoet.tool.actions.common.Base64EncodeAction"
-                text="Base64 Encode"
-                description="Encode base64">
-            <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
-        </action>
+            <action id="ConvertToCamelAction"
+                    class="cn.cpoet.tool.actions.common.ConvertToCamelAction"
+                    text="Convert To Camel"
+                    description="Convert to Camel text">
+            </action>
 
-        <action id="Base64DecodeAction"
-                class="cn.cpoet.tool.actions.common.Base64DecodeAction"
-                text="Base64 Decode"
-                description="Decode base64">
-            <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
-        </action>
+            <action id="ConvertToUnderlineAction"
+                    class="cn.cpoet.tool.actions.common.ConvertToUnderlineAction"
+                    text="Convert To Underline"
+                    description="Convert to Underline text">
+            </action>
+
+            <separator/>
+
+            <action id="Base64EncodeAction"
+                    class="cn.cpoet.tool.actions.common.Base64EncodeAction"
+                    text="Base64 Encode"
+                    description="Encode base64">
+            </action>
+
+            <action id="Base64DecodeAction"
+                    class="cn.cpoet.tool.actions.common.Base64DecodeAction"
+                    text="Base64 Decode"
+                    description="Decode base64">
+            </action>
+        </group>
     </actions>
 </idea-plugin>
