@@ -1,4 +1,4 @@
-package cn.cpoet.tool.actions.file.action;
+package cn.cpoet.tool.actions.file;
 
 import cn.cpoet.tool.util.FileUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;

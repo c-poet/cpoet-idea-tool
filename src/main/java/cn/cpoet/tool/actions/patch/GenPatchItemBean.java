@@ -1,4 +1,4 @@
-package cn.cpoet.tool.actions.patch.model;
+package cn.cpoet.tool.actions.patch;
 
 import com.intellij.openapi.vfs.VirtualFile;
 
@@ -7,21 +7,31 @@ import java.util.List;
 /**
  * @author CPoet
  */
-public class GenPatchItem {
+public class GenPatchItemBean {
 
-    /** 文件相对路径（不含文件名） */
+    /**
+     * 文件相对路径（不含文件名）
+     */
     private String fullPath;
 
-    /** 文件所在的模块 */
-    private GenPatchModule patchModule;
+    /**
+     * 文件所在的模块
+     */
+    private GenPatchModuleBean patchModule;
 
-    /** 源文件 */
+    /**
+     * 源文件
+     */
     private VirtualFile sourceFile;
 
-    /** 输出文件 */
+    /**
+     * 输出文件
+     */
     private VirtualFile outputFile;
 
-    /** 附加输出文件：例如JAVA内部类 */
+    /**
+     * 附加输出文件：例如JAVA内部类
+     */
     private List<VirtualFile> attachOutputFiles;
 
     public String getFullPath() {
@@ -32,11 +42,11 @@ public class GenPatchItem {
         this.fullPath = fullPath;
     }
 
-    public GenPatchModule getPatchModule() {
+    public GenPatchModuleBean getPatchModule() {
         return patchModule;
     }
 
-    public void setPatchModule(GenPatchModule patchModule) {
+    public void setPatchModule(GenPatchModuleBean patchModule) {
         this.patchModule = patchModule;
     }
 

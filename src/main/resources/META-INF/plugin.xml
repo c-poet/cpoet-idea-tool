@@ -53,35 +53,35 @@
         </group>
 
         <action id="UUIDGenerateAction"
-                class="cn.cpoet.tool.actions.common.action.UUIDGenerateAction"
+                class="cn.cpoet.tool.actions.common.UUIDGenerateAction"
                 text="Generate UUID"
                 description="Generate UUID">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
         </action>
 
         <action id="ConvertToCamelAction"
-                class="cn.cpoet.tool.actions.common.action.ConvertToCamelAction"
+                class="cn.cpoet.tool.actions.common.ConvertToCamelAction"
                 text="Convert To Camel"
                 description="Convert to Camel text">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
         </action>
 
         <action id="ConvertToUnderlineAction"
-                class="cn.cpoet.tool.actions.common.action.ConvertToUnderlineAction"
+                class="cn.cpoet.tool.actions.common.ConvertToUnderlineAction"
                 text="Convert To Underline"
                 description="Convert to Underline text">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
         </action>
 
         <action id="Base64EncodeAction"
-                class="cn.cpoet.tool.actions.common.action.Base64EncodeAction"
+                class="cn.cpoet.tool.actions.common.Base64EncodeAction"
                 text="Base64 Encode"
                 description="Encode base64">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
         </action>
 
         <action id="Base64DecodeAction"
-                class="cn.cpoet.tool.actions.common.action.Base64DecodeAction"
+                class="cn.cpoet.tool.actions.common.Base64DecodeAction"
                 text="Base64 Decode"
                 description="Decode base64">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>

@@ -1,4 +1,4 @@
-package cn.cpoet.tool.actions.java.action;
+package cn.cpoet.tool.actions.java;
 
 import com.intellij.codeInsight.intention.AbstractIntentionAction;
 import com.intellij.codeInspection.util.IntentionName;

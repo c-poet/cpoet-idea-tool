@@ -1,14 +1,20 @@
-package cn.cpoet.tool.actions.patch.model;
+package cn.cpoet.tool.actions.patch;
 
 import com.intellij.openapi.module.Module;
 
 /**
  * @author CPoet
  */
-public class GenPatchModule {
+public class GenPatchModuleBean {
 
+    /**
+     * 模块
+     */
     private Module module;
 
+    /**
+     * 是否入口文件所在目录
+     */
     private boolean isApp;
 
     public Module getModule() {

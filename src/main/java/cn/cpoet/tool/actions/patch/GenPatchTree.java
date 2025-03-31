@@ -1,4 +1,4 @@
-package cn.cpoet.tool.actions.patch.component;
+package cn.cpoet.tool.actions.patch;
 
 import cn.cpoet.tool.component.FilterCheckboxTree;
 import cn.cpoet.tool.component.FilterCheckedTreeNode;

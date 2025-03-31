@@ -1,6 +1,5 @@
-package cn.cpoet.tool.actions.patch.action;
+package cn.cpoet.tool.actions.patch;
 
-import cn.cpoet.tool.actions.patch.component.GenPatchPanel;
 import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;

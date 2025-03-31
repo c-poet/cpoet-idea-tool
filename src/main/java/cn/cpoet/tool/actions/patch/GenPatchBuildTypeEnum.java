@@ -1,4 +1,4 @@
-package cn.cpoet.tool.actions.patch.constant;
+package cn.cpoet.tool.actions.patch;
 
 
 import cn.cpoet.tool.util.I18nUtil;

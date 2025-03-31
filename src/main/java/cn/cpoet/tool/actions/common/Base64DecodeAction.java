@@ -1,4 +1,4 @@
-package cn.cpoet.tool.actions.common.action;
+package cn.cpoet.tool.actions.common;
 
 import cn.cpoet.tool.util.Base64Util;
 

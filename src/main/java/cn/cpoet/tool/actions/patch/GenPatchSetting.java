@@ -1,7 +1,5 @@
-package cn.cpoet.tool.actions.patch.setting;
+package cn.cpoet.tool.actions.patch;
 
-import cn.cpoet.tool.actions.patch.constant.GenPatchBuildTypeEnum;
-import cn.cpoet.tool.actions.patch.constant.GenPatchTreeFilterTypeEnum;
 import cn.cpoet.tool.constant.CommonConst;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.Service;
@@ -16,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * @author CPoet
  */
 @Service(Service.Level.PROJECT)
-@State(name = "cn.cpoet.tool.actions.patch.setting.GenPatchSetting", storages = @Storage(CommonConst.SETTING_FILE_NAME))
+@State(name = "cn.cpoet.tool.actions.patch.GenPatchSetting", storages = @Storage(CommonConst.SETTING_FILE_NAME))
 public final class GenPatchSetting implements PersistentStateComponent<GenPatchSetting.State> {
 
     public static class State {

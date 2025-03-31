@@ -14,21 +14,21 @@
 
     <actions>
         <action id="OpenOutputFileAction_java"
-                class="cn.cpoet.tool.actions.file.action.OpenOutputFileAction"
+                class="cn.cpoet.tool.actions.file.OpenOutputFileAction"
                 text="Open Output File"
                 description="Open Output file">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
         </action>
 
         <action id="OpenOutputFileInExplorerAction_java"
-                class="cn.cpoet.tool.actions.file.action.OpenOutputFileInExplorerAction"
+                class="cn.cpoet.tool.actions.file.OpenOutputFileInExplorerAction"
                 text="Open Output In Explorer"
                 description="Open output file in explorer">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
         </action>
 
         <action id="GenPatchPackageAction_java"
-                class="cn.cpoet.tool.actions.patch.action.GenPatchPackageAction"
+                class="cn.cpoet.tool.actions.patch.GenPatchPackageAction"
                 text="Generate Patch"
                 description="Generate Patch package">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>

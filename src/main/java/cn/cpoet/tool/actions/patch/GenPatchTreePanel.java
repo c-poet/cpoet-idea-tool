@@ -1,7 +1,5 @@
-package cn.cpoet.tool.actions.patch.component;
+package cn.cpoet.tool.actions.patch;
 
-import cn.cpoet.tool.actions.patch.constant.GenPatchTreeFilterTypeEnum;
-import cn.cpoet.tool.actions.patch.setting.GenPatchSetting;
 import cn.cpoet.tool.component.CustomComboBox;
 import cn.cpoet.tool.component.SimpleHPanel;
 import cn.cpoet.tool.component.TitledPanel;

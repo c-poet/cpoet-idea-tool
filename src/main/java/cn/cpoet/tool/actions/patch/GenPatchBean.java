@@ -1,6 +1,4 @@
-package cn.cpoet.tool.actions.patch.model;
-
-import cn.cpoet.tool.actions.patch.constant.GenPatchProjectTypeEnum;
+package cn.cpoet.tool.actions.patch;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,22 +8,32 @@ import java.util.List;
  *
  * @author CPoet
  */
-public class GenPatch {
+public class GenPatchBean {
 
-    /** 补丁输出路径 */
+    /**
+     * 补丁输出路径
+     */
     private String outputFolder;
 
-    /** 补丁文件名 */
+    /**
+     * 补丁文件名
+     */
     private String fileName;
 
-    /** 项目类型 */
+    /**
+     * 项目类型
+     */
     private GenPatchProjectTypeEnum projectType;
 
-    /** 补丁说明内容 */
+    /**
+     * 补丁说明内容
+     */
     private StringBuilder desc = new StringBuilder();
 
-    /** 补丁内容 */
-    private List<GenPatchItem> items = new LinkedList<>();
+    /**
+     * 补丁内容
+     */
+    private List<GenPatchItemBean> items = new LinkedList<>();
 
     public String getOutputFolder() {
         return outputFolder;
@@ -59,11 +67,11 @@ public class GenPatch {
         this.desc = desc;
     }
 
-    public List<GenPatchItem> getItems() {
+    public List<GenPatchItemBean> getItems() {
         return items;
     }
 
-    public void setItems(List<GenPatchItem> items) {
+    public void setItems(List<GenPatchItemBean> items) {
         this.items = items;
     }
 }
