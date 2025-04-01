@@ -137,7 +137,16 @@ public class GenPatchPanel extends JBSplitter {
                     LOGGER.error("生成补丁失败: {}", e.getMessage(), e);
                     NotificationUtil.initBalloonError(e.getMessage()).notify(project);
                 })
-                .onProcessed(ret -> stopGenerateIndicator(indicator));
+                .onProcessed(path -> {
+                    stopGenerateIndicator(indicator);
+                    if (StringUtils.isNotEmpty(path)) {
+                        doOpenReplacePatch(path);
+                    }
+                });
+    }
+
+    protected void doOpenReplacePatch(String path) {
+        ReplacePatchAction.openReplacePatchDialog(project, path);
     }
 
     protected ProgressIndicator startGenerateIndicator() {

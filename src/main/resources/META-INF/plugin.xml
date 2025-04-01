@@ -24,6 +24,8 @@
         <li>支持快速生成实体的set方法调用并随机默认值；</li>
         <li>支持快速生成实体和实体间、实体和Map间的转换代码；</li>
     </ol>
+    <br />
+    <a href="https://www.cpoet.cn">建议|反馈</a>
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.

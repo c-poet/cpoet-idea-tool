@@ -18,38 +18,63 @@ import org.jetbrains.annotations.NotNull;
 public final class GenPatchSetting implements PersistentStateComponent<GenPatchSetting.State> {
 
     public static class State {
-        /** 面板宽度 */
+        /**
+         * 面板宽度
+         */
         public int width = 720;
 
-        /** 面板高度 */
+        /**
+         * 面板高度
+         */
         public int height = 400;
 
-        /** 记录最后一次操作的文件名 */
+        /**
+         * 记录最后一次操作的文件名
+         */
         public String lastFileName;
 
-        /** 最后一次生成的文件名前缀 */
+        /**
+         * 最后一次生成的文件名前缀
+         */
         public String lastFileNamePrefix;
 
         /** 文件树过滤类型 */
         public String treeFilterType = GenPatchTreeFilterTypeEnum.PROJECT.getCode();
 
-        /** 输出目录 */
+        /**
+         * 输出目录
+         */
         public String outputFolder;
 
-        /** 包含路径 */
+        /**
+         * 包含路径
+         */
         public boolean includePath;
 
-        /** 是否压缩 */
+        /**
+         * 是否压缩
+         */
         public boolean compress = true;
 
-        /** 存在文件或者目录的情况下是否覆盖 */
+        /**
+         * 存在文件或者目录的情况下是否覆盖
+         */
         public boolean cover = true;
 
-        /** 编译类型 */
+        /**
+         * 编译类型
+         */
         public String buildType = GenPatchBuildTypeEnum.DEFAULT.getCode();
 
-        /** 生成后打开输出的目录 */
+        /**
+         * 生成后打开输出的目录
+         */
         public boolean openOutputFolder = true;
+
+        /**
+         * 生成后打开替换面板
+         */
+        public boolean openReplacePatch = false;
     }
 
     private State state = new State();
