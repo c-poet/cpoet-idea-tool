@@ -54,6 +54,14 @@
             <add-to-group group-id="EditorPopupMenu" relative-to-action="EditorToggleColumnMode" anchor="after"/>
         </group>
 
+        <group id="CPoetTool_ProjectViewPopupMenu"
+               text="CPoet Tool"
+               popup="true"
+        >
+             <separator />
+            <add-to-group group-id="ProjectViewPopupMenu" relative-to-action="AnalyzeMenu" anchor="after" />
+        </group>
+
         <group id="CPoetTool_EditorPopupMenu_Text">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
 

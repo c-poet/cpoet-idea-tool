@@ -12,6 +12,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.changes.Change;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiUtil;
 import com.intellij.ui.CheckedTreeNode;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.JBSplitter;
@@ -24,6 +26,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.event.ItemEvent;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 生成补丁树面板
@@ -36,10 +41,19 @@ public class GenPatchTreePanel extends JBSplitter {
     private final GenPatchTree tree;
     private EditorTextField patchDescEditor;
 
-    public GenPatchTreePanel(Project project) {
+    public GenPatchTreePanel(Project project, Object[] selectedItems) {
         super(true);
         this.project = project;
-        tree = new GenPatchTree(project);
+        Set<VirtualFile> selectedFiles = Collections.emptySet();
+        if (selectedItems != null && selectedItems.length > 0) {
+            selectedFiles = new HashSet<>(selectedItems.length);
+            for (Object selectedItem : selectedItems) {
+                if (selectedItem instanceof PsiElement) {
+                    selectedFiles.add(PsiUtil.getVirtualFile((PsiElement) selectedItem));
+                }
+            }
+        }
+        tree = new GenPatchTree(project, selectedFiles);
         GenPatchSetting setting = GenPatchSetting.getInstance(project);
         buildTreePanel(setting);
         buildDescriptionPanel();

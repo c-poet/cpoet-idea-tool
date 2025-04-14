@@ -4,6 +4,7 @@ import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogBuilder;
 
@@ -17,8 +18,9 @@ public class GenPatchPackageAction extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         Project project = e.getRequiredData(CommonDataKeys.PROJECT);
+        Object[] selectedItems = e.getData(LangDataKeys.SELECTED_ITEMS);
         DialogBuilder dialogBuilder = new DialogBuilder(project);
-        GenPatchPanel packagePanel = new GenPatchPanel(project, dialogBuilder.getDialogWrapper());
+        GenPatchPanel packagePanel = new GenPatchPanel(project, selectedItems, dialogBuilder.getDialogWrapper());
         dialogBuilder.setTitle(I18nUtil.t("actions.patch.GenPatchPackageAction.title"));
         dialogBuilder.setCenterPanel(packagePanel);
         dialogBuilder.addAction(packagePanel.getPreviewAction());

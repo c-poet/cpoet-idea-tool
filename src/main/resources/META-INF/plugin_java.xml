@@ -13,7 +13,7 @@
     </extensions>
 
     <actions>
-        <group id="CPoetTool_EditorPopupMenu_File">
+        <group id="CPoetTool_File_JAVA">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
             <separator />
             <action id="OpenOutputFileAction_java"
@@ -29,8 +29,9 @@
             </action>
         </group>
 
-        <group id="CPoetTool_EditorPopupMenu_Patch">
+        <group id="CPoetTool_Patch_JAVA">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
+            <add-to-group group-id="CPoetTool_ProjectViewPopupMenu" />
             <separator />
             <action id="GenPatchPackageAction_java"
                     class="cn.cpoet.tool.actions.patch.GenPatchPackageAction"

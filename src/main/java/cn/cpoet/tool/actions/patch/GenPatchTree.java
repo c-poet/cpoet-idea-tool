@@ -12,6 +12,7 @@ import com.intellij.ui.CheckedTreeNode;
 import com.intellij.ui.ColoredTreeCellRenderer;
 
 import javax.swing.*;
+import java.util.Set;
 
 /**
  * 生成补丁树形
@@ -20,10 +21,18 @@ import javax.swing.*;
  */
 public class GenPatchTree extends FilterCheckboxTree {
 
-    public GenPatchTree(Project project) {
+    public GenPatchTree(Project project, Set<VirtualFile> selectedFiles) {
         super(new GenPatchPackageTreeCellRenderer(), TreeUtil.buildWithProject(project, (obj) -> {
             FilterCheckedTreeNode checkedTreeNode = new FilterCheckedTreeNode();
-            checkedTreeNode.setChecked(false);
+            VirtualFile file = null;
+            if (obj instanceof Project) {
+                file = ((Project) obj).getProjectFile();
+            } else if (obj instanceof Module) {
+                file = ((Module) obj).getModuleFile();
+            } else if (obj instanceof VirtualFile) {
+                file = (VirtualFile) obj;
+            }
+            checkedTreeNode.setChecked(file != null && selectedFiles.contains(file));
             return checkedTreeNode;
         }));
     }

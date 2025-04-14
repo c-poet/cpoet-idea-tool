@@ -58,8 +58,7 @@ public class GenPatchPanel extends JBSplitter {
     private final GenPatchConfPanel confPanel;
     private final GenPatchTreePanel treePanel;
 
-
-    public GenPatchPanel(Project project, DialogWrapper dialogWrapper) {
+    public GenPatchPanel(Project project, Object[] selectedItems, DialogWrapper dialogWrapper) {
         this.project = project;
         this.dialogWrapper = dialogWrapper;
         this.setting = GenPatchSetting.getInstance(project);
@@ -72,7 +71,7 @@ public class GenPatchPanel extends JBSplitter {
             }
         });
         buildPreviewAction();
-        treePanel = new GenPatchTreePanel(project);
+        treePanel = new GenPatchTreePanel(project, selectedItems);
         setFirstComponent(treePanel);
         confPanel = new GenPatchConfPanel(project, this);
         setSecondComponent(confPanel);
