@@ -5,11 +5,18 @@ import cn.cpoet.tool.component.SimpleHPanel;
 import cn.cpoet.tool.component.TitledPanel;
 import cn.cpoet.tool.util.I18nUtil;
 import cn.cpoet.tool.model.TreeNodeInfo;
+import com.intellij.history.integration.LocalHistoryImpl;
+import com.intellij.history.integration.LocalHistoryUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vcs.changes.Change;
+import com.intellij.openapi.vcs.changes.ChangeListManager;
+import com.intellij.openapi.vcs.changes.LocalChangeList;
+import com.intellij.openapi.vcs.changes.LocalChangeListImpl;
+import com.intellij.openapi.vcs.changes.ui.LocalChangesBrowser;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.CheckedTreeNode;
 import com.intellij.ui.EditorTextField;
@@ -19,6 +26,7 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.components.BorderLayoutPanel;
 import com.intellij.util.ui.tree.TreeUtil;
+import com.intellij.vcs.log.history.FileHistory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,11 +112,12 @@ public class GenPatchTreePanel extends JBSplitter {
     }
 
     private void doFilterTreeChange() {
-        FileDocumentManager fileDocumentManager = FileDocumentManager.getInstance();
+        ChangeListManager changeListManager = ChangeListManager.getInstance(project);
         tree.applyFilter(node -> {
             TreeNodeInfo nodeInfo = (TreeNodeInfo) node.getUserObject();
             if (nodeInfo.getObject() instanceof VirtualFile) {
-                return fileDocumentManager.isFileModified((VirtualFile) nodeInfo.getObject());
+                Change change = changeListManager.getChange((VirtualFile) nodeInfo.getObject());
+                return change != null;
             }
             return false;
         });
