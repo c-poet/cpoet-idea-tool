@@ -145,7 +145,9 @@ public class GenPatchPanel extends JBSplitter {
     }
 
     protected void doOpenReplacePatch(String path) {
-        ReplacePatchAction.openReplacePatchDialog(project, path);
+        if (setting.getState().openReplacePatch) {
+            ReplacePatchAction.openReplacePatchDialog(project, path);
+        }
     }
 
     protected ProgressIndicator startGenerateIndicator() {
