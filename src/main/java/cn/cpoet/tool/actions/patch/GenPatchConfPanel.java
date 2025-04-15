@@ -123,7 +123,7 @@ public class GenPatchConfPanel extends ScrollVPanel {
         openOutputFolderCheckBox.addActionListener((event) -> setting.getState().openOutputFolder = !setting.getState().openOutputFolder);
         formBuilder.addComponent(openOutputFolderCheckBox);
 
-        JBCheckBox replacePatchCheckBox = new JBCheckBox(I18nUtil.t("actions.patch.GenPatchPackageAction.config.openReplacePatch"));
+        JBCheckBox replacePatchCheckBox = new JBCheckBox(I18nUtil.t("actions.patch.GenPatchPackageAction.config.openReplacePatch"), setting.getState().openReplacePatch);
         replacePatchCheckBox.addActionListener((event) -> setting.getState().openReplacePatch = !setting.getState().openReplacePatch);
         formBuilder.addComponent(replacePatchCheckBox);
 
