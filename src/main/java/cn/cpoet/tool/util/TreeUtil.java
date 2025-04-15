@@ -108,6 +108,10 @@ public abstract class TreeUtil {
             ((TreeNodeInfo) childObj).setParent((TreeNodeInfo) parentObj);
         }
         patent.add(child);
+        // 子级延续父级的选中状态
+        if (patent instanceof CheckedTreeNode && child instanceof CheckedTreeNode && ((CheckedTreeNode) patent).isChecked()) {
+            ((CheckedTreeNode) child).setChecked(true);
+        }
     }
 
     /**
