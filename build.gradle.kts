@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "cn.cpoet.tool"
-version = "0.1.4"
+version = "0.1.5-beta"
 
 
 // Configure Gradle IntelliJ Plugin
