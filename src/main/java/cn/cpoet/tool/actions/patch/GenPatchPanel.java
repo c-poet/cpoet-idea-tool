@@ -3,6 +3,7 @@ package cn.cpoet.tool.actions.patch;
 import cn.cpoet.tool.exception.ToolException;
 import cn.cpoet.tool.model.FileInfo;
 import cn.cpoet.tool.model.TreeNodeInfo;
+import cn.cpoet.tool.setting.Setting;
 import cn.cpoet.tool.util.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -145,8 +146,18 @@ public class GenPatchPanel extends JBSplitter {
     }
 
     protected void doOpenReplacePatch(String path) {
-        if (setting.getState().openReplacePatch) {
-            ReplacePatchAction.openReplacePatchDialog(project, path);
+        if (!setting.getState().openReplacePatch) {
+            return;
+        }
+        String patchAssistant2JPath = Setting.getInstance().getState().patchAssistant2JPath;
+        if (StringUtils.isBlank(patchAssistant2JPath)) {
+            NotificationUtil.initBalloonError("The PatchAssistant2J path is not configured").notify(project);
+            return;
+        }
+        try {
+            Runtime.getRuntime().exec(new String[]{patchAssistant2JPath, "--patch=" + path});
+        } catch (Exception e) {
+            NotificationUtil.initBalloonError("Failed to launch PatchAssistant2J, please check if the path configuration is correct").notify(project);
         }
     }
 

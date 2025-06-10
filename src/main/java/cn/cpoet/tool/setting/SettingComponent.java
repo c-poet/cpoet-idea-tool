@@ -3,7 +3,9 @@ package cn.cpoet.tool.setting;
 import cn.cpoet.tool.component.CustomComboBox;
 import cn.cpoet.tool.constant.LanguageEnum;
 import cn.cpoet.tool.util.I18nUtil;
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.ui.ComboBox;
+import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.util.ui.FormBuilder;
 
 import javax.swing.*;
@@ -18,11 +20,16 @@ public class SettingComponent {
     private final JPanel mainPanel;
 
     private final ComboBox<LanguageEnum> selectLanguageComboBox;
+    private final TextFieldWithBrowseButton patchAssistant2JTextFieldWithBtn;
 
     public SettingComponent() {
         selectLanguageComboBox = buildSelectLanguageComboBox();
+        patchAssistant2JTextFieldWithBtn = new TextFieldWithBrowseButton();
+        patchAssistant2JTextFieldWithBtn.addBrowseFolderListener(I18nUtil.t("settings.PatchAssistant2J.path")
+                , null, null, FileChooserDescriptorFactory.createSingleFileDescriptor("exe"));
         mainPanel = FormBuilder.createFormBuilder().setFormLeftIndent(20)
                 .addLabeledComponent(I18nUtil.t("settings.SelectLanguage.label"), selectLanguageComboBox)
+                .addLabeledComponent(I18nUtil.t("settings.PatchAssistant2J.label"), patchAssistant2JTextFieldWithBtn)
                 .addComponentFillVertically(new JPanel(), 0)
                 .getPanel();
     }
@@ -46,5 +53,13 @@ public class SettingComponent {
 
     public void setLanguage(LanguageEnum language) {
         selectLanguageComboBox.setSelectedItem(language);
+    }
+
+    public String getPatchAssistant2JPath() {
+        return patchAssistant2JTextFieldWithBtn.getText();
+    }
+
+    public void setPatchAssistant2JPath(String patchAssistant2JPath) {
+        patchAssistant2JTextFieldWithBtn.setText(patchAssistant2JPath);
     }
 }

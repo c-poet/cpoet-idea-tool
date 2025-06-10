@@ -21,6 +21,11 @@ public final class Setting implements PersistentStateComponent<Setting.State> {
     public static class State {
         /** 配置的语言 */
         public String language = LanguageEnum.ZH.getCode();
+
+        /**
+         * 替换补丁包工具所在路径
+         */
+        public String patchAssistant2JPath;
     }
 
     private State state = new State();

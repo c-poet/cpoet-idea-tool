@@ -72,7 +72,7 @@ public final class GenPatchSetting implements PersistentStateComponent<GenPatchS
         public boolean openOutputFolder = true;
 
         /**
-         * 生成后打开替换面板
+         * 生成后打开替换工具
          */
         public boolean openReplacePatch = false;
     }

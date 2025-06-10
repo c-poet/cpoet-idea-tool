@@ -38,12 +38,6 @@
                     text="Generate Patch"
                     description="Generate Patch package">
             </action>
-
-            <action id="ReplacePatchPackageAction_java"
-                    class="cn.cpoet.tool.actions.patch.ReplacePatchAction"
-                    text="Replace Patch"
-                    description="Replace Patch package">
-            </action>
         </group>
     </actions>
 </idea-plugin>

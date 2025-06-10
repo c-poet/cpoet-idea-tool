@@ -5,6 +5,7 @@ import cn.cpoet.tool.util.I18nUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Objects;
 
 /**
  * 插件配置
@@ -29,7 +30,8 @@ public class Configurable implements com.intellij.openapi.options.Configurable {
     @Override
     public boolean isModified() {
         Setting.State state = Setting.getInstance().getState();
-        return !settingComponent.getLanguage().getCode().equals(state.language);
+        return !settingComponent.getLanguage().getCode().equals(state.language)
+                || !Objects.equals(settingComponent.getPatchAssistant2JPath(), state.patchAssistant2JPath);
     }
 
     @Override
@@ -41,12 +43,14 @@ public class Configurable implements com.intellij.openapi.options.Configurable {
         if (!oldLanguage.equals(state.language)) {
             I18nUtil.updateLocale();
         }
+        state.patchAssistant2JPath = settingComponent.getPatchAssistant2JPath();
     }
 
     @Override
     public void reset() {
         Setting.State state = Setting.getInstance().getState();
         settingComponent.setLanguage(LanguageEnum.ofCode(state.language));
+        settingComponent.setPatchAssistant2JPath(state.patchAssistant2JPath);
     }
 
     @Override
