@@ -198,7 +198,9 @@ public class GenPatchPanel extends JBSplitter {
         for (GenPatchItemBean item : items) {
             String filePath = path;
             if (state.includePath) {
-                filePath = FilenameUtils.concat(filePath, item.getPatchModule().getModule().getName());
+                if (!item.getPatchModule().isApp()) {
+                    filePath = FilenameUtils.concat(filePath, item.getPatchModule().getModule().getName());
+                }
                 filePath = FilenameUtils.concat(filePath, item.getFullPath());
             }
             FileUtil.writeToFile(item.getOutputFile(), FilenameUtils.concat(filePath, item.getOutputFile().getName()));
@@ -306,7 +308,12 @@ public class GenPatchPanel extends JBSplitter {
         GenPatchModuleBean patchModule = patchItem.getPatchModule();
         ZipEntry zipEntry;
         if (state.includePath) {
-            String filePath = String.join(FileUtil.UNIX_SEPARATOR, patchModule.getModule().getName(), patchItem.getFullPath(), file.getName());
+            String filePath;
+            if (patchModule.isApp()) {
+                filePath = String.join(FileUtil.UNIX_SEPARATOR, patchItem.getFullPath(), file.getName());
+            } else {
+                filePath = String.join(FileUtil.UNIX_SEPARATOR, patchModule.getModule().getName(), patchItem.getFullPath(), file.getName());
+            }
             zipEntry = new ZipEntry(filePath);
         } else {
             zipEntry = new ZipEntry(file.getName());
@@ -386,8 +393,10 @@ public class GenPatchPanel extends JBSplitter {
                     patchItem.setFullPath(FilenameUtils.getFullPathNoEndSeparator(relativePath));
                     patch.getDesc().append("\n");
                     if (state.includePath) {
-                        patch.getDesc().append(module.getName())
-                                .append(FileUtil.UNIX_SEPARATOR).append(patchItem.getFullPath())
+                        if (!patchModule.isApp()) {
+                            patch.getDesc().append(module.getName()).append(FileUtil.UNIX_SEPARATOR);
+                        }
+                        patch.getDesc().append(patchItem.getFullPath())
                                 .append(FileUtil.UNIX_SEPARATOR).append(outputFile.getName());
                         if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
                             if (patchModule.isApp()) {
