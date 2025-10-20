@@ -371,11 +371,12 @@ public class GenPatchPanel extends JBSplitter {
     protected GenPatchBean doGetGenPatch(TreeNodeInfo[] treeNodeInfos) {
         GenPatchSetting.State state = setting.getState();
         GenPatchBean patch = createGenPatch();
+        patch.getDesc().append("File Name: ").append(patch.getFileName());
         String patchDesc = getPatchDesc();
         if (StringUtils.isNotBlank(patchDesc)) {
-            patch.getDesc().append(patchDesc).append("\n\n");
+            patch.getDesc().append('\n').append("Patch Desc:\n").append(patchDesc);
         }
-        patch.getDesc().append("Files path:");
+        patch.getDesc().append("\n\n").append("File Paths:");
         Map<GenPatchModuleBean, List<TreeNodeInfo>> moduleFilesMapping = getModuleFilesMapping(patch, treeNodeInfos);
         for (Map.Entry<GenPatchModuleBean, List<TreeNodeInfo>> entry : moduleFilesMapping.entrySet()) {
             GenPatchModuleBean patchModule = entry.getKey();
