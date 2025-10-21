@@ -10,6 +10,11 @@
         <!--        <intentionAction>-->
         <!--            <className>cn.cpoet.tool.iu.actions.java.action.AllGetIntentionAction</className>-->
         <!--        </intentionAction>-->
+        <toolWindow id="CPoetTool"
+                    anchor="right"
+                    secondary="false"
+                    icon="/icons/cpoet.svg"
+                    factoryClass="cn.cpoet.tool.toolwin.ToolWinFactory"/>
     </extensions>
 
     <actions>

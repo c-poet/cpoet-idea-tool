@@ -16,6 +16,11 @@ public class ScrollVPanel extends JBScrollPane {
     public ScrollVPanel() {
         viewPanel = new SimpleVPanel();
         setViewportView(viewPanel);
+        setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
+    }
+
+    public SimpleVPanel getView() {
+        return viewPanel;
     }
 
     public void add2View(JComponent component) {

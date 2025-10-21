@@ -35,6 +35,12 @@
     <depends optional="true" config-file="plugin_java.xml">com.intellij.modules.java</depends>
     <depends optional="true" config-file="plugin_database.xml">com.intellij.database</depends>
 
+    <extensionPoints>
+        <extensionPoint name="toolWinContentFactory"
+                        interface="cn.cpoet.tool.toolwin.ToolWinContentFactory"
+                        dynamic="true"/>
+    </extensionPoints>
+
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
@@ -58,8 +64,8 @@
                text="CPoet Tool"
                popup="true"
         >
-             <separator />
-            <add-to-group group-id="ProjectViewPopupMenu" relative-to-action="AnalyzeMenu" anchor="after" />
+            <separator/>
+            <add-to-group group-id="ProjectViewPopupMenu" relative-to-action="AnalyzeMenu" anchor="after"/>
         </group>
 
         <group id="CPoetTool_EditorPopupMenu_Text">
