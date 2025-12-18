@@ -383,6 +383,8 @@ public class GenPatchPanel extends JBSplitter {
             Module module = patchModule.getModule();
             for (TreeNodeInfo nodeInfo : entry.getValue()) {
                 FileInfo fileInfo = ModuleUtil.getFileInfo(module, (VirtualFile) nodeInfo.getObject());
+                // 非编译文件可使用源文件
+                // 编译文件从输出文件读取
                 if (fileInfo.getOutputFile() != null) {
                     VirtualFile sourceFile = fileInfo.getSourceFile();
                     VirtualFile outputFile = fileInfo.getOutputFile();
@@ -421,6 +423,8 @@ public class GenPatchPanel extends JBSplitter {
                         patch.getDesc().append("\t\t").append(patchItem.getFullPath());
                     }
                     handleGenPatchItemAttachOutputFiles(patchItem);
+                    // MapStruct文件兼容
+                    
                     patch.getItems().add(patchItem);
                 }
             }

@@ -1,8 +1,10 @@
 package cn.cpoet.tool.setting;
 
 import cn.cpoet.tool.component.CustomComboBox;
+import cn.cpoet.tool.constant.IdeaVerEnum;
 import cn.cpoet.tool.constant.LanguageEnum;
 import cn.cpoet.tool.util.I18nUtil;
+import cn.cpoet.tool.util.ReflectUtil;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -25,8 +27,13 @@ public class SettingComponent {
     public SettingComponent() {
         selectLanguageComboBox = buildSelectLanguageComboBox();
         patchAssistant2JTextFieldWithBtn = new TextFieldWithBrowseButton();
-        patchAssistant2JTextFieldWithBtn.addBrowseFolderListener(I18nUtil.t("settings.PatchAssistant2J.path")
-                , null, null, FileChooserDescriptorFactory.createSingleFileDescriptor("exe"));
+        if (IdeaVerEnum.V243.isNewer()) {
+            ReflectUtil.invoke(patchAssistant2JTextFieldWithBtn, "addBrowseFolderListener", FileChooserDescriptorFactory
+                    .createSingleFileDescriptor("exe").withTitle(I18nUtil.t("settings.PatchAssistant2J.path")));
+        } else {
+            ReflectUtil.invoke(patchAssistant2JTextFieldWithBtn, "addBrowseFolderListener", I18nUtil.t("settings.PatchAssistant2J.path")
+                    , null, null, FileChooserDescriptorFactory.createSingleFileDescriptor("exe"));
+        }
         mainPanel = FormBuilder.createFormBuilder().setFormLeftIndent(20)
                 .addLabeledComponent(I18nUtil.t("settings.SelectLanguage.label"), selectLanguageComboBox)
                 .addLabeledComponent(I18nUtil.t("settings.PatchAssistant2J.label"), patchAssistant2JTextFieldWithBtn)

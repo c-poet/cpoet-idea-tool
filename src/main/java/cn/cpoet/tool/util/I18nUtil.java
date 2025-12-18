@@ -1,7 +1,7 @@
 package cn.cpoet.tool.util;
 
 import cn.cpoet.tool.setting.Setting;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;

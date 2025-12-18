@@ -11,7 +11,7 @@ repositories {
 
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.16.1"
+    id("org.jetbrains.intellij") version "1.17.2"
 }
 
 group = "cn.cpoet.tool"
@@ -21,9 +21,10 @@ version = "0.2.0-beta"
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
+//    version.set("2022.3")
+//    version.set("2023.3")
+    version.set("2024.3")
 
-    version.set("2022.1")
-//    version.set("2023.3.4")
     type.set("IU")
 
     plugins.set(listOf(
@@ -33,17 +34,21 @@ intellij {
     ))
 }
 
+java {
+    /* V223 -> V243 */
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 tasks {
     // Set the JVM compatibility versions
     withType<JavaCompile> {
-        targetCompatibility = "11"
-        sourceCompatibility = "11"
         options.encoding = "UTF-8"
     }
 
     patchPluginXml {
-        sinceBuild.set("221")
-        untilBuild.set("241.*")
+        sinceBuild.set("223")
+        untilBuild.set("243.*")
     }
 
     signPlugin {

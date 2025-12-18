@@ -1,48 +1,19 @@
 <idea-plugin>
     <actions>
-        <group id="CPoetTool_Console.TableResult.CellEditor.Popup"
-               text="CPoet Tool"
-               popup="true"
-               searchable="false"
-        >
+        <action class="cn.cpoet.tool.actions.database.CopySingleColJoinAction" text="Copy Joined Result Column">
+            <add-to-group group-id="Console.TableResult.PopupGroup" relative-to-action="Console.TableResult.CopyAggregatorResult" anchor="after" />
+        </action>
+
+        <group id="CPoetTool_Console.TableResult.CellEditor.Popup" text="CPoet Tool" popup="true" searchable="false">
             <separator/>
-            <add-to-group group-id="Console.TableResult.CellEditor.Popup" anchor="after"
-                          relative-to-action="EditorToggleColumnMode"/>
+            <add-to-group group-id="Console.TableResult.CellEditor.Popup" anchor="after" relative-to-action="EditorToggleColumnMode"/>
+            <reference ref="CPoetTool_UUIDGenerateAction" />
+            <reference ref="CPoetTool_ConvertToCamelAction" />
+            <reference ref="CPoetTool_ConvertToUnderlineAction" />
+            <reference ref="CPoetTool_Base64EncodeAction" />
+            <reference ref="CPoetTool_Base64DecodeAction" />
+            <reference ref="CPoetTool_Md5Action" />
+            <reference ref="CPoetTool_Sha1Action" />
         </group>
-
-        <action id="UUIDGenerateAction_database"
-                class="cn.cpoet.tool.actions.common.UUIDGenerateAction"
-                text="Generate UUID"
-                description="Generate UUID">
-            <add-to-group group-id="CPoetTool_Console.TableResult.CellEditor.Popup"/>
-        </action>
-
-        <action id="ConvertToCamelAction_database"
-                class="cn.cpoet.tool.actions.common.ConvertToCamelAction"
-                text="Convert To Camel"
-                description="Convert to Camel text">
-            <add-to-group group-id="CPoetTool_Console.TableResult.CellEditor.Popup"/>
-        </action>
-
-        <action id="ConvertToUnderlineAction_database"
-                class="cn.cpoet.tool.actions.common.ConvertToUnderlineAction"
-                text="Convert To Underline"
-                description="Convert to Underline text">
-            <add-to-group group-id="CPoetTool_Console.TableResult.CellEditor.Popup"/>
-        </action>
-
-        <action id="Base64EncodeAction_database"
-                class="cn.cpoet.tool.actions.common.Base64EncodeAction"
-                text="Base64 Encode"
-                description="Encode base64">
-            <add-to-group group-id="CPoetTool_Console.TableResult.CellEditor.Popup"/>
-        </action>
-
-        <action id="Base64DecodeAction_database"
-                class="cn.cpoet.tool.actions.common.Base64DecodeAction"
-                text="Base64 Decode"
-                description="Decode base64">
-            <add-to-group group-id="CPoetTool_Console.TableResult.CellEditor.Popup"/>
-        </action>
     </actions>
 </idea-plugin>

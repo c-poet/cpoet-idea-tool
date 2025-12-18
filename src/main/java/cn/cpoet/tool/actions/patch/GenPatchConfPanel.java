@@ -3,7 +3,9 @@ package cn.cpoet.tool.actions.patch;
 import cn.cpoet.tool.component.CustomComboBox;
 import cn.cpoet.tool.component.ScrollVPanel;
 import cn.cpoet.tool.component.TitledPanel;
+import cn.cpoet.tool.constant.IdeaVerEnum;
 import cn.cpoet.tool.util.I18nUtil;
+import cn.cpoet.tool.util.ReflectUtil;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -62,11 +64,15 @@ public class GenPatchConfPanel extends ScrollVPanel {
             }
         });
         formBuilder.addLabeledComponent(I18nUtil.t("actions.patch.GenPatchPackageAction.config.fileName"), fileNameField);
-
         // 选择输出的目录
         TextFieldWithBrowseButton outputFolderTextField = new TextFieldWithBrowseButton();
-        outputFolderTextField.addBrowseFolderListener(I18nUtil.t("actions.patch.GenPatchPackageAction.config.outputFolder")
-                , null, project, FileChooserDescriptorFactory.createSingleFolderDescriptor());
+        if (IdeaVerEnum.V243.isNewer()) {
+            ReflectUtil.invoke(outputFolderTextField, "addBrowseFolderListener", project, FileChooserDescriptorFactory
+                    .createSingleFolderDescriptor().withTitle(I18nUtil.t("actions.patch.GenPatchPackageAction.config.outputFolder")));
+        } else {
+            ReflectUtil.invoke(outputFolderTextField, "addBrowseFolderListener", I18nUtil.t("actions.patch.GenPatchPackageAction.config.outputFolder"),
+                    null, project, FileChooserDescriptorFactory.createSingleFolderDescriptor());
+        }
         outputFolderTextField.setText(state.outputFolder);
         outputFolderTextField.getTextField().getDocument().addDocumentListener(new DocumentAdapter() {
             @Override

@@ -12,22 +12,22 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    <b>CPoet Tool</b>是结合自己平时开发中的实际需求和编码习惯而编写的<b>Idea插件</b>。
-    <br/>
-    <b>主要功能：</b>
-    <ol>
-        <li>支持Base64编码和解码；</li>
-        <li>支持生成UUID；</li>
-        <li>支持下划线转驼峰、驼峰转下划线；</li>
-        <li>支持快速跳转到输出（编译）文件，打开输出（编译后）文件所在的目录；</li>
-        <li>支持快速生成补丁包（适用于增量发包）；</li>
-        <li>支持快速生成实体的set方法调用并随机默认值；</li>
-        <li>支持快速生成实体和实体间、实体和Map间的转换代码；</li>
-    </ol>
-    <br />
-    <a href="https://www.cpoet.cn">建议|反馈</a>
-  ]]></description>
-
+        <b>CPoet Tool</b> is a powerful IntelliJ IDEA plugin designed to boost developer productivity with multiple useful features.
+        <br/><br/>
+        <b>Main Features:</b>
+        <ol>
+          <li>Base64 encode/decode support</li>
+          <li>UUID generation</li>
+          <li>CamelCase and under_score case conversion</li>
+          <li>Quick navigation to compiled output files</li>
+          <li>Incremental patch package generation</li>
+          <li>Automatic entity setter methods generation with default values</li>
+          <li>Code generation for entity-to-entity and entity-to-Map conversion</li>
+        </ol>
+        <br/>
+        For suggestions or feedback, please visit: <a href="https://www.cpoet.cn">https://www.cpoet.cn</a>
+    ]]>
+    </description>
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
@@ -53,57 +53,38 @@
     </extensions>
 
     <actions>
-        <group id="CPoetTool_EditorPopupMenu"
-               text="CPoet Tool"
-               popup="true">
+        <action id="CPoetTool_UUIDGenerateAction" class="cn.cpoet.tool.actions.common.UUIDGenerateAction" text="Generate UUID" description="Generate UUID" />
+
+        <action id="CPoetTool_ConvertToCamelAction" class="cn.cpoet.tool.actions.common.ConvertToCamelAction" text="Convert To Camel" description="Convert to Camel text"/>
+        <action id="CPoetTool_ConvertToUnderlineAction" class="cn.cpoet.tool.actions.common.ConvertToUnderlineAction" text="Convert To Underline" description="Convert to Underline text"/>
+
+        <action id="CPoetTool_Base64EncodeAction" class="cn.cpoet.tool.actions.common.Base64EncodeAction" text="Base64 Encode" description="Encode base64"/>
+        <action id="CPoetTool_Base64DecodeAction" class="cn.cpoet.tool.actions.common.Base64DecodeAction" text="Base64 Decode" description="Decode base64"/>
+
+        <action id="CPoetTool_Md5Action" class="cn.cpoet.tool.actions.common.Md5Action" text="Calculate MD5" description="Calculate MD5 Value"/>
+        <action id="CPoetTool_Sha1Action" class="cn.cpoet.tool.actions.common.Sha1Action" text="Calculate SHA1" description="Calculate SHA1 Value"/>
+
+        <group id="CPoetTool_EditorPopupMenu" text="CPoet Tool" popup="true">
             <separator/>
             <add-to-group group-id="EditorPopupMenu" relative-to-action="EditorToggleColumnMode" anchor="after"/>
         </group>
 
-        <group id="CPoetTool_ProjectViewPopupMenu"
-               text="CPoet Tool"
-               popup="true"
-        >
+        <group id="CPoetTool_ProjectViewPopupMenu" text="CPoet Tool" popup="true">
             <separator/>
             <add-to-group group-id="ProjectViewPopupMenu" relative-to-action="AnalyzeMenu" anchor="after"/>
         </group>
 
         <group id="CPoetTool_EditorPopupMenu_Text">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
-
-            <action id="UUIDGenerateAction"
-                    class="cn.cpoet.tool.actions.common.UUIDGenerateAction"
-                    text="Generate UUID"
-                    description="Generate UUID">
-            </action>
-
+            <reference ref="CPoetTool_UUIDGenerateAction" />
             <separator/>
-
-            <action id="ConvertToCamelAction"
-                    class="cn.cpoet.tool.actions.common.ConvertToCamelAction"
-                    text="Convert To Camel"
-                    description="Convert to Camel text">
-            </action>
-
-            <action id="ConvertToUnderlineAction"
-                    class="cn.cpoet.tool.actions.common.ConvertToUnderlineAction"
-                    text="Convert To Underline"
-                    description="Convert to Underline text">
-            </action>
-
+            <reference ref="CPoetTool_ConvertToCamelAction" />
+            <reference ref="CPoetTool_ConvertToUnderlineAction" />
             <separator/>
-
-            <action id="Base64EncodeAction"
-                    class="cn.cpoet.tool.actions.common.Base64EncodeAction"
-                    text="Base64 Encode"
-                    description="Encode base64">
-            </action>
-
-            <action id="Base64DecodeAction"
-                    class="cn.cpoet.tool.actions.common.Base64DecodeAction"
-                    text="Base64 Decode"
-                    description="Decode base64">
-            </action>
+            <reference ref="CPoetTool_Base64EncodeAction" />
+            <reference ref="CPoetTool_Base64DecodeAction" />
+            <reference ref="CPoetTool_Md5Action" />
+            <reference ref="CPoetTool_Sha1Action" />
         </group>
     </actions>
 </idea-plugin>
