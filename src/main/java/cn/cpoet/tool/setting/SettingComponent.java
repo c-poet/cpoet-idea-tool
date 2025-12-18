@@ -28,7 +28,7 @@ public class SettingComponent {
         selectLanguageComboBox = buildSelectLanguageComboBox();
         patchAssistant2JTextFieldWithBtn = new TextFieldWithBrowseButton();
         if (IdeaVerEnum.V243.isNewer()) {
-            ReflectUtil.invoke(patchAssistant2JTextFieldWithBtn, "addBrowseFolderListener", FileChooserDescriptorFactory
+            ReflectUtil.invoke(patchAssistant2JTextFieldWithBtn, "addBrowseFolderListener", null, FileChooserDescriptorFactory
                     .createSingleFileDescriptor("exe").withTitle(I18nUtil.t("settings.PatchAssistant2J.path")));
         } else {
             ReflectUtil.invoke(patchAssistant2JTextFieldWithBtn, "addBrowseFolderListener", I18nUtil.t("settings.PatchAssistant2J.path")

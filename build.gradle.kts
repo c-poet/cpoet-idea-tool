@@ -15,15 +15,15 @@ plugins {
 }
 
 group = "cn.cpoet.tool"
-version = "0.2.0-beta"
+version = "0.2.0"
 
 
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-//    version.set("2022.3")
+    version.set("2022.3")
 //    version.set("2023.3")
-    version.set("2024.3")
+//    version.set("2024.3")
 
     type.set("IU")
 
