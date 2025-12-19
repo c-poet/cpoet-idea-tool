@@ -13,14 +13,14 @@ public class CopySingleColJoinAction extends DumbAwareAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         CompatibleService.getInstance()
-                .instance(CopySingleColJoinActionCompatible.class)
+                .instance(CopySingleColJoinActionCPB.class)
                 .update(e);
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
         CompatibleService.getInstance()
-                .instance(CopySingleColJoinActionCompatible.class)
+                .instance(CopySingleColJoinActionCPB.class)
                 .actionPerformed(anActionEvent);
     }
 }

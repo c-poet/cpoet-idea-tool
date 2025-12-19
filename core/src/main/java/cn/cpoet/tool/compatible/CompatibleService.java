@@ -9,7 +9,9 @@ import com.intellij.openapi.util.BuildNumber;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author CPoet
@@ -44,7 +46,7 @@ public final class CompatibleService {
     }
 
     public @NotNull <T> T instance(@NotNull Class<T> clazz) {
-        return instance(clazz, true);
+        return instance(clazz, false);
     }
 
     public @NotNull <T> T instance(@NotNull Class<T> clazz, boolean isSingle) {

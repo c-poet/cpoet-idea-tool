@@ -9,7 +9,7 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 /**
  * @author CPoet
  */
-public class SettingComponentCompatibleImpl implements SettingComponentCompatible {
+public class SettingComponentCPBImpl implements SettingComponentCompatible {
 
     @Override
     public void compatiblePatchAssistant2JTextFieldWithBtn(TextFieldWithBrowseButton btn) {

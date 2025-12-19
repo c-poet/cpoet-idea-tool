@@ -10,7 +10,7 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 /**
  * @author CPoet
  */
-public class GenPatchConfPanelCompatibleImpl implements GenPatchConfPanelCompatible {
+public class GenPatchConfPanelCPBImpl implements GenPatchConfPanelCompatible {
 
     @Override
     public void compatibleOutputFolderTextField(Project project, TextFieldWithBrowseButton btn) {

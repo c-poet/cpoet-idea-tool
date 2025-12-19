@@ -1,6 +1,6 @@
 package cn.cpoet.tool.impl223.actions.database;
 
-import cn.cpoet.tool.actions.database.CopySingleColJoinActionCompatible;
+import cn.cpoet.tool.actions.database.CopySingleColJoinActionCPB;
 import com.intellij.database.datagrid.*;
 import com.intellij.database.util.JdbcUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -16,7 +16,7 @@ import java.util.StringJoiner;
 /**
  * @author CPoet
  */
-public class CopySingleColJoinActionCompatibleImpl implements CopySingleColJoinActionCompatible {
+public class CopySingleColJoinActionCPBImpl implements CopySingleColJoinActionCPB {
 
     @Override
     public void update(@NotNull AnActionEvent e) {

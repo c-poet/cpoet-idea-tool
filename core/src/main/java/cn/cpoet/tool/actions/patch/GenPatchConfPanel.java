@@ -41,9 +41,9 @@ public class GenPatchConfPanel extends ScrollVPanel {
         buildAfterGenerate(setting);
     }
 
-    protected void compatibleOutputFolderTextField(TextFieldWithBrowseButton btn) {
-        CompatibleService.getInstance().instance(GenPatchConfPanelCompatible.class)
-                .compatibleOutputFolderTextField(project, btn);
+    protected void cpbOutputFolderTextField(TextFieldWithBrowseButton btn) {
+        CompatibleService.getInstance().instance(GenPatchConfPanelCPB.class)
+                .cpbOutputFolderTextField(project, btn);
     }
 
     public void buildGeneral(GenPatchSetting setting) {
@@ -69,7 +69,7 @@ public class GenPatchConfPanel extends ScrollVPanel {
         formBuilder.addLabeledComponent(I18nUtil.t("actions.patch.GenPatchPackageAction.config.fileName"), fileNameField);
         // 选择输出的目录
         TextFieldWithBrowseButton outputFolderTextField = new TextFieldWithBrowseButton();
-        compatibleOutputFolderTextField(outputFolderTextField);
+        cpbOutputFolderTextField(outputFolderTextField);
         outputFolderTextField.setText(state.outputFolder);
         outputFolderTextField.getTextField().getDocument().addDocumentListener(new DocumentAdapter() {
             @Override

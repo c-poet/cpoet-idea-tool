@@ -7,26 +7,26 @@ repositories {
     }
     mavenLocal()
     mavenCentral()
+
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.17.2"
+    id("org.jetbrains.intellij.platform") version "2.10.4"
 }
 
 group = "cn.cpoet.tool"
 
-intellij {
-    version.set("2022.3")
-//    version.set("2025.1")
-
-    type.set("IU")
-
-    plugins.set(listOf(
-            "com.intellij.database",
-            "com.intellij.java",
-            "com.intellij.spring"
-    ))
+dependencies {
+    intellijPlatform {
+        intellijIdea("2022.3")
+        bundledPlugin("com.intellij.database")
+        bundledPlugin("com.intellij.java")
+        bundledPlugin("com.intellij.spring")
+    }
 }
 
 tasks {

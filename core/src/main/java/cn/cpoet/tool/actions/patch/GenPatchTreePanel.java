@@ -22,7 +22,6 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.components.BorderLayoutPanel;
 import com.intellij.util.ui.tree.TreeUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.event.ItemEvent;
@@ -137,17 +136,17 @@ public class GenPatchTreePanel extends JBSplitter {
     private ActionGroup getTreeToolbarActionGroup() {
         return new ActionGroup() {
             @Override
-            public AnAction @NotNull [] getChildren(@Nullable AnActionEvent anActionEvent) {
+            public AnAction[] getChildren(@Nullable AnActionEvent anActionEvent) {
                 return new AnAction[]{
                         new AnAction("Expand All", null, AllIcons.Actions.Expandall) {
                             @Override
-                            public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
+                            public void actionPerformed(AnActionEvent anActionEvent) {
                                 TreeUtil.expandAll(tree);
                             }
                         },
                         new AnAction("Collapse All", null, AllIcons.Actions.Collapseall) {
                             @Override
-                            public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
+                            public void actionPerformed(AnActionEvent anActionEvent) {
                                 TreeUtil.collapseAll(tree, -1);
                             }
                         }

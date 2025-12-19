@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author CPoet
  */
-public interface CopySingleColJoinActionCompatible {
+public interface CopySingleColJoinActionCPB {
     /**
      * @param e {@link AnActionEvent}
      * @see CopySingleColJoinAction#update(AnActionEvent)

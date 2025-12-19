@@ -13,5 +13,4 @@ rootProject.name = "cpoet-idea-tool"
 include("core")
 include("impl223")
 include("impl243")
-include("impl251")
 include("cpoet-tool")

@@ -1,7 +1,6 @@
 package cn.cpoet.tool.component;
 
 import com.intellij.openapi.ui.ComboBox;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,19 +17,19 @@ public class CustomComboBox<T> extends ComboBox<T> {
         super(width);
     }
 
-    public CustomComboBox(@NotNull ComboBoxModel<T> model) {
+    public CustomComboBox(ComboBoxModel<T> model) {
         super(model);
     }
 
-    public CustomComboBox(T @NotNull [] items) {
+    public CustomComboBox(T[] items) {
         super(items);
     }
 
-    public CustomComboBox(T @NotNull [] items, int width) {
+    public CustomComboBox(T[] items, int width) {
         super(items, width);
     }
 
-    public CustomComboBox(@NotNull ComboBoxModel<T> model, int width) {
+    public CustomComboBox(ComboBoxModel<T> model, int width) {
         super(model, width);
     }
 

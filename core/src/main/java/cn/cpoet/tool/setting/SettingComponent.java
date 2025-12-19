@@ -25,9 +25,7 @@ public class SettingComponent {
     public SettingComponent() {
         selectLanguageComboBox = buildSelectLanguageComboBox();
         patchAssistant2JTextFieldWithBtn = new TextFieldWithBrowseButton();
-        CompatibleService.getInstance()
-                .instance(SettingComponentCompatible.class)
-                .compatiblePatchAssistant2JTextFieldWithBtn(patchAssistant2JTextFieldWithBtn);
+        cpbPatchAssistant2JTextFieldWithBtn(patchAssistant2JTextFieldWithBtn);
         mainPanel = FormBuilder.createFormBuilder().setFormLeftIndent(20)
                 .addLabeledComponent(I18nUtil.t("settings.SelectLanguage.label"), selectLanguageComboBox)
                 .addLabeledComponent(I18nUtil.t("settings.PatchAssistant2J.label"), patchAssistant2JTextFieldWithBtn)
@@ -35,8 +33,10 @@ public class SettingComponent {
                 .getPanel();
     }
 
-    protected void compatiblePatchAssistant2JTextFieldWithBtn(TextFieldWithBrowseButton btn) {
-
+    protected void cpbPatchAssistant2JTextFieldWithBtn(TextFieldWithBrowseButton btn) {
+        CompatibleService.getInstance()
+                .instance(SettingComponentCPB.class)
+                .cpbPatchAssistant2JTextFieldWithBtn(btn);
     }
 
     private ComboBox<LanguageEnum> buildSelectLanguageComboBox() {
