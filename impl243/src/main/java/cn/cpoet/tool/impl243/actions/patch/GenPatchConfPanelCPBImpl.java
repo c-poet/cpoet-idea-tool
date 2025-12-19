@@ -1,6 +1,6 @@
 package cn.cpoet.tool.impl243.actions.patch;
 
-import cn.cpoet.tool.actions.patch.GenPatchConfPanelCompatible;
+import cn.cpoet.tool.actions.patch.GenPatchConfPanelCPB;
 import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
@@ -10,12 +10,12 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 /**
  * @author CPoet
  */
-public class GenPatchConfPanelCPBImpl implements GenPatchConfPanelCompatible {
+public class GenPatchConfPanelCPBImpl implements GenPatchConfPanelCPB {
 
     @Override
-    public void compatibleOutputFolderTextField(Project project, TextFieldWithBrowseButton btn) {
+    public void cpbOutputFolderTextField(Project project, TextFieldWithBrowseButton textFieldWithBrowseButton) {
         FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
                 .withTitle(I18nUtil.t("actions.patch.GenPatchPackageAction.config.outputFolder"));
-        btn.addBrowseFolderListener(project, descriptor);
+        textFieldWithBrowseButton.addBrowseFolderListener(project, descriptor);
     }
 }

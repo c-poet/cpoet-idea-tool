@@ -1,9 +1,9 @@
 package cn.cpoet.tool.impl243;
 
-import cn.cpoet.tool.actions.patch.GenPatchConfPanelCompatible;
+import cn.cpoet.tool.actions.patch.GenPatchConfPanelCPB;
 import cn.cpoet.tool.compatible.CompatibleProvider;
 import cn.cpoet.tool.compatible.CompatibleRegister;
-import cn.cpoet.tool.setting.SettingComponentCompatible;
+import cn.cpoet.tool.setting.SettingComponentCPB;
 import com.intellij.openapi.util.BuildNumber;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +20,7 @@ public class Impl243CompatibleProvider implements CompatibleProvider {
 
     @Override
     public void register(@NotNull CompatibleRegister register) {
-        register.reg(GenPatchConfPanelCompatible.class);
-        register.reg(SettingComponentCompatible.class);
+        register.reg(GenPatchConfPanelCPB.class);
+        register.reg(SettingComponentCPB.class);
     }
 }
