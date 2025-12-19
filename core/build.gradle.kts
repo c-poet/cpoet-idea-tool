@@ -1,0 +1,37 @@
+repositories {
+    maven {
+        url = uri("https://maven.aliyun.com/repository/public")
+    }
+    maven {
+        url = uri("https://maven.aliyun.com/repository/central")
+    }
+    mavenLocal()
+    mavenCentral()
+}
+
+plugins {
+    id("java")
+    id("org.jetbrains.intellij") version "1.17.2"
+}
+
+group = "cn.cpoet.tool"
+
+intellij {
+    version.set("2022.3")
+//    version.set("2025.1")
+
+    type.set("IU")
+
+    plugins.set(listOf(
+            "com.intellij.database",
+            "com.intellij.java",
+            "com.intellij.spring"
+    ))
+}
+
+tasks {
+    // Set the JVM compatibility versions
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
+}
