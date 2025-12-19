@@ -50,7 +50,6 @@
     <extensions defaultExtensionNs="cn.cpoet.tool">
         <compatibleProvider implementation="cn.cpoet.tool.impl223.Impl223CompatibleProvider" />
         <compatibleProvider implementation="cn.cpoet.tool.impl243.Impl243CompatibleProvider" />
-        <compatibleProvider implementation="cn.cpoet.tool.impl251.Impl251CompatibleProvider" />
     </extensions>
 
     <actions>
