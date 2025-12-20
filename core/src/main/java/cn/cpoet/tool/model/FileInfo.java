@@ -14,9 +14,6 @@ public class FileInfo {
     /** 源文件 */
     private VirtualFile sourceFile;
 
-    /** 输出文件所在路径 */
-    private VirtualFile outputRoot;
-
     /** 输出文件 */
     private VirtualFile outputFile;
 
@@ -37,14 +34,6 @@ public class FileInfo {
 
     public void setSourceFile(VirtualFile sourceFile) {
         this.sourceFile = sourceFile;
-    }
-
-    public VirtualFile getOutputRoot() {
-        return outputRoot;
-    }
-
-    public void setOutputRoot(VirtualFile outputRoot) {
-        this.outputRoot = outputRoot;
     }
 
     public VirtualFile getOutputFile() {
