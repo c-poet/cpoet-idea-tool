@@ -3,6 +3,10 @@ package cn.cpoet.tool.util;
 import cn.cpoet.tool.constant.FileBuildTypeExtEnum;
 import cn.cpoet.tool.constant.OSExplorerConst;
 import cn.cpoet.tool.exception.ToolException;
+import cn.cpoet.tool.model.FileInfo;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.roots.CompilerModuleExtension;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +14,7 @@ import org.jdesktop.swingx.util.OS;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -90,17 +95,26 @@ public abstract class FileUtil {
     /**
      * 获取文件的输出路径
      *
+     * @param sourcePath 源文件路径
+     */
+    public static String getOutputFilePath(String sourcePath) {
+        String ext = FileBuildTypeExtEnum.findBuildExt(FilenameUtils.getExtension(sourcePath));
+        if (StringUtils.isNotEmpty(ext)) {
+            sourcePath = FilenameUtils.removeExtension(sourcePath) + FilenameUtils.EXTENSION_SEPARATOR + ext;
+        }
+        return sourcePath;
+    }
+
+    /**
+     * 获取文件的输出路径
+     *
      * @param root 输出根目录
-     * @param file 源文件路径
+     * @param file 源文件
      * @return 输出路径
      */
     public static String getOutputFilePath(VirtualFile root, VirtualFile file) {
         String filePath = getRelativePath(root.getPath(), file.getPath());
-        String ext = FileBuildTypeExtEnum.findBuildExt(FilenameUtils.getExtension(filePath));
-        if (StringUtils.isNotEmpty(ext)) {
-            filePath = FilenameUtils.removeExtension(filePath) + FilenameUtils.EXTENSION_SEPARATOR + ext;
-        }
-        return filePath;
+        return getOutputFilePath(filePath);
     }
 
     /**
@@ -208,5 +222,58 @@ public abstract class FileUtil {
         } catch (Exception e) {
             throw new ToolException("Write file fail", e);
         }
+    }
+
+
+    /**
+     * 获取输出文件
+     *
+     * @param module     模块
+     * @param sourceFile 源文件
+     * @return 输出文件
+     */
+    public static VirtualFile getOutputFile(Module module, VirtualFile sourceFile) {
+        return getFileInfo(module, sourceFile).getOutputFile();
+    }
+
+    /**
+     * 获取输出文件
+     *
+     * @param module   模块
+     * @param filePath 输出文件路径
+     * @return 输出文件
+     */
+    public static VirtualFile getOutputFile(Module module, String filePath) {
+        CompilerModuleExtension compilerModuleExtension = Objects.requireNonNull(CompilerModuleExtension.getInstance(module));
+        VirtualFile outputFile = FileUtil.getFileInRoot(compilerModuleExtension.getCompilerOutputPath(), filePath);
+        if (outputFile == null) {
+            outputFile = FileUtil.getFileInRoot(compilerModuleExtension.getCompilerOutputPathForTests(), filePath);
+        }
+        return outputFile;
+    }
+
+    /**
+     * 获取文件信息
+     *
+     * @param module     模块
+     * @param sourceFile 源文件
+     * @return 文件信息
+     */
+    public static FileInfo getFileInfo(Module module, VirtualFile sourceFile) {
+        FileInfo fileInfo = new FileInfo();
+        fileInfo.setSourceFile(sourceFile);
+        ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
+        VirtualFile[] sourceRoots = moduleRootManager.getSourceRoots();
+        for (VirtualFile sourceRoot : sourceRoots) {
+            if (FileUtil.isFileChild(sourceRoot, sourceFile)) {
+                String outputFilePath = FileUtil.getOutputFilePath(sourceRoot, sourceFile);
+                VirtualFile outputFile = getOutputFile(module, outputFilePath);
+                fileInfo.setSourceRoot(sourceRoot);
+                fileInfo.setOutputFile(outputFile);
+                fileInfo.setOutputRelativePath(outputFilePath);
+                break;
+            }
+        }
+        return fileInfo;
     }
 }

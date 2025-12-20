@@ -2,6 +2,7 @@ package cn.cpoet.tool.actions.patch;
 
 import com.intellij.openapi.vfs.VirtualFile;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -67,6 +68,13 @@ public class GenPatchItemBean {
     }
 
     public List<VirtualFile> getAttachOutputFiles() {
+        return attachOutputFiles;
+    }
+
+    public List<VirtualFile> getAndInitAttachOutputFiles() {
+        if (attachOutputFiles == null) {
+            attachOutputFiles = new LinkedList<>();
+        }
         return attachOutputFiles;
     }
 

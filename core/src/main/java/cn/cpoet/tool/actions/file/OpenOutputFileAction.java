@@ -1,6 +1,6 @@
 package cn.cpoet.tool.actions.file;
 
-import cn.cpoet.tool.util.ModuleUtil;
+import cn.cpoet.tool.util.FileUtil;
 import com.intellij.ide.actions.OpenFileAction;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.module.Module;
@@ -33,7 +33,7 @@ public class OpenOutputFileAction extends AnAction {
     }
 
     protected void doUpdate(Module module, VirtualFile sourceFile) {
-        VirtualFile outputFile = ModuleUtil.getOutputFile(module, sourceFile);
+        VirtualFile outputFile = FileUtil.getOutputFile(module, sourceFile);
         if (outputFile != null) {
             this.sourceFile = sourceFile;
             this.outputFile = outputFile;

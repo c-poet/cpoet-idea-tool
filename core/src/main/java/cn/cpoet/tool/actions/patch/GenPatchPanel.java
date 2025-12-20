@@ -1,5 +1,6 @@
 package cn.cpoet.tool.actions.patch;
 
+import cn.cpoet.tool.constant.FileBuildTypeExtEnum;
 import cn.cpoet.tool.exception.ToolException;
 import cn.cpoet.tool.model.FileInfo;
 import cn.cpoet.tool.model.TreeNodeInfo;
@@ -11,6 +12,9 @@ import com.intellij.openapi.progress.util.PotemkinProgress;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.spring.SpringLibraryUtil;
 import com.intellij.spring.SpringManager;
 import com.intellij.spring.contexts.model.SpringModel;
@@ -382,7 +386,7 @@ public class GenPatchPanel extends JBSplitter {
             GenPatchModuleBean patchModule = entry.getKey();
             Module module = patchModule.getModule();
             for (TreeNodeInfo nodeInfo : entry.getValue()) {
-                FileInfo fileInfo = ModuleUtil.getFileInfo(module, (VirtualFile) nodeInfo.getObject());
+                FileInfo fileInfo = FileUtil.getFileInfo(module, (VirtualFile) nodeInfo.getObject());
                 // 非编译文件可使用源文件
                 // 编译文件从输出文件读取
                 if (fileInfo.getOutputFile() != null) {
@@ -422,9 +426,7 @@ public class GenPatchPanel extends JBSplitter {
                         }
                         patch.getDesc().append("\t\t").append(patchItem.getFullPath());
                     }
-                    handleGenPatchItemAttachOutputFiles(patchItem);
-                    // MapStruct文件兼容
-                    
+                    addPatchItemAttachOutputFiles(patchItem);
                     patch.getItems().add(patchItem);
                 }
             }
@@ -432,13 +434,38 @@ public class GenPatchPanel extends JBSplitter {
         return patch;
     }
 
-    protected void handleGenPatchItemAttachOutputFiles(GenPatchItemBean patchItem) {
+    protected void addPatchItemAttachOutputFiles(GenPatchItemBean patchItem) {
+        addInner2AttachOutFiles(patchItem);
+        addMapStruct2AttachOutputFiles(patchItem);
+    }
+
+    private void addInner2AttachOutFiles(GenPatchItemBean patchItem) {
         VirtualFile[] innerOutputFiles = ClassUtil.getInnerOutputFiles(patchItem.getOutputFile());
         for (VirtualFile innerOutputFile : innerOutputFiles) {
-            if (patchItem.getAttachOutputFiles() == null) {
-                patchItem.setAttachOutputFiles(new LinkedList<>());
+            patchItem.getAndInitAttachOutputFiles().add(innerOutputFile);
+        }
+    }
+
+    private void addMapStruct2AttachOutputFiles(GenPatchItemBean patchItem) {
+        VirtualFile sourceFile = patchItem.getSourceFile();
+        FileBuildTypeExtEnum fileExt = MapStructUtil.getSupportBuildTypeExt(sourceFile);
+        if (fileExt == null) {
+            return;
+        }
+        PsiJavaFile psiFile = Objects.requireNonNull((PsiJavaFile) PsiManager.getInstance(project).findFile(sourceFile));
+        PsiClass[] classes = psiFile.getClasses();
+        for (PsiClass psiClass : classes) {
+            String mapperImplName = MapStructUtil.getMapperImplName(psiClass);
+            if (StringUtils.isBlank(mapperImplName)) {
+                continue;
             }
-            patchItem.getAttachOutputFiles().add(innerOutputFile);
+            String classPath = ClassUtil.convertNameToPath(mapperImplName) + FilenameUtils.EXTENSION_SEPARATOR + fileExt.getSourceExt();
+            String outputFilePath = FileUtil.getOutputFilePath(classPath);
+            VirtualFile outputFile = FileUtil.getOutputFile(patchItem.getPatchModule().getModule(), outputFilePath);
+            // 非强制性输出，未引入Processor时不会自动生成实现
+            if (outputFile != null) {
+                patchItem.getAndInitAttachOutputFiles().add(outputFile);
+            }
         }
     }
 

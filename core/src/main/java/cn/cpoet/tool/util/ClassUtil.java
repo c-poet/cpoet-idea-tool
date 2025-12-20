@@ -16,6 +16,16 @@ public abstract class ClassUtil {
     }
 
     /**
+     * 获取类路径
+     *
+     * @param className 类全限定名称
+     * @return 类路径
+     */
+    public static String convertNameToPath(String className) {
+        return className.replaceAll("\\.", FileUtil.UNIX_SEPARATOR);
+    }
+
+    /**
      * 获取所有内部类输出的文件列表
      *
      * @param classFile 类输出文件
