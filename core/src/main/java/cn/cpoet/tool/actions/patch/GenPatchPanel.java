@@ -6,7 +6,6 @@ import cn.cpoet.tool.model.FileInfo;
 import cn.cpoet.tool.model.TreeNodeInfo;
 import cn.cpoet.tool.setting.Setting;
 import cn.cpoet.tool.util.*;
-import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.util.PotemkinProgress;
@@ -399,21 +398,24 @@ public class GenPatchPanel extends JBSplitter {
     }
 
     private void addPatchItem(GenPatchBean patch, GenPatchModuleBean patchModule, VirtualFile file) {
-        FileInfo fileInfo = FileUtil.getFileInfo(patchModule.getModule(), file);
-        // 非编译文件可使用源文件
-        // 编译文件从输出文件读取
-        if (fileInfo.getOutputFile() != null) {
-            VirtualFile sourceFile = fileInfo.getSourceFile();
-            VirtualFile outputFile = fileInfo.getOutputFile();
-            GenPatchItemBean patchItem = new GenPatchItemBean();
-            patchItem.setPatchModule(patchModule);
-            patchItem.setSourceFile(sourceFile);
-            patchItem.setOutputFile(outputFile);
-            String relativePath = FileUtil.removeStartSeparator(fileInfo.getOutputRelativePath());
-            patchItem.setFullPath(FilenameUtils.getFullPathNoEndSeparator(relativePath));
-            addPatchReplacePathInfo(patch, patchItem);
-            addInner2AttachOutFiles(patchItem);
-            patch.getItems().add(patchItem);
+        addPatchItem(patch, patchModule, file, true);
+    }
+
+    private void addPatchItem(GenPatchBean patch, GenPatchModuleBean patchModule, VirtualFile sourceFile, boolean isMapStruct) {
+        FileInfo fileInfo = FileUtil.getFileInfo(patchModule.getModule(), sourceFile);
+        if (fileInfo.getOutputFile() == null) {
+            return;
+        }
+        GenPatchItemBean patchItem = new GenPatchItemBean();
+        patchItem.setPatchModule(patchModule);
+        patchItem.setSourceFile(fileInfo.getSourceFile());
+        patchItem.setOutputFile(fileInfo.getOutputFile());
+        String relativePath = FileUtil.removeStartSeparator(fileInfo.getOutputRelativePath());
+        patchItem.setFullPath(FilenameUtils.getFullPathNoEndSeparator(relativePath));
+        addPatchReplacePathInfo(patch, patchItem);
+        addInner2AttachOutFiles(patchItem);
+        patch.getItems().add(patchItem);
+        if (isMapStruct) {
             addMapStructMapperImpl(patch, patchItem);
         }
     }
@@ -451,23 +453,36 @@ public class GenPatchPanel extends JBSplitter {
         if (fileExt == null) {
             return;
         }
-        ReadAction.run(() -> {
-            PsiJavaFile psiFile = Objects.requireNonNull((PsiJavaFile) PsiManager.getInstance(project).findFile(sourceFile));
-            PsiClass[] classes = psiFile.getClasses();
-            for (PsiClass psiClass : classes) {
-                String mapperImplName = MapStructUtil.getMapperImplName(psiClass);
-                if (StringUtils.isBlank(mapperImplName)) {
-                    continue;
-                }
-                String filePath = ClassUtil.convertNameToPath(mapperImplName) + FilenameUtils.EXTENSION_SEPARATOR + fileExt.getSourceExt();
-                VirtualFile mapperImplFile = FileUtil.getSourceFile(patchItem.getPatchModule().getModule(), filePath);
-                // Idea未开启Annotation或者未引入MapStruct Processor坐标的情况下，不自动生成源码
-                if (mapperImplFile == null) {
-                    continue;
-                }
-                addPatchItem(patch, patchItem.getPatchModule(), mapperImplFile);
+        PsiJavaFile psiFile = Objects.requireNonNull((PsiJavaFile) PsiManager.getInstance(project).findFile(sourceFile));
+        PsiClass[] classes = psiFile.getClasses();
+        for (PsiClass psiClass : classes) {
+            String mapperImplName = MapStructUtil.getMapperImplName(psiClass);
+            if (StringUtils.isBlank(mapperImplName)) {
+                continue;
             }
-        });
+            String filePath = ClassUtil.convertNameToPath(mapperImplName) + FilenameUtils.EXTENSION_SEPARATOR + fileExt.getSourceExt();
+            VirtualFile mapperImplFile = FileUtil.getSourceFile(patchItem.getPatchModule().getModule(), filePath);
+            if (mapperImplFile == null) {
+                addMapStructMapperImpl(patch, patchItem.getPatchModule(), filePath);
+                continue;
+            }
+            addPatchItem(patch, patchItem.getPatchModule(), mapperImplFile, false);
+        }
+    }
+
+    private void addMapStructMapperImpl(GenPatchBean patch, GenPatchModuleBean patchModule, String filePath) {
+        String outputFilePath = FileUtil.getOutputFilePath(filePath);
+        VirtualFile outputFile = FileUtil.getOutputFile(patchModule.getModule(), outputFilePath);
+        if (outputFile != null) {
+            GenPatchItemBean patchItem = new GenPatchItemBean();
+            patchItem.setPatchModule(patchModule);
+            patchItem.setSourceFile(null);
+            patchItem.setOutputFile(outputFile);
+            patchItem.setFullPath(FilenameUtils.getFullPathNoEndSeparator(FileUtil.removeStartSeparator(filePath)));
+            addPatchReplacePathInfo(patch, patchItem);
+            addInner2AttachOutFiles(patchItem);
+            patch.getItems().add(patchItem);
+        }
     }
 
     protected Map<GenPatchModuleBean, List<TreeNodeInfo>> getModuleFilesMapping(GenPatchBean patch, TreeNodeInfo[] treeNodeInfos) {
@@ -485,11 +500,9 @@ public class GenPatchPanel extends JBSplitter {
         GenPatchModuleBean patchModule = new GenPatchModuleBean();
         patchModule.setModule(module);
         if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
-            ReadAction.run(() -> {
-                SpringManager springManager = SpringManager.getInstance(project);
-                Set<SpringModel> springModels = springManager.getAllModelsWithoutDependencies(module);
-                patchModule.setApp(CollectionUtils.isNotEmpty(springModels));
-            });
+            SpringManager springManager = SpringManager.getInstance(project);
+            Set<SpringModel> springModels = springManager.getAllModelsWithoutDependencies(module);
+            patchModule.setApp(CollectionUtils.isNotEmpty(springModels));
         } else {
             patchModule.setApp(false);
         }
@@ -501,14 +514,12 @@ public class GenPatchPanel extends JBSplitter {
         GenPatchBean patch = new GenPatchBean();
         patch.setOutputFolder(state.outputFolder);
         patch.setFileName(getFileName());
-        return ReadAction.compute(() -> {
-            if (SpringLibraryUtil.hasSpringLibrary(project)) {
-                patch.setProjectType(GenPatchProjectTypeEnum.SPRING);
-            } else {
-                patch.setProjectType(GenPatchProjectTypeEnum.NONE);
-            }
-            return patch;
-        });
+        if (SpringLibraryUtil.hasSpringLibrary(project)) {
+            patch.setProjectType(GenPatchProjectTypeEnum.SPRING);
+        } else {
+            patch.setProjectType(GenPatchProjectTypeEnum.NONE);
+        }
+        return patch;
     }
 
     protected String getPatchDesc() {

@@ -1,6 +1,5 @@
 package cn.cpoet.tool.actions.java;
 
-import cn.cpoet.tool.constant.FileBuildTypeExtEnum;
 import cn.cpoet.tool.util.FileUtil;
 import cn.cpoet.tool.util.SpringUtil;
 import com.intellij.ide.actions.DumbAwareCopyPathProvider;
@@ -61,7 +60,7 @@ public class CopyTargetPathProvider extends DumbAwareCopyPathProvider {
         if (relativePath == null) {
             return null;
         }
-        String ext = FileBuildTypeExtEnum.findBuildExt(FilenameUtils.getExtension(relativePath));
+        String ext = FileUtil.getBuildExt(relativePath);
         if (ext != null) {
             relativePath = FilenameUtils.removeExtension(relativePath) + FilenameUtils.EXTENSION_SEPARATOR + ext;
         }

@@ -31,13 +31,18 @@ public enum FileBuildTypeExtEnum {
         this.buildExt = buildExt;
     }
 
-    public static String findBuildExt(String sourceExt) {
+    public static FileBuildTypeExtEnum ofSourceExt(String sourceExt) {
         for (FileBuildTypeExtEnum item : values()) {
             if (item.sourceExt.equals(sourceExt)) {
-                return item.buildExt;
+                return item;
             }
         }
         return null;
+    }
+
+    public static String findBuildExt(String sourceExt) {
+        FileBuildTypeExtEnum fileBuildTypeExtEnum = ofSourceExt(sourceExt);
+        return fileBuildTypeExtEnum == null ? null : fileBuildTypeExtEnum.buildExt;
     }
 
     public static String findSourceExt(String buildExt) {

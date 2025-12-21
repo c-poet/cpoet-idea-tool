@@ -8,6 +8,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.util.OS;
@@ -31,6 +32,27 @@ public abstract class FileUtil {
     public final static String WINDOWS_SEPARATOR = "\\";
 
     private FileUtil() {
+    }
+
+    /**
+     * 获取文件编译后缀名
+     *
+     * @param filePath 文件路径
+     * @return 后缀名
+     */
+    public static String getBuildExt(String filePath) {
+        FileBuildTypeExtEnum buildExtEnum = getBuildExtEnum(filePath);
+        return buildExtEnum == null ? null : buildExtEnum.getBuildExt();
+    }
+
+    /**
+     * 获取文件编译后缀
+     *
+     * @param filePath 文件路径
+     * @return 后缀
+     */
+    public static FileBuildTypeExtEnum getBuildExtEnum(String filePath) {
+        return FileBuildTypeExtEnum.ofSourceExt(FilenameUtils.getExtension(filePath));
     }
 
     /**
@@ -98,7 +120,7 @@ public abstract class FileUtil {
      * @param sourcePath 源文件路径
      */
     public static String getOutputFilePath(String sourcePath) {
-        String ext = FileBuildTypeExtEnum.findBuildExt(FilenameUtils.getExtension(sourcePath));
+        String ext = getBuildExt(sourcePath);
         if (StringUtils.isNotEmpty(ext)) {
             sourcePath = FilenameUtils.removeExtension(sourcePath) + FilenameUtils.EXTENSION_SEPARATOR + ext;
         }
@@ -129,17 +151,35 @@ public abstract class FileUtil {
     }
 
     /**
-     * 获取文件实例
+     * 获取虚拟文件实例
      *
-     * @param root     文件根目录
-     * @param filePath 文件路径
-     * @return 文件实例
+     * @param filePath  文件路径
+     * @param isRefresh 是否刷新
+     * @return 虚拟文件
      */
-    public static VirtualFile getFileInRoot(VirtualFile root, String filePath) {
-        if (root != null) {
-            return root.findFileByRelativePath(filePath);
+    public static VirtualFile getVirtualFile(String filePath, boolean isRefresh) {
+        if (isRefresh) {
+            return VirtualFileManager.getInstance().refreshAndFindFileByUrl(filePath);
         }
-        return null;
+        return VirtualFileManager.getInstance().findFileByUrl(filePath);
+    }
+
+    /**
+     * 获取虚拟文件实例
+     *
+     * @param parent    父级
+     * @param filePath  文件路径
+     * @param isRefresh 是否刷新
+     * @return 虚拟文件
+     */
+    public static VirtualFile getVirtualFile(VirtualFile parent, String filePath, boolean isRefresh) {
+        if (parent == null) {
+            return null;
+        }
+        if (!filePath.startsWith(UNIX_SEPARATOR)) {
+            filePath = UNIX_SEPARATOR + filePath;
+        }
+        return getVirtualFile(parent.getUrl() + filePath, isRefresh);
     }
 
     /**
@@ -245,9 +285,9 @@ public abstract class FileUtil {
      */
     public static VirtualFile getOutputFile(Module module, String filePath) {
         CompilerModuleExtension compilerModuleExtension = Objects.requireNonNull(CompilerModuleExtension.getInstance(module));
-        VirtualFile outputFile = getFileInRoot(compilerModuleExtension.getCompilerOutputPath(), filePath);
+        VirtualFile outputFile = getVirtualFile(compilerModuleExtension.getCompilerOutputPath(), filePath, true);
         if (outputFile == null) {
-            outputFile = getFileInRoot(compilerModuleExtension.getCompilerOutputPathForTests(), filePath);
+            outputFile = getVirtualFile(compilerModuleExtension.getCompilerOutputPathForTests(), filePath, true);
         }
         return outputFile;
     }
@@ -262,9 +302,27 @@ public abstract class FileUtil {
     public static VirtualFile getSourceFile(Module module, String filePath) {
         VirtualFile[] sourceRoots = ModuleRootManager.getInstance(module).getSourceRoots();
         for (VirtualFile sourceRoot : sourceRoots) {
-            VirtualFile file = getFileInRoot(sourceRoot, filePath);
+            VirtualFile file = getVirtualFile(sourceRoot, filePath, true);
             if (file != null) {
                 return file;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取某个文件所在模块源文件根目录
+     *
+     * @param module    模块
+     * @param childFile 文件
+     * @return 源文件根目录
+     */
+    public static VirtualFile getSourceRootFile(Module module, VirtualFile childFile) {
+        ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
+        VirtualFile[] sourceRoots = moduleRootManager.getSourceRoots();
+        for (VirtualFile sourceRoot : sourceRoots) {
+            if (isFileChild(sourceRoot, childFile)) {
+                return sourceRoot;
             }
         }
         return null;
@@ -280,17 +338,18 @@ public abstract class FileUtil {
     public static FileInfo getFileInfo(Module module, VirtualFile sourceFile) {
         FileInfo fileInfo = new FileInfo();
         fileInfo.setSourceFile(sourceFile);
-        ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
-        VirtualFile[] sourceRoots = moduleRootManager.getSourceRoots();
-        for (VirtualFile sourceRoot : sourceRoots) {
-            if (isFileChild(sourceRoot, sourceFile)) {
-                String outputFilePath = getOutputFilePath(sourceRoot, sourceFile);
-                VirtualFile outputFile = getOutputFile(module, outputFilePath);
-                fileInfo.setSourceRoot(sourceRoot);
+        VirtualFile sourceRootFile = getSourceRootFile(module, sourceFile);
+        if (sourceRootFile != null) {
+            String outputFilePath = getOutputFilePath(sourceRootFile, sourceFile);
+            VirtualFile outputFile = getOutputFile(module, outputFilePath);
+            fileInfo.setSourceRoot(sourceRootFile);
+            if (outputFile != null) {
                 fileInfo.setOutputFile(outputFile);
-                fileInfo.setOutputRelativePath(outputFilePath);
-                break;
+            } else if (getBuildExtEnum(sourceFile.getName()) == null) {
+                // 非编译类型可以直接使用源文件作为输出
+                fileInfo.setOutputFile(sourceFile);
             }
+            fileInfo.setOutputRelativePath(outputFilePath);
         }
         return fileInfo;
     }
