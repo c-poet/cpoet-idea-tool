@@ -6,6 +6,8 @@ import cn.cpoet.tool.component.TitledPanel;
 import cn.cpoet.tool.model.TreeNodeInfo;
 import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.icons.AllIcons;
+import com.intellij.ide.projectView.ProjectViewNode;
+import com.intellij.ide.projectView.impl.nodes.ClassTreeNode;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
@@ -47,7 +49,11 @@ public class GenPatchTreePanel extends JBSplitter {
         if (selectedItems != null && selectedItems.length > 0) {
             selectedFiles = new HashSet<>(selectedItems.length);
             for (Object selectedItem : selectedItems) {
-                if (selectedItem instanceof PsiElement) {
+                if (selectedItem instanceof ProjectViewNode) {
+                    selectedFiles.add(((ProjectViewNode<?>) selectedItem).getVirtualFile());
+                } else if (selectedItem instanceof VirtualFile) {
+                    selectedFiles.add((VirtualFile) selectedItem);
+                } else if (selectedItem instanceof PsiElement) {
                     selectedFiles.add(PsiUtil.getVirtualFile((PsiElement) selectedItem));
                 }
             }

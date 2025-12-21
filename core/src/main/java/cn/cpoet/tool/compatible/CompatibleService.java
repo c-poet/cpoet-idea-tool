@@ -41,7 +41,6 @@ public final class CompatibleService {
 
     public CompatibleService() {
         List<CompatibleInfo> compatibleInfos = loadCompatibleInfos();
-        System.out.println(compatibleInfos);
         BuildNumber curBuildNumber = ApplicationInfo.getInstance().getBuild();
         compatibleInfos
                 .stream()

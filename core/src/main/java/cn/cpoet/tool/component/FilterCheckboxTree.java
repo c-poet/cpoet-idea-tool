@@ -114,7 +114,7 @@ public class FilterCheckboxTree extends CheckboxTree {
     }
 
     protected void handleOriginNodeExpand(FilterCheckedTreeNode node) {
-        if (node.isLeaf()) {
+        if (node == null || node.isLeaf()) {
             return;
         }
         TreePath originTreePath = node.getOriginNode().getAndInitTreePath();
