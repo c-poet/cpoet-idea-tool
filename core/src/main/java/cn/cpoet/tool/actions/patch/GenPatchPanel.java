@@ -6,6 +6,7 @@ import cn.cpoet.tool.model.FileInfo;
 import cn.cpoet.tool.model.TreeNodeInfo;
 import cn.cpoet.tool.setting.Setting;
 import cn.cpoet.tool.util.*;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.util.PotemkinProgress;
@@ -450,21 +451,23 @@ public class GenPatchPanel extends JBSplitter {
         if (fileExt == null) {
             return;
         }
-        PsiJavaFile psiFile = Objects.requireNonNull((PsiJavaFile) PsiManager.getInstance(project).findFile(sourceFile));
-        PsiClass[] classes = psiFile.getClasses();
-        for (PsiClass psiClass : classes) {
-            String mapperImplName = MapStructUtil.getMapperImplName(psiClass);
-            if (StringUtils.isBlank(mapperImplName)) {
-                continue;
+        ReadAction.run(() -> {
+            PsiJavaFile psiFile = Objects.requireNonNull((PsiJavaFile) PsiManager.getInstance(project).findFile(sourceFile));
+            PsiClass[] classes = psiFile.getClasses();
+            for (PsiClass psiClass : classes) {
+                String mapperImplName = MapStructUtil.getMapperImplName(psiClass);
+                if (StringUtils.isBlank(mapperImplName)) {
+                    continue;
+                }
+                String filePath = ClassUtil.convertNameToPath(mapperImplName) + FilenameUtils.EXTENSION_SEPARATOR + fileExt.getSourceExt();
+                VirtualFile mapperImplFile = FileUtil.getSourceFile(patchItem.getPatchModule().getModule(), filePath);
+                // Idea未开启Annotation或者未引入MapStruct Processor坐标的情况下，不自动生成源码
+                if (mapperImplFile == null) {
+                    continue;
+                }
+                addPatchItem(patch, patchItem.getPatchModule(), mapperImplFile);
             }
-            String filePath = ClassUtil.convertNameToPath(mapperImplName) + FilenameUtils.EXTENSION_SEPARATOR + fileExt.getSourceExt();
-            VirtualFile mapperImplFile = FileUtil.getSourceFile(patchItem.getPatchModule().getModule(), filePath);
-            // Idea未开启Annotation或者未引入MapStruct Processor坐标的情况下，不自动生成源码
-            if (mapperImplFile == null) {
-                continue;
-            }
-            addPatchItem(patch, patchItem.getPatchModule(), mapperImplFile);
-        }
+        });
     }
 
     protected Map<GenPatchModuleBean, List<TreeNodeInfo>> getModuleFilesMapping(GenPatchBean patch, TreeNodeInfo[] treeNodeInfos) {
@@ -482,9 +485,11 @@ public class GenPatchPanel extends JBSplitter {
         GenPatchModuleBean patchModule = new GenPatchModuleBean();
         patchModule.setModule(module);
         if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
-            SpringManager springManager = SpringManager.getInstance(project);
-            Set<SpringModel> springModels = springManager.getAllModelsWithoutDependencies(module);
-            patchModule.setApp(CollectionUtils.isNotEmpty(springModels));
+            ReadAction.run(() -> {
+                SpringManager springManager = SpringManager.getInstance(project);
+                Set<SpringModel> springModels = springManager.getAllModelsWithoutDependencies(module);
+                patchModule.setApp(CollectionUtils.isNotEmpty(springModels));
+            });
         } else {
             patchModule.setApp(false);
         }
@@ -496,12 +501,14 @@ public class GenPatchPanel extends JBSplitter {
         GenPatchBean patch = new GenPatchBean();
         patch.setOutputFolder(state.outputFolder);
         patch.setFileName(getFileName());
-        if (SpringLibraryUtil.hasSpringLibrary(project)) {
-            patch.setProjectType(GenPatchProjectTypeEnum.SPRING);
-        } else {
-            patch.setProjectType(GenPatchProjectTypeEnum.NONE);
-        }
-        return patch;
+        return ReadAction.compute(() -> {
+            if (SpringLibraryUtil.hasSpringLibrary(project)) {
+                patch.setProjectType(GenPatchProjectTypeEnum.SPRING);
+            } else {
+                patch.setProjectType(GenPatchProjectTypeEnum.NONE);
+            }
+            return patch;
+        });
     }
 
     protected String getPatchDesc() {
