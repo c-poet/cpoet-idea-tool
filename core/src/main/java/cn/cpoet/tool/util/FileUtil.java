@@ -245,11 +245,29 @@ public abstract class FileUtil {
      */
     public static VirtualFile getOutputFile(Module module, String filePath) {
         CompilerModuleExtension compilerModuleExtension = Objects.requireNonNull(CompilerModuleExtension.getInstance(module));
-        VirtualFile outputFile = FileUtil.getFileInRoot(compilerModuleExtension.getCompilerOutputPath(), filePath);
+        VirtualFile outputFile = getFileInRoot(compilerModuleExtension.getCompilerOutputPath(), filePath);
         if (outputFile == null) {
-            outputFile = FileUtil.getFileInRoot(compilerModuleExtension.getCompilerOutputPathForTests(), filePath);
+            outputFile = getFileInRoot(compilerModuleExtension.getCompilerOutputPathForTests(), filePath);
         }
         return outputFile;
+    }
+
+    /**
+     * 获取源文件
+     *
+     * @param module   模块
+     * @param filePath 源文件路径
+     * @return 源文件
+     */
+    public static VirtualFile getSourceFile(Module module, String filePath) {
+        VirtualFile[] sourceRoots = ModuleRootManager.getInstance(module).getSourceRoots();
+        for (VirtualFile sourceRoot : sourceRoots) {
+            VirtualFile file = getFileInRoot(sourceRoot, filePath);
+            if (file != null) {
+                return file;
+            }
+        }
+        return null;
     }
 
     /**
@@ -265,8 +283,8 @@ public abstract class FileUtil {
         ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
         VirtualFile[] sourceRoots = moduleRootManager.getSourceRoots();
         for (VirtualFile sourceRoot : sourceRoots) {
-            if (FileUtil.isFileChild(sourceRoot, sourceFile)) {
-                String outputFilePath = FileUtil.getOutputFilePath(sourceRoot, sourceFile);
+            if (isFileChild(sourceRoot, sourceFile)) {
+                String outputFilePath = getOutputFilePath(sourceRoot, sourceFile);
                 VirtualFile outputFile = getOutputFile(module, outputFilePath);
                 fileInfo.setSourceRoot(sourceRoot);
                 fileInfo.setOutputFile(outputFile);

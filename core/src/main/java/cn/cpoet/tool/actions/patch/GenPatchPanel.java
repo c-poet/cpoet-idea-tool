@@ -373,7 +373,6 @@ public class GenPatchPanel extends JBSplitter {
     }
 
     protected GenPatchBean doGetGenPatch(TreeNodeInfo[] treeNodeInfos) {
-        GenPatchSetting.State state = setting.getState();
         GenPatchBean patch = createGenPatch();
         patch.getDesc().append("File Name: ").append(patch.getFileName());
         String patchDesc = getPatchDesc();
@@ -383,60 +382,63 @@ public class GenPatchPanel extends JBSplitter {
         patch.getDesc().append("\n\n").append("File Paths:");
         Map<GenPatchModuleBean, List<TreeNodeInfo>> moduleFilesMapping = getModuleFilesMapping(patch, treeNodeInfos);
         for (Map.Entry<GenPatchModuleBean, List<TreeNodeInfo>> entry : moduleFilesMapping.entrySet()) {
-            GenPatchModuleBean patchModule = entry.getKey();
-            Module module = patchModule.getModule();
             for (TreeNodeInfo nodeInfo : entry.getValue()) {
-                FileInfo fileInfo = FileUtil.getFileInfo(module, (VirtualFile) nodeInfo.getObject());
-                // 非编译文件可使用源文件
-                // 编译文件从输出文件读取
-                if (fileInfo.getOutputFile() != null) {
-                    VirtualFile sourceFile = fileInfo.getSourceFile();
-                    VirtualFile outputFile = fileInfo.getOutputFile();
-                    GenPatchItemBean patchItem = new GenPatchItemBean();
-                    patchItem.setPatchModule(patchModule);
-                    patchItem.setSourceFile(sourceFile);
-                    patchItem.setOutputFile(outputFile);
-                    String relativePath = FileUtil.removeStartSeparator(fileInfo.getOutputRelativePath());
-                    patchItem.setFullPath(FilenameUtils.getFullPathNoEndSeparator(relativePath));
-                    patch.getDesc().append("\n");
-                    if (state.includePath) {
-                        if (!patchModule.isApp()) {
-                            patch.getDesc().append(module.getName()).append(FileUtil.UNIX_SEPARATOR);
-                        }
-                        patch.getDesc().append(patchItem.getFullPath())
-                                .append(FileUtil.UNIX_SEPARATOR).append(outputFile.getName());
-                        if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
-                            if (patchModule.isApp()) {
-                                patch.getDesc().append("\t\t").append(SpringUtil.SB_CLASSES_PATH);
-                            } else {
-                                patch.getDesc().append("\t\t").append(SpringUtil.SB_LIB_PATH);
-                            }
-                        }
-                    } else {
-                        patch.getDesc().append(outputFile.getName());
-                        if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
-                            if (patchModule.isApp()) {
-                                patch.getDesc().append("\t\t").append(SpringUtil.SB_CLASSES_PATH);
-                            } else {
-                                patch.getDesc().append("\t\t").append(SpringUtil.SB_LIB_PATH)
-                                        .append(FileUtil.UNIX_SEPARATOR).append(module.getName());
-                            }
-                        } else {
-                            patch.getDesc().append("\t\t").append(module.getName());
-                        }
-                        patch.getDesc().append("\t\t").append(patchItem.getFullPath());
-                    }
-                    addPatchItemAttachOutputFiles(patchItem);
-                    patch.getItems().add(patchItem);
-                }
+                addPatchItem(patch, entry.getKey(), (VirtualFile) nodeInfo.getObject());
             }
         }
         return patch;
     }
 
-    protected void addPatchItemAttachOutputFiles(GenPatchItemBean patchItem) {
-        addInner2AttachOutFiles(patchItem);
-        addMapStruct2AttachOutputFiles(patchItem);
+    private void addPatchItem(GenPatchBean patch, GenPatchModuleBean patchModule, VirtualFile file) {
+        FileInfo fileInfo = FileUtil.getFileInfo(patchModule.getModule(), file);
+        // 非编译文件可使用源文件
+        // 编译文件从输出文件读取
+        if (fileInfo.getOutputFile() != null) {
+            VirtualFile sourceFile = fileInfo.getSourceFile();
+            VirtualFile outputFile = fileInfo.getOutputFile();
+            GenPatchItemBean patchItem = new GenPatchItemBean();
+            patchItem.setPatchModule(patchModule);
+            patchItem.setSourceFile(sourceFile);
+            patchItem.setOutputFile(outputFile);
+            String relativePath = FileUtil.removeStartSeparator(fileInfo.getOutputRelativePath());
+            patchItem.setFullPath(FilenameUtils.getFullPathNoEndSeparator(relativePath));
+            addPatchReplacePathInfo(patch, patchItem);
+            addInner2AttachOutFiles(patchItem);
+            patch.getItems().add(patchItem);
+            addMapStructMapperImpl(patch, patchItem);
+        }
+    }
+
+    private void addPatchReplacePathInfo(GenPatchBean patch, GenPatchItemBean patchItem) {
+        patch.getDesc().append("\n");
+        GenPatchModuleBean patchModule = patchItem.getPatchModule();
+        if (setting.getState().includePath) {
+            if (!patchItem.getPatchModule().isApp()) {
+                patch.getDesc().append(patchModule.getModule().getName()).append(FileUtil.UNIX_SEPARATOR);
+            }
+            patch.getDesc().append(patchItem.getFullPath())
+                    .append(FileUtil.UNIX_SEPARATOR).append(patchItem.getOutputFile().getName());
+            if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
+                if (patchModule.isApp()) {
+                    patch.getDesc().append("\t\t").append(SpringUtil.SB_CLASSES_PATH);
+                } else {
+                    patch.getDesc().append("\t\t").append(SpringUtil.SB_LIB_PATH);
+                }
+            }
+        } else {
+            patch.getDesc().append(patchItem.getOutputFile().getName());
+            if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
+                if (patchModule.isApp()) {
+                    patch.getDesc().append("\t\t").append(SpringUtil.SB_CLASSES_PATH);
+                } else {
+                    patch.getDesc().append("\t\t").append(SpringUtil.SB_LIB_PATH)
+                            .append(FileUtil.UNIX_SEPARATOR).append(patchModule.getModule().getName());
+                }
+            } else {
+                patch.getDesc().append("\t\t").append(patchModule.getModule().getName());
+            }
+            patch.getDesc().append("\t\t").append(patchItem.getFullPath());
+        }
     }
 
     private void addInner2AttachOutFiles(GenPatchItemBean patchItem) {
@@ -446,7 +448,7 @@ public class GenPatchPanel extends JBSplitter {
         }
     }
 
-    private void addMapStruct2AttachOutputFiles(GenPatchItemBean patchItem) {
+    private void addMapStructMapperImpl(GenPatchBean patch, GenPatchItemBean patchItem) {
         VirtualFile sourceFile = patchItem.getSourceFile();
         FileBuildTypeExtEnum fileExt = MapStructUtil.getSupportBuildTypeExt(sourceFile);
         if (fileExt == null) {
@@ -459,13 +461,13 @@ public class GenPatchPanel extends JBSplitter {
             if (StringUtils.isBlank(mapperImplName)) {
                 continue;
             }
-            String classPath = ClassUtil.convertNameToPath(mapperImplName) + FilenameUtils.EXTENSION_SEPARATOR + fileExt.getSourceExt();
-            String outputFilePath = FileUtil.getOutputFilePath(classPath);
-            VirtualFile outputFile = FileUtil.getOutputFile(patchItem.getPatchModule().getModule(), outputFilePath);
-            // 非强制性输出，未引入Processor时不会自动生成实现
-            if (outputFile != null) {
-                patchItem.getAndInitAttachOutputFiles().add(outputFile);
+            String filePath = ClassUtil.convertNameToPath(mapperImplName) + FilenameUtils.EXTENSION_SEPARATOR + fileExt.getSourceExt();
+            VirtualFile mapperImplFile = FileUtil.getSourceFile(patchItem.getPatchModule().getModule(), filePath);
+            // Idea未开启Annotation或者未引入MapStruct Processor坐标的情况下，不自动生成源码
+            if (mapperImplFile == null) {
+                continue;
             }
+            addPatchItem(patch, patchItem.getPatchModule(), mapperImplFile);
         }
     }
 
