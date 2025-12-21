@@ -8,7 +8,7 @@ import cn.cpoet.tool.setting.Setting;
 import cn.cpoet.tool.util.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.util.PotemkinProgress;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -42,6 +42,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -112,41 +115,54 @@ public class GenPatchPanel extends JBSplitter {
     }
 
     public void generate() {
-        ProgressIndicator indicator = startGenerateIndicator();
+        dialogWrapper.setOKActionEnabled(false);
+        new Task.Backgroundable(project, "Generating", false) {
+
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                generate(indicator);
+            }
+
+            @Override
+            public void onFinished() {
+                dialogWrapper.setOKActionEnabled(true);
+            }
+        }.queue();
+    }
+
+    private void generate(ProgressIndicator indicator) {
         GenPatchSetting.State state = setting.getState();
         indicator.setFraction(0.1);
         indicator.setText("Generate Patch info");
-        getGenPatch()
-                .then(patch -> {
-                    indicator.setText("Generate patch");
-                    indicator.setFraction(0.5);
-                    return doGenerate(patch);
-                })
-                .onSuccess((path) -> {
-                    indicator.setText("Generate after");
-                    indicator.setFraction(0.8);
-                    if (state.openOutputFolder) {
-                        String patchPath = FilenameUtils.separatorsToSystem(path);
-                        if (state.compress) {
-                            FileUtil.selectFile(patchPath);
-                        } else {
-                            FileUtil.openFolder(patchPath);
-                        }
+        try {
+            getGenPatch().then(patch -> {
+                indicator.setText("Generate patch");
+                indicator.setFraction(0.5);
+                return doGenerate(patch);
+            }).onSuccess((path) -> {
+                indicator.setText("Generate after");
+                indicator.setFraction(0.8);
+                if (state.openOutputFolder) {
+                    String patchPath = FilenameUtils.separatorsToSystem(path);
+                    if (state.compress) {
+                        FileUtil.selectFile(patchPath);
+                    } else {
+                        FileUtil.openFolder(patchPath);
                     }
-                    state.lastFileNamePrefix = confPanel.getFileNamePrefix();
-                    state.lastFileName = confPanel.getFileName();
-                    indicator.setFraction(0.98);
-                })
-                .onError(e -> {
-                    LOGGER.error("生成补丁失败: {}", e.getMessage(), e);
-                    NotificationUtil.initBalloonError(e.getMessage()).notify(project);
-                })
-                .onProcessed(path -> {
-                    stopGenerateIndicator(indicator);
-                    if (StringUtils.isNotEmpty(path)) {
-                        doOpenReplacePatch(path);
-                    }
-                });
+                }
+                state.lastFileNamePrefix = confPanel.getFileNamePrefix();
+                state.lastFileName = confPanel.getFileName();
+                indicator.setFraction(0.98);
+            }).onError(e -> {
+                LOGGER.error("Failed to generate the patch: {}", e.getMessage(), e);
+                NotificationUtil.initBalloonError(e.getMessage()).notify(project);
+            }).onProcessed(path -> {
+                if (StringUtils.isNotEmpty(path)) {
+                    doOpenReplacePatch(path);
+                }
+            }).blockingGet(3, TimeUnit.MINUTES);
+        } catch (ExecutionException | TimeoutException ignored) {
+        }
     }
 
     protected void doOpenReplacePatch(String path) {
@@ -163,18 +179,6 @@ public class GenPatchPanel extends JBSplitter {
         } catch (Exception e) {
             NotificationUtil.initBalloonError("Failed to launch PatchAssistant2J, please check if the path configuration is correct").notify(project);
         }
-    }
-
-    protected ProgressIndicator startGenerateIndicator() {
-        PotemkinProgress progress = new PotemkinProgress("Generating", project, dialogWrapper.getContentPanel(), null);
-        dialogWrapper.getWindow().setEnabled(false);
-        progress.start();
-        return progress;
-    }
-
-    protected void stopGenerateIndicator(ProgressIndicator progress) {
-        progress.stop();
-        dialogWrapper.getWindow().setEnabled(true);
     }
 
     public void preview() {
