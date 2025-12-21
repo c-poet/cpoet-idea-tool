@@ -37,7 +37,6 @@
 
     <extensionPoints>
         <extensionPoint name="toolWinContentFactory" interface="cn.cpoet.tool.toolwin.ToolWinContentFactory" dynamic="true"/>
-        <extensionPoint name="compatibleProvider" interface="cn.cpoet.tool.compatible.CompatibleProvider" dynamic="true" />
     </extensionPoints>
 
     <!-- Extension points defined by the plugin.
@@ -45,11 +44,6 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable parentId="tools" instance="cn.cpoet.tool.setting.Configurable" id="cn.cpoet.tool.setting.Configurable" displayName="CPoet Tool"/>
         <notificationGroup id="CPOET_TOOL_NOTIFICATION_BALLOON" displayType="BALLOON"/>
-    </extensions>
-
-    <extensions defaultExtensionNs="cn.cpoet.tool">
-        <compatibleProvider implementation="cn.cpoet.tool.impl223.Impl223CompatibleProvider" />
-        <compatibleProvider implementation="cn.cpoet.tool.impl243.Impl243CompatibleProvider" />
     </extensions>
 
     <actions>

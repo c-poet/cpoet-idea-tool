@@ -1,0 +1,9 @@
+<compatible>
+    <since>223</since>
+    <package>cn.cpoet.tool.impl223</package>
+    <items>
+        <item source="cn.cpoet.tool.actions.patch.GenPatchConfPanelCPB"/>
+        <item source="cn.cpoet.tool.setting.SettingComponentCPB"/>
+        <item source="cn.cpoet.tool.actions.database.CopySingleColJoinActionCPB"/>
+    </items>
+</compatible>

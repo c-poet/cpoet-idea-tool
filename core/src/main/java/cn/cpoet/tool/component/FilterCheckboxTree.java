@@ -143,11 +143,11 @@ public class FilterCheckboxTree extends CheckboxTree {
 
     @Override
     protected void installSpeedSearch() {
-        new TreeSpeedSearch(this, treePath -> {
+        new TreeSpeedSearch(this, true, treePath -> {
             CheckedTreeNode treeNode = (CheckedTreeNode) treePath.getLastPathComponent();
             return treeNode.getUserObject() instanceof TreeNodeInfo
                     ? ((TreeNodeInfo) treeNode.getUserObject()).getName()
                     : treeNode.toString();
-        }, true);
+        });
     }
 }

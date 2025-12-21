@@ -24,15 +24,15 @@ public class GenPatchTree extends FilterCheckboxTree {
     public GenPatchTree(Project project, Set<VirtualFile> selectedFiles) {
         super(new GenPatchPackageTreeCellRenderer(), TreeUtil.buildWithProject(project, (obj) -> {
             FilterCheckedTreeNode checkedTreeNode = new FilterCheckedTreeNode();
-            VirtualFile file = null;
-            if (obj instanceof Project) {
-                file = ((Project) obj).getProjectFile();
-            } else if (obj instanceof Module) {
-                file = ((Module) obj).getModuleFile();
-            } else if (obj instanceof VirtualFile) {
-                file = (VirtualFile) obj;
-            }
-            checkedTreeNode.setChecked(file != null && selectedFiles.contains(file));
+            // VirtualFile file = null;
+            // if (obj instanceof Project) {
+            //     file = ((Project) obj).getProjectFile();
+            // } else if (obj instanceof Module) {
+            //     file = ((Module) obj).getModuleFile();
+            // } else if (obj instanceof VirtualFile) {
+            //     file = (VirtualFile) obj;
+            // }
+            checkedTreeNode.setChecked(obj instanceof VirtualFile && selectedFiles.contains((VirtualFile) obj));
             return checkedTreeNode;
         }));
     }

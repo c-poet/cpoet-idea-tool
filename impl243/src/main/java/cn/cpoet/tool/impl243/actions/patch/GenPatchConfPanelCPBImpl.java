@@ -6,10 +6,12 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * @author CPoet
  */
+@ApiStatus.AvailableSince(value = "243")
 public class GenPatchConfPanelCPBImpl implements GenPatchConfPanelCPB {
 
     @Override

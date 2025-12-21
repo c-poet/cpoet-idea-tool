@@ -1,23 +1,31 @@
 package cn.cpoet.tool.compatible;
 
 import cn.cpoet.tool.exception.ToolException;
+import cn.cpoet.tool.util.ClassUtil;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.Service;
-import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.util.BuildNumber;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import java.net.URL;
+import java.util.*;
 
 /**
  * @author CPoet
  */
 @Service(Service.Level.APP)
 public final class CompatibleService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompatibleService.class);
 
     private final Map<Class<?>, Class<?>> compatibleTable = new HashMap<>();
     private final Map<Class<?>, Object> compatibleSingleTable = new HashMap<>();
@@ -32,17 +40,94 @@ public final class CompatibleService {
     }
 
     public CompatibleService() {
-        ExtensionPointName<CompatibleProvider> epName = ExtensionPointName.create("cn.cpoet.tool.compatibleProvider");
-        // 获取版本兼容提供
+        List<CompatibleInfo> compatibleInfos = loadCompatibleInfos();
+        System.out.println(compatibleInfos);
         BuildNumber curBuildNumber = ApplicationInfo.getInstance().getBuild();
-        epName.getExtensionsIfPointIsRegistered(ApplicationManager.getApplication())
+        compatibleInfos
                 .stream()
-                .filter(provider -> curBuildNumber.compareTo(provider.getBuildNumber()) >= 0)
-                .sorted(Comparator.comparing(CompatibleProvider::getBuildNumber).reversed())
-                .forEach(provider -> {
-                    CompatibleRegister register = new CompatibleRegister(this, provider, compatibleTable);
-                    provider.register(register);
-                });
+                .filter(info -> curBuildNumber.compareTo(info.getBuildNumber()) >= 0)
+                .sorted(Comparator.comparing(CompatibleInfo::getBuildNumber).reversed())
+                .forEach(this::registerCompatible);
+    }
+
+    private void registerCompatible(CompatibleInfo compatibleInfo) {
+        Compatible compatible = compatibleInfo.getCompatible();
+        List<CompatibleItem> compatibleItems = compatible.getItems();
+        if (CollectionUtils.isEmpty(compatibleItems)) {
+            return;
+        }
+        for (CompatibleItem compatibleItem : compatibleItems) {
+            String sourceClassName = compatibleItem.getSource().trim();
+            Class<?> sourceClass = ClassUtil.tryGetClass(sourceClassName);
+            if (sourceClass == null) {
+                LOGGER.warn("Compatible source class " + sourceClassName + " does not exist");
+            } else if (StringUtils.isNotBlank(compatibleItem.getImpl())) {
+                registerCompatible(sourceClass, compatibleItem.getImpl().trim());
+            } else {
+                registerCompatible(compatible, sourceClass);
+            }
+        }
+    }
+
+    private String getImplName(Class<?> clazz) {
+        String name = clazz.getSimpleName();
+        return name + "Impl";
+    }
+
+    private void registerCompatible(Compatible compatible, @NotNull Class<?> clazz) {
+        Class<?> compatibleClass = getCompatibleClass(clazz);
+        if (compatibleClass != null) {
+            return;
+        }
+        String basePackageName = StringUtils.isBlank(compatible.getPackageName()) ? "" : compatible.getPackageName();
+        String implName = getImplName(clazz);
+        Class<?> targetClass = ClassUtil.tryGetClass(basePackageName + "." + implName);
+        if (targetClass == null) {
+            List<String> packagePaths = Arrays.asList(clazz.getPackageName().split("\\."));
+            int i = packagePaths.size();
+            while (targetClass == null && --i >= 0) {
+                targetClass = ClassUtil.tryGetClass(basePackageName + "." + String.join(".", packagePaths.subList(i, packagePaths.size())) + "." + implName);
+            }
+        }
+        if (targetClass == null) {
+            throw new ToolException("Class " + clazz.getName() + " compatibility implementation class loading failed");
+        }
+        compatibleTable.put(clazz, targetClass);
+    }
+
+    private void registerCompatible(@NotNull Class<?> clazz, @NotNull String implName) {
+        Class<?> compatibleClass = getCompatibleClass(clazz);
+        if (compatibleClass != null) {
+            return;
+        }
+        try {
+            Class<?> targetClass = ClassUtils.getClass(implName);
+            compatibleTable.put(clazz, targetClass);
+        } catch (Exception e) {
+            throw new ToolException("Compatible implementation of class " + clazz.getName() + " cannot be loaded class " + implName);
+        }
+    }
+
+    private List<CompatibleInfo> loadCompatibleInfos() {
+        List<CompatibleInfo> compatibleInfos = null;
+        try {
+            Enumeration<URL> compatibilityXmlEnum = CompatibleService.class.getClassLoader().getResources("compatibility.xml");
+            while (compatibilityXmlEnum.hasMoreElements()) {
+                URL url = compatibilityXmlEnum.nextElement();
+                Unmarshaller unmarshaller = JAXBContext.newInstance(Compatible.class).createUnmarshaller();
+                Compatible compatible = (Compatible) unmarshaller.unmarshal(url);
+                CompatibleInfo compatibleInfo = new CompatibleInfo();
+                compatibleInfo.setCompatible(compatible);
+                compatibleInfo.setBuildNumber(BuildNumber.fromString(compatible.getSince()));
+                if (compatibleInfos == null) {
+                    compatibleInfos = new LinkedList<>();
+                }
+                compatibleInfos.add(compatibleInfo);
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Load compatible failed: {}", e.getMessage(), e);
+        }
+        return compatibleInfos == null ? Collections.emptyList() : compatibleInfos;
     }
 
     public @NotNull <T> T instance(@NotNull Class<T> clazz) {
