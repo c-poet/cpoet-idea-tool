@@ -32,6 +32,7 @@
         <group id="CPoetTool_Patch_JAVA">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
             <add-to-group group-id="CPoetTool_ProjectViewPopupMenu" />
+            <add-to-group group-id="CPoetTool_Vcs.RepositoryChangesBrowserMenu" />
             <separator />
             <reference ref="CPoetTool_GenPatchPackageAction" />
         </group>

@@ -59,13 +59,15 @@
         <action id="CPoetTool_Sha1Action" class="cn.cpoet.tool.actions.common.Sha1Action" text="Calculate SHA1" description="Calculate SHA1 Value"/>
 
         <group id="CPoetTool_EditorPopupMenu" text="CPoet Tool" popup="true">
-            <separator/>
             <add-to-group group-id="EditorPopupMenu" relative-to-action="EditorToggleColumnMode" anchor="after"/>
         </group>
 
         <group id="CPoetTool_ProjectViewPopupMenu" text="CPoet Tool" popup="true">
-            <separator/>
             <add-to-group group-id="ProjectViewPopupMenu" relative-to-action="AnalyzeMenu" anchor="after"/>
+        </group>
+
+        <group id="CPoetTool_Vcs.RepositoryChangesBrowserMenu" text="CPoet Tool" popup="true">
+            <add-to-group group-id="Vcs.RepositoryChangesBrowserMenu" relative-to-action="Vcs.EditSource" anchor="after" />
         </group>
 
         <group id="CPoetTool_EditorPopupMenu_Text">
