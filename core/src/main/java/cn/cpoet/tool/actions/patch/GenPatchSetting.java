@@ -52,6 +52,11 @@ public final class GenPatchSetting implements PersistentStateComponent<GenPatchS
         public boolean includePath;
 
         /**
+         * 添加修改标识符
+         */
+        public boolean addModLabel;
+
+        /**
          * 是否压缩
          */
         public boolean compress = true;

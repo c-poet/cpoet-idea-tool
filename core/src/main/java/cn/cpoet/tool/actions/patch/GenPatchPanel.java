@@ -202,8 +202,13 @@ public class GenPatchPanel extends JBSplitter {
         for (GenPatchItemBean item : items) {
             String filePath = path;
             if (state.includePath) {
-                if (!item.getPatchModule().isApp()) {
-                    filePath = FilenameUtils.concat(filePath, item.getPatchModule().getModule().getName());
+                if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
+                    if (item.getPatchModule().isApp()) {
+                        filePath = FilenameUtils.concat(filePath, SpringUtil.SB_CLASSES_PATH);
+                    } else {
+                        filePath = FilenameUtils.concat(filePath, SpringUtil.SB_LIB_PATH);
+                        filePath = FilenameUtils.concat(filePath, item.getPatchModule().getModule().getName());
+                    }
                 }
                 filePath = FilenameUtils.concat(filePath, item.getFullPath());
             }
@@ -254,8 +259,8 @@ public class GenPatchPanel extends JBSplitter {
              ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
             List<GenPatchItemBean> items = patch.getItems();
             for (GenPatchItemBean item : items) {
-                doWritePatchItemToZip(zipOutputStream, item);
-                doWriteAttachOutputFilesToZip(zipOutputStream, item);
+                doWritePatchItemToZip(patch, zipOutputStream, item);
+                doWriteAttachOutputFilesToZip(patch, zipOutputStream, item);
             }
             doWriteReadmeFileToZip(zipOutputStream, patch);
         } catch (IOException e) {
@@ -283,10 +288,10 @@ public class GenPatchPanel extends JBSplitter {
         return file.getPath();
     }
 
-    protected void doWriteAttachOutputFilesToZip(ZipOutputStream zipOutputStream, GenPatchItemBean item) {
+    protected void doWriteAttachOutputFilesToZip(GenPatchBean patch, ZipOutputStream zipOutputStream, GenPatchItemBean item) {
         if (CollectionUtils.isNotEmpty(item.getAttachOutputFiles())) {
             for (VirtualFile attach : item.getAttachOutputFiles()) {
-                doWritePatchItemToZip(zipOutputStream, item, attach);
+                doWritePatchItemToZip(patch, zipOutputStream, item, attach);
             }
         }
     }
@@ -297,26 +302,29 @@ public class GenPatchPanel extends JBSplitter {
         ZipUtil.writeEntry(zipOutputStream, zipEntry, patch.getDesc().toString().getBytes());
     }
 
-    protected void doWritePatchItemToZip(ZipOutputStream zipOutputStream, GenPatchItemBean patchItem) {
+    protected void doWritePatchItemToZip(GenPatchBean patch, ZipOutputStream zipOutputStream, GenPatchItemBean patchItem) {
         VirtualFile outputFile = patchItem.getOutputFile();
-        doWritePatchItemToZip(zipOutputStream, patchItem, outputFile);
+        doWritePatchItemToZip(patch, zipOutputStream, patchItem, outputFile);
     }
 
-    protected void doWritePatchItemToZip(ZipOutputStream zipOutputStream, GenPatchItemBean patchItem, VirtualFile file) {
-        ZipEntry zipEntry = createZipEntry(patchItem, file);
+    protected void doWritePatchItemToZip(GenPatchBean patch, ZipOutputStream zipOutputStream, GenPatchItemBean patchItem, VirtualFile file) {
+        ZipEntry zipEntry = createZipEntry(patch, patchItem, file);
         ZipUtil.writeEntry(zipOutputStream, zipEntry, file);
     }
 
-    protected ZipEntry createZipEntry(GenPatchItemBean patchItem, VirtualFile file) {
+    protected ZipEntry createZipEntry(GenPatchBean patch, GenPatchItemBean patchItem, VirtualFile file) {
         GenPatchSetting.State state = setting.getState();
-        GenPatchModuleBean patchModule = patchItem.getPatchModule();
         ZipEntry zipEntry;
         if (state.includePath) {
             String filePath;
-            if (patchModule.isApp()) {
-                filePath = String.join(FileUtil.UNIX_SEPARATOR, patchItem.getFullPath(), file.getName());
+            if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
+                if (patchItem.getPatchModule().isApp()) {
+                    filePath = String.join(FileUtil.UNIX_SEPARATOR, SpringUtil.SB_CLASSES_PATH, patchItem.getFullPath(), file.getName());
+                } else {
+                    filePath = String.join(FileUtil.UNIX_SEPARATOR, SpringUtil.SB_LIB_PATH, patchItem.getFullPath(), file.getName());
+                }
             } else {
-                filePath = String.join(FileUtil.UNIX_SEPARATOR, patchModule.getModule().getName(), patchItem.getFullPath(), file.getName());
+                filePath = String.join(FileUtil.UNIX_SEPARATOR, patchItem.getFullPath(), file.getName());
             }
             zipEntry = new ZipEntry(filePath);
         } else {
@@ -412,33 +420,21 @@ public class GenPatchPanel extends JBSplitter {
     private void addPatchReplacePathInfo(GenPatchBean patch, GenPatchItemBean patchItem) {
         patch.getDesc().append("\n");
         GenPatchModuleBean patchModule = patchItem.getPatchModule();
-        if (setting.getState().includePath) {
-            if (!patchItem.getPatchModule().isApp()) {
-                patch.getDesc().append(patchModule.getModule().getName()).append(FileUtil.UNIX_SEPARATOR);
-            }
-            patch.getDesc().append(patchItem.getFullPath())
-                    .append(FileUtil.UNIX_SEPARATOR).append(patchItem.getOutputFile().getName());
-            if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
-                if (patchModule.isApp()) {
-                    patch.getDesc().append("\t\t").append(SpringUtil.SB_CLASSES_PATH);
-                } else {
-                    patch.getDesc().append("\t\t").append(SpringUtil.SB_LIB_PATH);
-                }
-            }
-        } else {
-            patch.getDesc().append(patchItem.getOutputFile().getName());
-            if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
-                if (patchModule.isApp()) {
-                    patch.getDesc().append("\t\t").append(SpringUtil.SB_CLASSES_PATH);
-                } else {
-                    patch.getDesc().append("\t\t").append(SpringUtil.SB_LIB_PATH)
-                            .append(FileUtil.UNIX_SEPARATOR).append(patchModule.getModule().getName());
-                }
-            } else {
-                patch.getDesc().append("\t\t").append(patchModule.getModule().getName());
-            }
-            patch.getDesc().append("\t\t").append(patchItem.getFullPath());
+        if (setting.getState().addModLabel) {
+            patch.getDesc().append(GenPatchConst.CHANGE_TYPE_MOD);
         }
+        if (!setting.getState().includePath) {
+            patch.getDesc().append(patchItem.getOutputFile().getName()).append("\t");
+        }
+        if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
+            if (patchModule.isApp()) {
+                patch.getDesc().append(SpringUtil.SB_CLASSES_PATH).append(FileUtil.UNIX_SEPARATOR);
+            } else {
+                patch.getDesc().append(SpringUtil.SB_LIB_PATH).append(FileUtil.UNIX_SEPARATOR)
+                        .append(patchModule.getModule().getName()).append(FileUtil.UNIX_SEPARATOR);
+            }
+        }
+        patch.getDesc().append(patchItem.getFullPath()).append(FileUtil.UNIX_SEPARATOR).append(patchItem.getOutputFile().getName());
     }
 
     private void addInner2AttachOutFiles(GenPatchItemBean patchItem) {

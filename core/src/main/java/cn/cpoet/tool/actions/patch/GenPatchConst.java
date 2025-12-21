@@ -19,4 +19,7 @@ public interface GenPatchConst {
 
     /** 补丁说明文件描述 */
     String PATCH_DESC_FILE_COMMENT = "The Patch description file";
+
+    /** PatchAssistant Modify Change Type */
+    String CHANGE_TYPE_MOD = "!";
 }
