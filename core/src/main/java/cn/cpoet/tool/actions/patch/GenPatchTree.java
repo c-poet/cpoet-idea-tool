@@ -37,8 +37,11 @@ public class GenPatchTree extends FilterCheckboxTree {
             if (nodeInfo.getObject() instanceof Module) {
                 textRenderer.setIcon(AllIcons.Nodes.Module);
             } else if (nodeInfo.getObject() instanceof VirtualFile) {
-                if (((VirtualFile) nodeInfo.getObject()).isDirectory()) {
+                VirtualFile file = (VirtualFile) nodeInfo.getObject();
+                if (file.isDirectory()) {
                     textRenderer.setIcon(AllIcons.Nodes.Folder);
+                } else {
+                    textRenderer.setIcon(file.getFileType().getIcon());
                 }
             }
             textRenderer.append(nodeInfo.getName());
