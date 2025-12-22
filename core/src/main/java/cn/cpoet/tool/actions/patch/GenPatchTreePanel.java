@@ -7,7 +7,6 @@ import cn.cpoet.tool.model.TreeNodeInfo;
 import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.projectView.ProjectViewNode;
-import com.intellij.ide.projectView.impl.nodes.ClassTreeNode;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
@@ -140,23 +139,24 @@ public class GenPatchTreePanel extends JBSplitter {
     }
 
     private ActionGroup getTreeToolbarActionGroup() {
+        AnAction[] toolbarActions = new AnAction[]{
+                new AnAction("Expand All", null, AllIcons.Actions.Expandall) {
+                    @Override
+                    public void actionPerformed(AnActionEvent anActionEvent) {
+                        TreeUtil.expandAll(tree);
+                    }
+                },
+                new AnAction("Collapse All", null, AllIcons.Actions.Collapseall) {
+                    @Override
+                    public void actionPerformed(AnActionEvent anActionEvent) {
+                        TreeUtil.collapseAll(tree, -1);
+                    }
+                }
+        };
         return new ActionGroup() {
             @Override
             public AnAction[] getChildren(@Nullable AnActionEvent anActionEvent) {
-                return new AnAction[]{
-                        new AnAction("Expand All", null, AllIcons.Actions.Expandall) {
-                            @Override
-                            public void actionPerformed(AnActionEvent anActionEvent) {
-                                TreeUtil.expandAll(tree);
-                            }
-                        },
-                        new AnAction("Collapse All", null, AllIcons.Actions.Collapseall) {
-                            @Override
-                            public void actionPerformed(AnActionEvent anActionEvent) {
-                                TreeUtil.collapseAll(tree, -1);
-                            }
-                        }
-                };
+                return toolbarActions;
             }
         };
     }

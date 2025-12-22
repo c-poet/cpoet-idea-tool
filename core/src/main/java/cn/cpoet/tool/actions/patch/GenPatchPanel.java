@@ -6,11 +6,13 @@ import cn.cpoet.tool.model.FileInfo;
 import cn.cpoet.tool.model.TreeNodeInfo;
 import cn.cpoet.tool.setting.Setting;
 import cn.cpoet.tool.util.*;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiJavaFile;
@@ -28,8 +30,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.concurrency.Promise;
-import org.jetbrains.concurrency.Promises;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,9 +42,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -115,53 +113,47 @@ public class GenPatchPanel extends JBSplitter {
     }
 
     public void generate() {
-        dialogWrapper.setOKActionEnabled(false);
-        new Task.Backgroundable(project, "Generating", false) {
-
-            @Override
-            public void run(@NotNull ProgressIndicator indicator) {
-                generate(indicator);
-            }
-
-            @Override
-            public void onFinished() {
-                dialogWrapper.setOKActionEnabled(true);
-            }
-        }.queue();
+        UITaskUtil.runProgress(project, "Generating", this::generate);
     }
 
     private void generate(ProgressIndicator indicator) {
-        GenPatchSetting.State state = setting.getState();
-        indicator.setFraction(0.1);
-        indicator.setText("Generate Patch info");
         try {
-            getGenPatch().then(patch -> {
-                indicator.setText("Generate patch");
-                indicator.setFraction(0.5);
-                return doGenerate(patch);
-            }).onSuccess((path) -> {
-                indicator.setText("Generate after");
-                indicator.setFraction(0.8);
-                if (state.openOutputFolder) {
-                    String patchPath = FilenameUtils.separatorsToSystem(path);
-                    if (state.compress) {
-                        FileUtil.selectFile(patchPath);
-                    } else {
-                        FileUtil.openFolder(patchPath);
-                    }
+            GenPatchSetting.State state = setting.getState();
+            indicator.setFraction(0.1);
+            if (!buildGenPatchBefore(indicator)) {
+                return;
+            }
+            indicator.setFraction(0.3);
+            indicator.setText("Wait index refresh");
+            DumbService.getInstance(project).waitForSmartMode();
+            indicator.setFraction(0.35);
+            GenPatchBean patch = getGenPatch(indicator);
+            if (patch.isFailed()) {
+                return;
+            }
+            indicator.setFraction(0.5);
+            String path = doGenerate(patch, indicator);
+            if (StringUtils.isBlank(path)) {
+                return;
+            }
+            indicator.setText("Generate after");
+            indicator.setFraction(0.8);
+            if (state.openOutputFolder) {
+                String patchPath = FilenameUtils.separatorsToSystem(path);
+                if (state.compress) {
+                    FileUtil.selectFile(patchPath);
+                } else {
+                    FileUtil.openFolder(patchPath);
                 }
-                state.lastFileNamePrefix = confPanel.getFileNamePrefix();
-                state.lastFileName = confPanel.getFileName();
-                indicator.setFraction(0.98);
-            }).onError(e -> {
-                LOGGER.error("Failed to generate the patch: {}", e.getMessage(), e);
-                NotificationUtil.initBalloonError(e.getMessage()).notify(project);
-            }).onProcessed(path -> {
-                if (StringUtils.isNotEmpty(path)) {
-                    doOpenReplacePatch(path);
-                }
-            }).blockingGet(3, TimeUnit.MINUTES);
-        } catch (ExecutionException | TimeoutException ignored) {
+            }
+            state.lastFileNamePrefix = confPanel.getFileNamePrefix();
+            state.lastFileName = confPanel.getFileName();
+            indicator.setFraction(0.98);
+            doOpenReplacePatch(path);
+            indicator.setFraction(1);
+        } catch (Exception e) {
+            LOGGER.error("Failed to generate the patch: {}", e.getMessage(), e);
+            NotificationUtil.initBalloonError(e.getMessage()).notify(project);
         }
     }
 
@@ -196,7 +188,8 @@ public class GenPatchPanel extends JBSplitter {
     }
 
 
-    protected String doGenerate(GenPatchBean patch) {
+    protected String doGenerate(GenPatchBean patch, ProgressIndicator indicator) {
+        indicator.setText("Generate patch");
         GenPatchSetting.State state = setting.getState();
         if (state.compress) {
             return doGenerateCompress(patch);
@@ -339,28 +332,52 @@ public class GenPatchPanel extends JBSplitter {
     }
 
 
-    protected Promise<GenPatchBean> getGenPatch() {
+    protected GenPatchBean getGenPatch(ProgressIndicator indicator) {
+        TreeNodeInfo[] checkedNodes = getTreeCheckedNodes();
+        indicator.setText("Generate patch info");
+        return doGetGenPatch(checkedNodes);
+    }
+
+    protected boolean buildGenPatchBefore(ProgressIndicator indicator) {
         GenPatchBuildTypeEnum buildTypeEnum = GenPatchBuildTypeEnum.ofCode(setting.getState().buildType);
+        indicator.setText("Patch build type: " + buildTypeEnum.getCode());
+        boolean isOk;
         switch (buildTypeEnum) {
             case PROJECT:
-                return getGenPatchProject();
+                indicator.setText("Wait project build");
+                isOk = buildProjectGenPatch();
+                break;
             case MODULE:
-                return getGenPatchModule();
+                indicator.setText("Wait module build");
+                isOk = buildModuleGenPatch();
+                break;
             case FILE:
-                return getGenPatchFile();
+                indicator.setText("Wait file build");
+                isOk = buildFileGenPatch();
+                break;
             default:
-                TreeNodeInfo[] checkedNodes = getTreeCheckedNodes();
-                return Promises.runAsync(() -> doGetGenPatch(checkedNodes));
+                isOk = true;
         }
+        if (!isOk) {
+            UITaskUtil.runUI(() -> Messages.showWarningDialog(project, "Compilation failed, please manually compile", "Tip"));
+        }
+        return isOk;
     }
 
-    protected Promise<GenPatchBean> getGenPatchProject() {
-        return ProjectTaskManager.getInstance(project)
-                .rebuildAllModules()
-                .then(result -> doGetGenPatch(getTreeCheckedNodes()));
+    protected boolean buildProjectGenPatch() {
+        try {
+            return Optional.ofNullable(ProjectTaskManager.getInstance(project)
+                            .rebuildAllModules()
+                            .blockingGet(6, TimeUnit.MINUTES))
+                    .map(result -> !result.hasErrors())
+                    .orElse(true);
+        } catch (Exception e) {
+            LOGGER.info("Build project failed", e);
+        }
+        return false;
     }
 
-    protected Promise<GenPatchBean> getGenPatchModule() {
+    protected boolean buildModuleGenPatch() {
         TreeNodeInfo[] checkedNodes = getTreeCheckedNodes();
         Set<Module> modules = new HashSet<>();
         for (TreeNodeInfo checkedNode : checkedNodes) {
@@ -369,19 +386,33 @@ public class GenPatchPanel extends JBSplitter {
                 modules.add(module);
             }
         }
-        return ProjectTaskManager.getInstance(project)
-                .rebuild(modules.toArray(Module[]::new))
-                .then(ret -> doGetGenPatch(checkedNodes));
+        try {
+            return Optional.ofNullable(ProjectTaskManager.getInstance(project)
+                            .rebuild(modules.toArray(Module[]::new))
+                            .blockingGet(6, TimeUnit.MINUTES))
+                    .map(result -> !result.hasErrors())
+                    .orElse(true);
+        } catch (Exception e) {
+            LOGGER.info("Build module failed", e);
+        }
+        return false;
     }
 
-    protected Promise<GenPatchBean> getGenPatchFile() {
+    protected boolean buildFileGenPatch() {
         TreeNodeInfo[] checkedNodes = getTreeCheckedNodes();
         VirtualFile[] files = Arrays.stream(checkedNodes)
                 .map(nodeInfo -> (VirtualFile) nodeInfo.getObject())
                 .toArray(VirtualFile[]::new);
-        return ProjectTaskManager.getInstance(project)
-                .compile(files)
-                .then(result -> doGetGenPatch(checkedNodes));
+        try {
+            return Optional.ofNullable(ProjectTaskManager.getInstance(project)
+                            .compile(files)
+                            .blockingGet(6, TimeUnit.MINUTES))
+                    .map(result -> !result.hasErrors())
+                    .orElse(true);
+        } catch (Exception e) {
+            LOGGER.info("Build file failed", e);
+        }
+        return false;
     }
 
     protected GenPatchBean doGetGenPatch(TreeNodeInfo[] treeNodeInfos) {
@@ -396,6 +427,9 @@ public class GenPatchPanel extends JBSplitter {
         for (Map.Entry<GenPatchModuleBean, List<TreeNodeInfo>> entry : moduleFilesMapping.entrySet()) {
             for (TreeNodeInfo nodeInfo : entry.getValue()) {
                 addPatchItem(patch, entry.getKey(), (VirtualFile) nodeInfo.getObject());
+                if (patch.isFailed()) {
+                    return patch;
+                }
             }
         }
         return patch;
@@ -408,6 +442,9 @@ public class GenPatchPanel extends JBSplitter {
     private void addPatchItem(GenPatchBean patch, GenPatchModuleBean patchModule, VirtualFile sourceFile, boolean isMapStruct) {
         FileInfo fileInfo = FileUtil.getFileInfo(patchModule.getModule(), sourceFile);
         if (fileInfo.getOutputFile() == null) {
+            patch.setFailed(true);
+            UITaskUtil.runUI(() -> Messages.showWarningDialog(project, "If the output file of file " + sourceFile.getName() +
+                    " is not found, you can try to compile it first", "Warn"));
             return;
         }
         GenPatchItemBean patchItem = new GenPatchItemBean();
@@ -457,10 +494,12 @@ public class GenPatchPanel extends JBSplitter {
         if (fileExt == null) {
             return;
         }
-        PsiJavaFile psiFile = Objects.requireNonNull((PsiJavaFile) PsiManager.getInstance(project).findFile(sourceFile));
-        PsiClass[] classes = psiFile.getClasses();
+        PsiClass[] classes = ReadAction.compute(() -> {
+            PsiJavaFile psiFile = Objects.requireNonNull((PsiJavaFile) PsiManager.getInstance(project).findFile(sourceFile));
+            return psiFile.getClasses();
+        });
         for (PsiClass psiClass : classes) {
-            String mapperImplName = MapStructUtil.getMapperImplName(psiClass);
+            String mapperImplName = ReadAction.compute(() -> MapStructUtil.getMapperImplName(psiClass));
             if (StringUtils.isBlank(mapperImplName)) {
                 continue;
             }
@@ -504,9 +543,11 @@ public class GenPatchPanel extends JBSplitter {
         GenPatchModuleBean patchModule = new GenPatchModuleBean();
         patchModule.setModule(module);
         if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
-            SpringManager springManager = SpringManager.getInstance(project);
-            Set<SpringModel> springModels = springManager.getAllModelsWithoutDependencies(module);
-            patchModule.setApp(CollectionUtils.isNotEmpty(springModels));
+            ReadAction.run(() -> {
+                SpringManager springManager = SpringManager.getInstance(project);
+                Set<SpringModel> springModels = springManager.getAllModelsWithoutDependencies(module);
+                patchModule.setApp(CollectionUtils.isNotEmpty(springModels));
+            });
         } else {
             patchModule.setApp(false);
         }
@@ -518,11 +559,13 @@ public class GenPatchPanel extends JBSplitter {
         GenPatchBean patch = new GenPatchBean();
         patch.setOutputFolder(state.outputFolder);
         patch.setFileName(getFileName());
-        if (SpringLibraryUtil.hasSpringLibrary(project)) {
-            patch.setProjectType(GenPatchProjectTypeEnum.SPRING);
-        } else {
-            patch.setProjectType(GenPatchProjectTypeEnum.NONE);
-        }
+        ReadAction.run(() -> {
+            if (SpringLibraryUtil.hasSpringLibrary(project)) {
+                patch.setProjectType(GenPatchProjectTypeEnum.SPRING);
+            } else {
+                patch.setProjectType(GenPatchProjectTypeEnum.NONE);
+            }
+        });
         return patch;
     }
 

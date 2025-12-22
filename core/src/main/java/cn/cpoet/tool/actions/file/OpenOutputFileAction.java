@@ -59,4 +59,9 @@ public class OpenOutputFileAction extends AnAction {
         Module module = e.getRequiredData(LangDataKeys.MODULE);
         OpenFileAction.openFile(outputFile, module.getProject());
     }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
 }

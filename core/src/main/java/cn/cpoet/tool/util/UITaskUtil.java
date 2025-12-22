@@ -3,7 +3,6 @@ package cn.cpoet.tool.util;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -42,12 +41,31 @@ public abstract class UITaskUtil {
         }
     }
 
+    /**
+     * 执行后台任务，不可取消
+     *
+     * @param project  项目
+     * @param title    任务标题
+     * @param runnable 执行的任务
+     */
     public static void runProgress(Project project, String title, Consumer<ProgressIndicator> runnable) {
-        ProgressManager.getInstance().run(new Task.Backgroundable(project, title) {
+        runProgress(project, title, false, runnable);
+    }
+
+    /**
+     * 执行后台任务
+     *
+     * @param project        项目
+     * @param title          任务标题
+     * @param canBeCancelled 是否支持取消
+     * @param runnable       执行的任务
+     */
+    public static void runProgress(Project project, String title, boolean canBeCancelled, Consumer<ProgressIndicator> runnable) {
+        new Task.Backgroundable(project, title, canBeCancelled) {
             @Override
             public void run(@NotNull ProgressIndicator progressIndicator) {
                 runnable.accept(progressIndicator);
             }
-        });
+        }.queue();
     }
 }

@@ -33,7 +33,10 @@ dependencies {
     }
 
     intellijPlatform {
+        // intellijIdea("2022.3")
         intellijIdea("2024.3")
+        // intellijIdea("2025.1")
+
         bundledPlugin("com.intellij.database")
         bundledPlugin("com.intellij.java")
         bundledPlugin("com.intellij.spring")

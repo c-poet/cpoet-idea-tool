@@ -9,6 +9,10 @@ import java.util.List;
  * @author CPoet
  */
 public class GenPatchBean {
+    /**
+     * 标记生成是否失败
+     */
+    private boolean isFailed;
 
     /**
      * 补丁输出路径
@@ -34,6 +38,14 @@ public class GenPatchBean {
      * 补丁内容
      */
     private List<GenPatchItemBean> items = new LinkedList<>();
+
+    public boolean isFailed() {
+        return isFailed;
+    }
+
+    public void setFailed(boolean failed) {
+        isFailed = failed;
+    }
 
     public String getOutputFolder() {
         return outputFolder;
