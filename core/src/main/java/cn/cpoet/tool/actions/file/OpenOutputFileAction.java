@@ -1,11 +1,15 @@
 package cn.cpoet.tool.actions.file;
 
 import cn.cpoet.tool.util.FileUtil;
+import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.ide.actions.OpenFileAction;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.util.NlsActions;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Supplier;
 
 /**
  * 打开输出文件
@@ -16,6 +20,15 @@ public class OpenOutputFileAction extends AnAction {
 
     protected VirtualFile sourceFile;
     protected VirtualFile outputFile;
+
+    public OpenOutputFileAction() {
+        this(I18nUtil.td("actions.file.OpenOutputFileAction.title"),
+                I18nUtil.td("actions.file.OpenOutputFileAction.description"));
+    }
+
+    public OpenOutputFileAction(@NotNull Supplier<@NlsActions.ActionText String> dynamicText, @NotNull Supplier<@NlsActions.ActionDescription String> dynamicDescription) {
+        super(dynamicText, dynamicDescription, null);
+    }
 
     @Override
     public void update(@NotNull AnActionEvent e) {

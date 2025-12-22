@@ -1,6 +1,6 @@
 <idea-plugin>
     <actions>
-        <action class="cn.cpoet.tool.actions.database.CopySingleColJoinAction" text="Copy Joined Result Column">
+        <action class="cn.cpoet.tool.actions.database.CopySingleColJoinAction">
             <add-to-group group-id="Console.TableResult.PopupGroup" relative-to-action="Console.TableResult.CopyAggregatorResult" anchor="after" />
         </action>
 

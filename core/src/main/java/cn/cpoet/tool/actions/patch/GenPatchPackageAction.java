@@ -27,8 +27,8 @@ public class GenPatchPackageAction extends AnAction {
         Project project = e.getRequiredData(CommonDataKeys.PROJECT);
         Object[] selectedItems = getSelectedItems(e);
         DialogBuilder dialogBuilder = new DialogBuilder(project);
-        GenPatchPanel packagePanel = new GenPatchPanel(project, selectedItems, dialogBuilder.getDialogWrapper());
         dialogBuilder.setTitle(I18nUtil.t("actions.patch.GenPatchPackageAction.title"));
+        GenPatchPanel packagePanel = new GenPatchPanel(project, selectedItems, dialogBuilder.getDialogWrapper());
         dialogBuilder.setCenterPanel(packagePanel);
         dialogBuilder.addAction(packagePanel.getPreviewAction());
         dialogBuilder.addOkAction().setText(I18nUtil.t("actions.patch.GenPatchPackageAction.generate"));

@@ -1,6 +1,7 @@
 package cn.cpoet.tool.actions.file;
 
 import cn.cpoet.tool.util.FileUtil;
+import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
 /**
@@ -9,6 +10,11 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
  * @author CPoet
  */
 public class OpenOutputFileInExplorerAction extends OpenOutputFileAction {
+
+    public OpenOutputFileInExplorerAction() {
+        super(I18nUtil.td("actions.file.OpenOutputFileInExplorerAction.title"),
+                I18nUtil.td("actions.file.OpenOutputFileInExplorerAction.description"));
+    }
 
     @Override
     public void actionPerformed(AnActionEvent e) {

@@ -125,6 +125,7 @@ public class GenPatchPanel extends JBSplitter {
             }
             indicator.setFraction(0.3);
             indicator.setText("Wait index refresh");
+            // 等待文件索引完成（特别是重新编译的情况下）
             DumbService.getInstance(project).waitForSmartMode();
             indicator.setFraction(0.35);
             GenPatchBean patch = getGenPatch(indicator);
@@ -359,7 +360,8 @@ public class GenPatchPanel extends JBSplitter {
                 isOk = true;
         }
         if (!isOk) {
-            UITaskUtil.runUI(() -> Messages.showWarningDialog(project, "Compilation failed, please manually compile", "Tip"));
+            UITaskUtil.runUI(() -> Messages.showWarningDialog(project, I18nUtil.t("actions.patch.GenPatchPackageAction.buildFailedWarnMsg"),
+                    I18nUtil.t("message.warn.title")));
         }
         return isOk;
     }
@@ -443,8 +445,8 @@ public class GenPatchPanel extends JBSplitter {
         FileInfo fileInfo = FileUtil.getFileInfo(patchModule.getModule(), sourceFile);
         if (fileInfo.getOutputFile() == null) {
             patch.setFailed(true);
-            UITaskUtil.runUI(() -> Messages.showWarningDialog(project, "If the output file of file " + sourceFile.getName() +
-                    " is not found, you can try to compile it first", "Warn"));
+            UITaskUtil.runUI(() -> Messages.showWarningDialog(project, I18nUtil.tr("actions.patch.GenPatchPackageAction.notFoundOutputFile", sourceFile.getName())
+                    , I18nUtil.t("message.warn.title")));
             return;
         }
         GenPatchItemBean patchItem = new GenPatchItemBean();

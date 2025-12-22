@@ -15,8 +15,8 @@
 
     <actions>
 
-        <action id="CPoetTool_OpenOutputFileAction" class="cn.cpoet.tool.actions.file.OpenOutputFileAction" text="Open Output File" description="Open Output file" />
-        <action id="CPoetTool_OpenOutputFileInExplorerAction" class="cn.cpoet.tool.actions.file.OpenOutputFileInExplorerAction" text="Open Output In Explorer" description="Open output file in explorer" />
+        <action id="CPoetTool_OpenOutputFileAction" class="cn.cpoet.tool.actions.file.OpenOutputFileAction"/>
+        <action id="CPoetTool_OpenOutputFileInExplorerAction" class="cn.cpoet.tool.actions.file.OpenOutputFileInExplorerAction" />
 
         <action id="CPoetTool_GenPatchPackageAction" class="cn.cpoet.tool.actions.patch.GenPatchPackageAction" text="Generate Patch" description="Generate Patch package" />
 
