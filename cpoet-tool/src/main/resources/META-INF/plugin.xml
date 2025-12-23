@@ -12,20 +12,26 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-        <b>CPoet Tool</b> is a powerful IntelliJ IDEA plugin designed to boost developer productivity with multiple useful features.
-        <br/><br/>
-        <b>Main Features:</b>
-        <ol>
-          <li>Base64 encode/decode support</li>
-          <li>UUID generation</li>
-          <li>CamelCase and under_score case conversion</li>
-          <li>Quick navigation to compiled output files</li>
-          <li>Incremental patch package generation</li>
-          <li>Automatic entity setter methods generation with default values</li>
-          <li>Code generation for entity-to-entity and entity-to-Map conversion</li>
-        </ol>
-        <br/>
-        For suggestions or feedback, please visit: <a href="https://www.cpoet.cn">https://www.cpoet.cn</a>
+        <p><b>CPoet Tools</b> is an IntelliJ IDEA plugin that integrates commonly used development utilities, such as randomly generating UUIDs, Base64 encoding/decoding, and calculating MD5/Sha1 values of strings.</p>
+        <div>
+            <p><b>Features:</b></p>
+            <ul>
+                <li>Select files to quickly generate incremental patch packages in ZIP format with auto-generated path documentation, with MapStruct support</li>
+                <li>Convert selected text between camelCase and underscore_case, perform Base64 encoding/decoding, and calculate MD5/Sha1 values</li>
+                <li>Concatenate multiple database values for copying as IN condition values, automatically determining whether to add single quotes based on column type</li>
+            </ul>
+        </div>
+        <p><b>CPoet Tools</b>是一个集成开发中常用工具的Idea插件，比如随机生成UUID、Base64编码和解码、计算字符串的MD5和Sha1值。<p>
+        <div>
+            <p><b>主要功能：</b></p>
+            <ul>
+                <li>选择文件快速生成zip格式的增量补丁包并自动生成路径说明文件，同时支持MapStruct</li>
+                <li>选择文本转换驼峰和下划线、Base64编码和解码、计算MD5值和Sha1值</li>
+                <li>数据库多个值选择拼接拷贝为in条件值，根据列的类型自动判断是否加单引号</li>
+            </ul>
+        </div>
+        <br />
+        <a href="https://github.com/c-poet/cpoet-idea-tool">Source Code</a>&nbsp;<a href="https://www.cpoet.cn">Suggestions|Feedback</a>
     ]]>
     </description>
     <!-- Product and plugin compatibility requirements.
