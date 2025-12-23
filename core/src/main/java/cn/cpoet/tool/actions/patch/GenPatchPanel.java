@@ -253,6 +253,7 @@ public class GenPatchPanel extends JBSplitter {
 
     protected String doGenerateCompress(GenPatchBean patch) {
         String filePath = getWriteFileName(patch);
+        FileUtil.mkdirParent(filePath);
         try (FileOutputStream fileOutputStream = new FileOutputStream(filePath);
              ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
             List<GenPatchItemBean> items = patch.getItems();

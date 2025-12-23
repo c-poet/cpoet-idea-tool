@@ -9,6 +9,7 @@ import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.util.OS;
@@ -352,5 +353,26 @@ public abstract class FileUtil {
             fileInfo.setOutputRelativePath(outputFilePath);
         }
         return fileInfo;
+    }
+
+    /**
+     * 创建父级目录
+     *
+     * @param file 文件
+     */
+    public static void mkdirParent(File file) {
+        try {
+            FileUtils.forceMkdirParent(file);
+        } catch (Exception ignored) {
+        }
+    }
+
+    /**
+     * 创建父级目录
+     *
+     * @param filePath 文件路径
+     */
+    public static void mkdirParent(String filePath) {
+        mkdirParent(new File(filePath));
     }
 }
