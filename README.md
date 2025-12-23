@@ -1,5 +1,7 @@
 # CPoet Tools
 
+**Download:** [https://plugins.jetbrains.com/plugin/29450-cpoet-tool](https://plugins.jetbrains.com/plugin/29450-cpoet-tool)
+
 **CPoet Tools** is an IntelliJ IDEA plugin that integrates commonly used development utilities, such as generating incremental patches, Base64 encoding/decoding, calculating MD5 and SHA1 hash values, etc.
 
 ## Features
@@ -17,10 +19,6 @@
 3. **Database Query Assistance**
     - Concatenate multiple database values for IN conditions
     - Automatically determines whether to add single quotes based on column type
-
----
-
-# CPoet Tools
 
 **CPoet Tools** 是一个 IntelliJ IDEA 插件，集成了开发中常用的工具，比如生成增量补丁、Base64 编码和解码、计算字符串的 MD5 和 SHA1 值等。
 
@@ -40,8 +38,3 @@
     - 将多个数据库值拼接为 IN 条件
     - 根据列类型自动判断是否添加单引号
 
-<script src="https://plugins.jetbrains.com/assets/scripts/mp-widget.js"></script>
-<script>
-  // Please, replace #yourelement with a real element id on your webpage
-  MarketplaceWidget.setupMarketplaceWidget('card', 29450, "#yourelement");
-</script>
