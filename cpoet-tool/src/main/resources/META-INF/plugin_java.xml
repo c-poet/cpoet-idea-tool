@@ -18,9 +18,9 @@
         <action id="CPoetTool_OpenOutputFileAction" class="cn.cpoet.tool.actions.file.OpenOutputFileAction"/>
         <action id="CPoetTool_OpenOutputFileInExplorerAction" class="cn.cpoet.tool.actions.file.OpenOutputFileInExplorerAction" />
 
-        <action id="CPoetTool_GenPatchPackageAction" class="cn.cpoet.tool.actions.patch.GenPatchPackageAction" text="Generate Patch" description="Generate Patch package" />
+        <action id="CPoetTool_GenPatchPackageAction" class="cn.cpoet.tool.actions.patch.GenPatchPackageAction" />
 
-        <action id="CPoetTool_CopyTargetPathProvider" class="cn.cpoet.tool.actions.java.CopyTargetPathProvider" text="Path From Possible Target"/>
+        <action id="CPoetTool_CopyTargetPathProvider" class="cn.cpoet.tool.actions.java.CopyTargetPathProvider" />
 
         <group id="CPoetTool_File_JAVA">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>

@@ -2,23 +2,31 @@ package cn.cpoet.tool.actions.common;
 
 import cn.cpoet.tool.util.EditorUtil;
 import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.editor.Caret;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.actionSystem.EditorWriteActionHandler;
 import com.intellij.openapi.editor.actions.TextComponentEditorAction;
+import com.intellij.openapi.util.NlsActions;
 import com.intellij.openapi.util.TextRange;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author CPoet
  */
 public abstract class AbstractSelectedTextAction extends TextComponentEditorAction {
 
-    public AbstractSelectedTextAction(Function<String, String> func) {
+    public AbstractSelectedTextAction(@NotNull Supplier<@NlsActions.ActionText String> dynamicText,
+                                      @NotNull Supplier<@NlsActions.ActionDescription String> dynamicDescription,
+                                      Function<String, String> func) {
         super(new Handler(func));
+        Presentation presentation = getTemplatePresentation();
+        presentation.setText(dynamicText);
+        presentation.setDescription(dynamicDescription);
     }
 
     public static class Handler extends EditorWriteActionHandler {

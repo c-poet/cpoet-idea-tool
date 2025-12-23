@@ -1,8 +1,10 @@
 package cn.cpoet.tool.actions.common;
 
 import cn.cpoet.tool.util.EditorUtil;
+import cn.cpoet.tool.util.I18nUtil;
 import cn.cpoet.tool.util.UUIDUtil;
 import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.editor.Caret;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.actionSystem.EditorWriteActionHandler;
@@ -19,6 +21,9 @@ public class UUIDGenerateAction extends TextComponentEditorAction {
 
     public UUIDGenerateAction() {
         super(new Handler());
+        Presentation presentation = getTemplatePresentation();
+        presentation.setText(I18nUtil.td("actions.common.UUIDGenerateAction.title"));
+        presentation.setText(I18nUtil.td("actions.common.UUIDGenerateAction.description"));
     }
 
     public static class Handler extends EditorWriteActionHandler {

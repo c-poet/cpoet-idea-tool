@@ -22,6 +22,10 @@ import java.util.List;
  */
 public class GenPatchPackageAction extends AnAction {
 
+    public GenPatchPackageAction() {
+        super(I18nUtil.td("actions.patch.GenPatchPackageAction.title"), I18nUtil.td("actions.patch.GenPatchPackageAction.description"), null);
+    }
+
     @Override
     public void actionPerformed(AnActionEvent e) {
         Project project = e.getRequiredData(CommonDataKeys.PROJECT);

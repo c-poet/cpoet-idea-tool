@@ -47,16 +47,16 @@
     </extensions>
 
     <actions>
-        <action id="CPoetTool_UUIDGenerateAction" class="cn.cpoet.tool.actions.common.UUIDGenerateAction" text="Generate UUID" description="Generate UUID" />
+        <action id="CPoetTool_UUIDGenerateAction" class="cn.cpoet.tool.actions.common.UUIDGenerateAction" />
 
-        <action id="CPoetTool_ConvertToCamelAction" class="cn.cpoet.tool.actions.common.ConvertToCamelAction" text="Convert To Camel" description="Convert to Camel text"/>
-        <action id="CPoetTool_ConvertToUnderlineAction" class="cn.cpoet.tool.actions.common.ConvertToUnderlineAction" text="Convert To Underline" description="Convert to Underline text"/>
+        <action id="CPoetTool_ConvertToCamelAction" class="cn.cpoet.tool.actions.common.ConvertToCamelAction" />
+        <action id="CPoetTool_ConvertToUnderlineAction" class="cn.cpoet.tool.actions.common.ConvertToUnderlineAction" />
 
-        <action id="CPoetTool_Base64EncodeAction" class="cn.cpoet.tool.actions.common.Base64EncodeAction" text="Base64 Encode" description="Encode base64"/>
-        <action id="CPoetTool_Base64DecodeAction" class="cn.cpoet.tool.actions.common.Base64DecodeAction" text="Base64 Decode" description="Decode base64"/>
+        <action id="CPoetTool_Base64EncodeAction" class="cn.cpoet.tool.actions.common.Base64EncodeAction" />
+        <action id="CPoetTool_Base64DecodeAction" class="cn.cpoet.tool.actions.common.Base64DecodeAction" />
 
-        <action id="CPoetTool_Md5Action" class="cn.cpoet.tool.actions.common.Md5Action" text="Calculate MD5" description="Calculate MD5 Value"/>
-        <action id="CPoetTool_Sha1Action" class="cn.cpoet.tool.actions.common.Sha1Action" text="Calculate SHA1" description="Calculate SHA1 Value"/>
+        <action id="CPoetTool_Md5Action" class="cn.cpoet.tool.actions.common.Md5Action" />
+        <action id="CPoetTool_Sha1Action" class="cn.cpoet.tool.actions.common.Sha1Action" />
 
         <group id="CPoetTool_EditorPopupMenu" text="CPoet Tool" popup="true">
             <add-to-group group-id="EditorPopupMenu" relative-to-action="EditorToggleColumnMode" anchor="after"/>

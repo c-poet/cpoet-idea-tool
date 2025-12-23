@@ -1,8 +1,10 @@
 package cn.cpoet.tool.actions.java;
 
 import cn.cpoet.tool.util.FileUtil;
+import cn.cpoet.tool.util.I18nUtil;
 import cn.cpoet.tool.util.SpringUtil;
 import com.intellij.ide.actions.DumbAwareCopyPathProvider;
+import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
@@ -25,6 +27,12 @@ import java.util.Set;
  * @author CPoet
  */
 public class CopyTargetPathProvider extends DumbAwareCopyPathProvider {
+
+    public CopyTargetPathProvider() {
+        Presentation presentation = getTemplatePresentation();
+        presentation.setText(I18nUtil.td("actions.java.CopyTargetPathProvider.title"));
+    }
+
     @Nullable
     @Override
     public String getPathToElement(@NotNull Project project, @Nullable VirtualFile virtualFile, @Nullable Editor editor) {

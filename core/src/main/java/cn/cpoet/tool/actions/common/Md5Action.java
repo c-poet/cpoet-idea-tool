@@ -1,6 +1,7 @@
 package cn.cpoet.tool.actions.common;
 
 import cn.cpoet.tool.util.HashUtil;
+import cn.cpoet.tool.util.I18nUtil;
 
 /**
  * @author CPoet
@@ -8,6 +9,7 @@ import cn.cpoet.tool.util.HashUtil;
 public class Md5Action extends AbstractSelectedTextAction {
 
     public Md5Action() {
-        super(HashUtil::md5);
+        super(I18nUtil.td("actions.common.Md5Action.title"),
+                I18nUtil.td("actions.common.Md5Action.description"), HashUtil::md5);
     }
 }
