@@ -1,8 +1,0 @@
-<compatible>
-    <since>243</since>
-    <package>cn.cpoet.tool.impl243</package>
-    <items>
-        <item source="cn.cpoet.tool.actions.patch.GenPatchConfPanelCPB"/>
-        <item source="cn.cpoet.tool.setting.SettingComponentCPB"/>
-    </items>
-</compatible>

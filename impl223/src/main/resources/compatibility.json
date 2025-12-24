@@ -1,0 +1,9 @@
+{
+    "since": "223",
+    "packageName": "cn.cpoet.tool.impl223",
+    "items": [
+        {"source": "cn.cpoet.tool.actions.patch.GenPatchConfPanelCPB"},
+        {"source": "cn.cpoet.tool.setting.SettingComponentCPB"},
+        {"source": "cn.cpoet.tool.actions.database.CopySingleColJoinActionCPB"}
+    ]
+}

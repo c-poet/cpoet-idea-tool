@@ -20,6 +20,10 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractSelectedTextAction extends TextComponentEditorAction {
 
+    public AbstractSelectedTextAction(Function<String, String> func) {
+        super(new Handler(func));
+    }
+
     public AbstractSelectedTextAction(@NotNull Supplier<@NlsActions.ActionText String> dynamicText,
                                       @NotNull Supplier<@NlsActions.ActionDescription String> dynamicDescription,
                                       Function<String, String> func) {

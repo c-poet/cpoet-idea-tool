@@ -1,0 +1,8 @@
+{
+    "since": "243",
+    "packageName": "cn.cpoet.tool.impl243",
+    "items": [
+        {"source": "cn.cpoet.tool.actions.patch.GenPatchConfPanelCPB"},
+        {"source": "cn.cpoet.tool.setting.SettingComponentCPB"}
+    ]
+}

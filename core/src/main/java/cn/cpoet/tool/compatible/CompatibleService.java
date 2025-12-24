@@ -2,10 +2,12 @@ package cn.cpoet.tool.compatible;
 
 import cn.cpoet.tool.exception.ToolException;
 import cn.cpoet.tool.util.ClassUtil;
+import cn.cpoet.tool.util.JsonUtil;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.util.BuildNumber;
+import com.intellij.openapi.util.io.StreamUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,8 +16,9 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.*;
 
@@ -26,6 +29,8 @@ import java.util.*;
 public final class CompatibleService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CompatibleService.class);
+
+    public static final String COMPATIBILITY_FILE = "compatibility.json";
 
     private final Map<Class<?>, Class<?>> compatibleTable = new HashMap<>();
     private final Map<Class<?>, Object> compatibleSingleTable = new HashMap<>();
@@ -110,11 +115,9 @@ public final class CompatibleService {
     private List<CompatibleInfo> loadCompatibleInfos() {
         List<CompatibleInfo> compatibleInfos = null;
         try {
-            Enumeration<URL> compatibilityXmlEnum = CompatibleService.class.getClassLoader().getResources("compatibility.xml");
+            Enumeration<URL> compatibilityXmlEnum = CompatibleService.class.getClassLoader().getResources(COMPATIBILITY_FILE);
             while (compatibilityXmlEnum.hasMoreElements()) {
-                URL url = compatibilityXmlEnum.nextElement();
-                Unmarshaller unmarshaller = JAXBContext.newInstance(Compatible.class).createUnmarshaller();
-                Compatible compatible = (Compatible) unmarshaller.unmarshal(url);
+                Compatible compatible = readCompatible(compatibilityXmlEnum.nextElement());
                 CompatibleInfo compatibleInfo = new CompatibleInfo();
                 compatibleInfo.setCompatible(compatible);
                 compatibleInfo.setBuildNumber(BuildNumber.fromString(compatible.getSince()));
@@ -127,6 +130,14 @@ public final class CompatibleService {
             LOGGER.warn("Load compatible failed: {}", e.getMessage(), e);
         }
         return compatibleInfos == null ? Collections.emptyList() : compatibleInfos;
+    }
+
+    private Compatible readCompatible(URL url) throws IOException {
+        try (InputStream in = url.openStream();
+             InputStreamReader reader = new InputStreamReader(in)) {
+            String compatibleJson = StreamUtil.readText(reader);
+            return JsonUtil.read(compatibleJson, Compatible.class);
+        }
     }
 
     public @NotNull <T> T instance(@NotNull Class<T> clazz) {
