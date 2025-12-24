@@ -35,7 +35,7 @@ public class SettingComponent {
 
     protected void cpbPatchAssistant2JTextFieldWithBtn(TextFieldWithBrowseButton btn) {
         CompatibleService.getInstance()
-                .instance(SettingComponentCPB.class)
+                .instance(SettingComponent9.class)
                 .cpbPatchAssistant2JTextFieldWithBtn(btn);
     }
 

@@ -1,10 +1,9 @@
 package cn.cpoet.tool.component;
 
-import cn.cpoet.tool.model.TreeNodeInfo;
+import cn.cpoet.tool.compatible.CompatibleService;
 import cn.cpoet.tool.util.TreeUtil;
 import com.intellij.ui.CheckboxTree;
 import com.intellij.ui.CheckedTreeNode;
-import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.ui.treeStructure.Tree;
 import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
@@ -143,11 +142,8 @@ public class FilterCheckboxTree extends CheckboxTree {
 
     @Override
     protected void installSpeedSearch() {
-        new TreeSpeedSearch(this, true, treePath -> {
-            CheckedTreeNode treeNode = (CheckedTreeNode) treePath.getLastPathComponent();
-            return treeNode.getUserObject() instanceof TreeNodeInfo
-                    ? ((TreeNodeInfo) treeNode.getUserObject()).getName()
-                    : treeNode.toString();
-        });
+        CompatibleService.getInstance()
+                .instance(FilterCheckboxTree9.class)
+                .installSpeedSearch(this);
     }
 }

@@ -17,9 +17,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.spring.SpringLibraryUtil;
-import com.intellij.spring.SpringManager;
-import com.intellij.spring.contexts.model.SpringModel;
 import com.intellij.task.ProjectTaskManager;
 import com.intellij.ui.CheckboxTreeListener;
 import com.intellij.ui.CheckedTreeNode;
@@ -546,11 +543,7 @@ public class GenPatchPanel extends JBSplitter {
         GenPatchModuleBean patchModule = new GenPatchModuleBean();
         patchModule.setModule(module);
         if (GenPatchProjectTypeEnum.SPRING.equals(patch.getProjectType())) {
-            ReadAction.run(() -> {
-                SpringManager springManager = SpringManager.getInstance(project);
-                Set<SpringModel> springModels = springManager.getAllModelsWithoutDependencies(module);
-                patchModule.setApp(CollectionUtils.isNotEmpty(springModels));
-            });
+            ReadAction.run(() -> patchModule.setApp(SpringUtil.isSpringAppModule(project, module)));
         } else {
             patchModule.setApp(false);
         }
@@ -563,7 +556,7 @@ public class GenPatchPanel extends JBSplitter {
         patch.setOutputFolder(state.outputFolder);
         patch.setFileName(getFileName());
         ReadAction.run(() -> {
-            if (SpringLibraryUtil.hasSpringLibrary(project)) {
+            if (SpringUtil.hasSpringLibrary(project)) {
                 patch.setProjectType(GenPatchProjectTypeEnum.SPRING);
             } else {
                 patch.setProjectType(GenPatchProjectTypeEnum.NONE);

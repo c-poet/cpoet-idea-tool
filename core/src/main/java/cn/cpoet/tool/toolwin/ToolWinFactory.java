@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author CPoet
  */
-public class ToolWinFactory implements ToolWindowFactory {
+public class ToolWinFactory implements ToolWindowFactory, ToolWinFactory9 {
 
     private static final ExtensionPointName<ToolWinContentFactory> EP_NAME = ExtensionPointName.create("cn.cpoet.tool.toolWinContentFactory");
 
@@ -24,6 +24,11 @@ public class ToolWinFactory implements ToolWindowFactory {
             Content content = toolWinContentFactory.createContent(project);
             contentManager.addContent(content);
         });
+    }
+
+    @Override
+    public boolean isApplicableAsync(@NotNull Project project) {
+        return EP_NAME.hasAnyExtensions();
     }
 
     @Override

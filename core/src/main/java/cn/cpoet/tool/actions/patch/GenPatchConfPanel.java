@@ -42,7 +42,7 @@ public class GenPatchConfPanel extends ScrollVPanel {
     }
 
     protected void cpbOutputFolderTextField(TextFieldWithBrowseButton btn) {
-        CompatibleService.getInstance().instance(GenPatchConfPanelCPB.class)
+        CompatibleService.getInstance().instance(GenPatchConfPanel9.class)
                 .cpbOutputFolderTextField(project, btn);
     }
 

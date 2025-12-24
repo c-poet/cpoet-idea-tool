@@ -28,7 +28,7 @@ public class GenPatchPackageAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        Project project = e.getRequiredData(CommonDataKeys.PROJECT);
+        Project project = e.getData(CommonDataKeys.PROJECT);
         Object[] selectedItems = getSelectedItems(e);
         DialogBuilder dialogBuilder = new DialogBuilder(project);
         dialogBuilder.setTitle(I18nUtil.t("actions.patch.GenPatchPackageAction.title"));

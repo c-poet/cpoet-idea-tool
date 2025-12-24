@@ -1,6 +1,6 @@
 package cn.cpoet.tool.impl223.setting;
 
-import cn.cpoet.tool.setting.SettingComponentCPB;
+import cn.cpoet.tool.setting.SettingComponent9;
 import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -8,7 +8,7 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 /**
  * @author CPoet
  */
-public class SettingComponentCPBImpl implements SettingComponentCPB {
+public class SettingComponent9Impl implements SettingComponent9 {
 
     @Override
     public void cpbPatchAssistant2JTextFieldWithBtn(TextFieldWithBrowseButton btn) {

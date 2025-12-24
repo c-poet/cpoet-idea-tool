@@ -9,7 +9,6 @@ import com.intellij.openapi.components.Service;
 import com.intellij.openapi.util.BuildNumber;
 import com.intellij.openapi.util.io.StreamUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.jetbrains.annotations.NotNull;
@@ -104,12 +103,11 @@ public final class CompatibleService {
         if (compatibleClass != null) {
             return;
         }
-        try {
-            Class<?> targetClass = ClassUtils.getClass(implName);
-            compatibleTable.put(clazz, targetClass);
-        } catch (Exception e) {
+        Class<?> targetClass = ClassUtil.tryGetClass(implName);
+        if (targetClass == null) {
             throw new ToolException("Compatible implementation of class " + clazz.getName() + " cannot be loaded class " + implName);
         }
+        compatibleTable.put(clazz, targetClass);
     }
 
     private List<CompatibleInfo> loadCompatibleInfos() {

@@ -12,16 +12,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.spring.SpringLibraryUtil;
-import com.intellij.spring.SpringManager;
-import com.intellij.spring.contexts.model.SpringModel;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
 
 /**
  * @author CPoet
@@ -41,16 +35,15 @@ public class CopyTargetPathProvider extends DumbAwareCopyPathProvider {
             return outputFilePath;
         }
         // 判断是否是Spring应用
-        if (!SpringLibraryUtil.hasSpringLibrary(project)) {
+        if (!SpringUtil.hasSpringLibrary(project)) {
             return outputFilePath;
         }
         Module module = ModuleUtil.findModuleForFile(virtualFile, project);
         if (module == null) {
             return outputFilePath;
         }
-        Set<SpringModel> springModels = SpringManager.getInstance(project).getAllModelsWithoutDependencies(module);
         // 判断是否服务所在模块
-        if (CollectionUtils.isEmpty(springModels)) {
+        if (SpringUtil.isSpringAppModule(project, module)) {
             return SpringUtil.SB_LIB_PATH + FileUtil.UNIX_SEPARATOR + module.getName() + FileUtil.UNIX_SEPARATOR + outputFilePath;
         }
         return SpringUtil.SB_CLASSES_PATH + FileUtil.UNIX_SEPARATOR + outputFilePath;

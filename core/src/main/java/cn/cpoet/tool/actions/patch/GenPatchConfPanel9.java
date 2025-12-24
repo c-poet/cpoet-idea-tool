@@ -6,10 +6,8 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 /**
  * @author CPoet
  */
-public interface GenPatchConfPanelCPB {
+public interface GenPatchConfPanel9 {
     /**
-     * @param project 项目
-     * @param btn     {@link TextFieldWithBrowseButton}
      * @see GenPatchConfPanel#cpbOutputFolderTextField(TextFieldWithBrowseButton)
      */
     void cpbOutputFolderTextField(Project project, TextFieldWithBrowseButton btn);

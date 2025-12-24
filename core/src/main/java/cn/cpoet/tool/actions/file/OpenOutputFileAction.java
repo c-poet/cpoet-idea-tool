@@ -9,6 +9,7 @@ import com.intellij.openapi.util.NlsActions;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -35,7 +36,7 @@ public class OpenOutputFileAction extends AnAction {
         // 重置文件信息
         resetFileInfo();
         // 获取当前操作的文件
-        VirtualFile selectFile = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE);
+        VirtualFile selectFile = e.getData(CommonDataKeys.VIRTUAL_FILE);
         // 获取当前操作文件所在的模块
         Module module = e.getData(LangDataKeys.MODULE);
         if (module != null) {
@@ -69,7 +70,7 @@ public class OpenOutputFileAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        Module module = e.getRequiredData(LangDataKeys.MODULE);
+        Module module = Objects.requireNonNull(e.getData(LangDataKeys.MODULE));
         OpenFileAction.openFile(outputFile, module.getProject());
     }
 

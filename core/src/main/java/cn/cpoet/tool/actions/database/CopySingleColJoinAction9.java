@@ -6,15 +6,13 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author CPoet
  */
-public interface CopySingleColJoinActionCPB {
+public interface CopySingleColJoinAction9 {
     /**
-     * @param e {@link AnActionEvent}
      * @see CopySingleColJoinAction#update(AnActionEvent)
      */
     void update(@NotNull AnActionEvent e);
 
     /**
-     * @param anActionEvent {@link AnActionEvent}
      * @see CopySingleColJoinAction#actionPerformed(AnActionEvent)
      */
     void actionPerformed(@NotNull AnActionEvent anActionEvent);

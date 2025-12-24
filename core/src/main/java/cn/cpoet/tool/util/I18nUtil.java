@@ -113,7 +113,7 @@ public abstract class I18nUtil {
     }
 
     public static void updateLocale() {
-        Locale locale = new Locale(getLanguage());
+        Locale locale = Locale.forLanguageTag(getLanguage());
         if (resourceBundle != null && Objects.equals(resourceBundle.getLocale(), locale)) {
             return;
         }

@@ -2,8 +2,10 @@
     "since": "223",
     "packageName": "cn.cpoet.tool.impl223",
     "items": [
-        {"source": "cn.cpoet.tool.actions.patch.GenPatchConfPanelCPB"},
-        {"source": "cn.cpoet.tool.setting.SettingComponentCPB"},
-        {"source": "cn.cpoet.tool.actions.database.CopySingleColJoinActionCPB"}
+        {"source": "cn.cpoet.tool.actions.patch.GenPatchConfPanel9", "impl": "cn.cpoet.tool.impl223.actions.patch.GenPatchConfPanel9Impl"},
+        {"source": "cn.cpoet.tool.setting.SettingComponent9", "impl": "cn.cpoet.tool.impl223.setting.SettingComponent9Impl"},
+        {"source": "cn.cpoet.tool.actions.database.CopySingleColJoinAction9", "impl": "cn.cpoet.tool.impl223.actions.database.CopySingleColJoinAction9Impl"},
+        {"source": "cn.cpoet.tool.component.FilterCheckboxTree9", "impl": "cn.cpoet.tool.impl223.component.FilterCheckBoxTree9Impl"},
+        {"source": "cn.cpoet.tool.util.SpringUtil9", "impl": "cn.cpoet.tool.impl223.util.SpringUtil9Impl"}
     ]
 }
