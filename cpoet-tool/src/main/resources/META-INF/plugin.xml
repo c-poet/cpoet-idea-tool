@@ -76,6 +76,10 @@
             <add-to-group group-id="Vcs.RepositoryChangesBrowserMenu" relative-to-action="Vcs.EditSource" anchor="after" />
         </group>
 
+        <group id="CPoet_ChangesViewPopupMenu" text="CPoet Tool" popup="true">
+            <add-to-group group-id="ChangesViewPopupMenu" relative-to-action="EditSource" anchor="after" />
+        </group>
+
         <group id="CPoetTool_EditorPopupMenu_Text">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
             <reference ref="CPoetTool_UUIDGenerateAction" />

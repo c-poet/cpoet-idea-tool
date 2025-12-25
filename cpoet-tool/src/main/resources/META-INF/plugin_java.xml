@@ -16,30 +16,28 @@
     <actions>
 
         <action id="CPoetTool_OpenOutputFileAction" class="cn.cpoet.tool.actions.file.OpenOutputFileAction"/>
-        <action id="CPoetTool_OpenOutputFileInExplorerAction" class="cn.cpoet.tool.actions.file.OpenOutputFileInExplorerAction" />
+        <action id="CPoetTool_OpenOutputFileInExplorerAction" class="cn.cpoet.tool.actions.file.OpenOutputFileInExplorerAction"/>
 
-        <action id="CPoetTool_GenPatchPackageAction" class="cn.cpoet.tool.actions.patch.GenPatchPackageAction" />
+        <action id="CPoetTool_GenPatchPackageAction" class="cn.cpoet.tool.actions.patch.GenPatchPackageAction"/>
 
-        <action id="CPoetTool_CopyTargetPathProvider" class="cn.cpoet.tool.actions.java.CopyTargetPathProvider" />
+        <action id="CPoetTool_CopyTargetPathProvider" class="cn.cpoet.tool.actions.java.CopyTargetPathProvider">
+            <add-to-group group-id="CopyFileReference" relative-to-action="CopySourceRootPath" anchor="after"/>
+        </action>
 
         <group id="CPoetTool_File_JAVA">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
-            <separator />
-            <reference ref="CPoetTool_OpenOutputFileAction" />
-            <reference ref="CPoetTool_OpenOutputFileInExplorerAction" />
+            <separator/>
+            <reference ref="CPoetTool_OpenOutputFileAction"/>
+            <reference ref="CPoetTool_OpenOutputFileInExplorerAction"/>
         </group>
 
         <group id="CPoetTool_Patch_JAVA">
             <add-to-group group-id="CPoetTool_EditorPopupMenu"/>
-            <add-to-group group-id="CPoetTool_ProjectViewPopupMenu" />
-            <add-to-group group-id="CPoetTool_Vcs.RepositoryChangesBrowserMenu" />
-            <separator />
-            <reference ref="CPoetTool_GenPatchPackageAction" />
-        </group>
-
-        <group id="CPoetTool_CopyFileReference_JAVA">
-            <add-to-group group-id="CopyFileReference" relative-to-action="CopySourceRootPath" anchor="after"/>
-            <reference ref="CPoetTool_CopyTargetPathProvider" />
+            <add-to-group group-id="CPoetTool_ProjectViewPopupMenu"/>
+            <add-to-group group-id="CPoetTool_Vcs.RepositoryChangesBrowserMenu"/>
+            <add-to-group group-id="CPoet_ChangesViewPopupMenu"/>
+            <separator/>
+            <reference ref="CPoetTool_GenPatchPackageAction"/>
         </group>
     </actions>
 </idea-plugin>
