@@ -1,18 +1,16 @@
 package cn.cpoet.tool.actions.patch;
 
 import cn.cpoet.tool.util.I18nUtil;
+import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.fileEditor.FileEditorNavigatable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogBuilder;
-import com.intellij.openapi.vcs.VcsDataKeys;
-import com.intellij.openapi.vcs.changes.Change;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.pom.Navigatable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,26 +40,18 @@ public class GenPatchPackageAction extends AnAction {
     }
 
     private Object[] getSelectedItems(AnActionEvent e) {
-        Object[] items = e.getData(LangDataKeys.SELECTED_ITEMS);
-        Change[] changes = e.getData(VcsDataKeys.SELECTED_CHANGES);
-        if (items == null && changes == null) {
+        Navigatable[] navigatables = e.getData(CommonDataKeys.NAVIGATABLE_ARRAY);
+        if (navigatables == null || navigatables.length == 0) {
             return null;
         }
-        if (items != null && changes != null) {
-            List<Object> selectedItems = new ArrayList<>(items.length + changes.length);
-            Collections.addAll(selectedItems, items);
-            for (Change change : changes) {
-                selectedItems.add(change.getVirtualFile());
+        List<Object> selectedItems = new ArrayList<>(navigatables.length);
+        for (Navigatable navigatable : navigatables) {
+            if (navigatable instanceof FileEditorNavigatable) {
+                selectedItems.add(((FileEditorNavigatable) navigatable).getFile());
+            } else if (navigatable instanceof ProjectViewNode) {
+                selectedItems.add(((ProjectViewNode<?>) navigatable).getVirtualFile());
             }
-            return selectedItems.toArray();
         }
-        if (items != null) {
-            return items;
-        }
-        VirtualFile[] files = new VirtualFile[changes.length];
-        for (int i = 0; i < changes.length; ++i) {
-            files[i] = changes[i].getVirtualFile();
-        }
-        return files;
+        return selectedItems.toArray(new Object[0]);
     }
 }
