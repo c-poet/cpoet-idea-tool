@@ -60,12 +60,12 @@ tasks {
     }
 
     signPlugin {
-        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-        privateKey.set(System.getenv("PRIVATE_KEY"))
-        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+        certificateChain.set(System.getenv("IDEA_PLUGIN_CERTIFICATE_CHAIN"))
+        privateKey.set(System.getenv("IDEA_PLUGIN_PRIVATE_KEY"))
+        password.set(System.getenv("IDEA_PLUGIN_PRIVATE_KEY_PASSWORD"))
     }
 
     publishPlugin {
-        token.set(System.getenv("PUBLISH_TOKEN"))
+        token.set(System.getenv("IDEA_PLUGIN_PUBLISH_TOKEN"))
     }
 }
