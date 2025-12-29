@@ -50,5 +50,3 @@
   ```
 - [ ] 🐛修复补丁生成文件索引未刷新完成的问题
 - [ ] 🐛修复补丁生成树多层级模块的情况下显示重复问题
-
-<iframe width="384px" height="319px" src="https://plugins.jetbrains.com/embeddable/card/29450"></iframe>
