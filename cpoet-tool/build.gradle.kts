@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "cn.cpoet.tool"
-version = "0.3.0"
+version = "0.3.1-Beta"
 
 dependencies {
     implementation(project(":core")) {
