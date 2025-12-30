@@ -41,12 +41,18 @@
 
 ## Next V0.3.1 🚀
 
-- [ ] 🔧支持自动替换Database占位符
+- [x] 🔧支持自动替换Database占位符
   ```sql
+  -- 🥹大多数日志打印出来是这样的：
   SELECT *
    FROM DEMO
    WHERE CREATE_USER = ?
    AND IS_DELETED <> ?['cpoet', 1];
+  -- 😂使用插件可以快速替换为：
+   SELECT *
+   FROM DEMO
+   WHERE CREATE_USER = 'cpoet'
+   AND IS_DELETED <> 1;
   ```
 - [ ] 🐛修复补丁生成文件索引未刷新完成的问题
 - [ ] 🐛修复补丁生成树多层级模块的情况下显示重复问题

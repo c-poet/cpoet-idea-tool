@@ -4,6 +4,10 @@
             <add-to-group group-id="Console.TableResult.PopupGroup" relative-to-action="Console.TableResult.CopyAggregatorResult" anchor="after" />
         </action>
 
+        <action class="cn.cpoet.tool.actions.database.ReplacePlaceholderAction">
+            <add-to-group group-id="CPoetTool_EditorPopupMenu" />
+        </action>
+
         <group id="CPoetTool_Console.TableResult.CellEditor.Popup" text="CPoet Tool" popup="true" searchable="false">
             <separator/>
             <add-to-group group-id="Console.TableResult.CellEditor.Popup" anchor="after" relative-to-action="EditorToggleColumnMode"/>

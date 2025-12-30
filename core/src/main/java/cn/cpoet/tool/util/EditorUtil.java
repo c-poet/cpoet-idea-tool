@@ -17,6 +17,16 @@ public abstract class EditorUtil {
      * 编辑器获取光标的情况下执行
      *
      * @param editor 编辑器
+     * @param action 操作
+     */
+    public static void runWithCaret(Editor editor, CaretAction action) {
+        runWithCaret(editor, null, action);
+    }
+
+    /**
+     * 编辑器获取光标的情况下执行
+     *
+     * @param editor 编辑器
      * @param caret  插入点
      * @param action 操作
      */
