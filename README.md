@@ -2,7 +2,7 @@
 
 <div align="center">
 
-**[中文版本](README.md)** | **[English Version](README-EN.md)**
+**[中文版本](README.md)** | **[English Version](README-en.md)**
 
 </div>
 
@@ -42,9 +42,10 @@
    WHERE CREATE_USER = 'cpoet'
    AND IS_DELETED <> 1;
   ```
-- [ ] ✨新增Base64配置编码和解码的编码类型（默认UTF-8）
+- [x] ✨新增Base64配置编码和解码的编码类型（默认UTF-8）
 - [ ] 🐛修复补丁生成文件索引未刷新完成的问题
 - [ ] 🐛修复补丁生成树多层级模块的情况下显示重复问题
+- [x] ✨兼容Idea2022.3至2026.1版本
 
 ## Next V0.3.2 📅
 

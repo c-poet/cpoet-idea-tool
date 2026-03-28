@@ -2,7 +2,7 @@
 
 <div align="center">
 
-**[中文版本](README.md)** | **[English Version](README-EN.md)**
+**[中文版本](README.md)** | **[English Version](README-en.md)**
 
 </div>
 
@@ -30,7 +30,6 @@
 ## Next V0.3.1 🚀
 
 - [x] ✨ Support for automatic replacement of SQL placeholders
-  ```sql
   -- 🥹 Most logs are printed like this:
   SELECT *
    FROM DEMO
@@ -41,10 +40,10 @@
    FROM DEMO
    WHERE CREATE_USER = 'cpoet'
    AND IS_DELETED <> 1;
-  ```
-- [ ] ✨ Add encoding type configuration for Base64 encoding and decoding (default UTF-8)
+- [x] ✨ Add encoding type configuration for Base64 encoding and decoding (default UTF-8)
 - [ ] 🐛 Fix the issue where patch generation file index was not refreshed completely
 - [ ] 🐛 Fix the duplicate display issue in patch generation tree with multi-level modules
+- [x] ✨ Compatible with IDEA versions 2022.3 to 2026.1
 
 ## Next V0.3.2 📅
 

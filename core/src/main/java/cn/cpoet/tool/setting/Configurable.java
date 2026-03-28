@@ -1,5 +1,7 @@
 package cn.cpoet.tool.setting;
 
+import cn.cpoet.tool.constant.TextEncodeEnum;
+import cn.cpoet.tool.constant.CommonConst;
 import cn.cpoet.tool.constant.LanguageEnum;
 import cn.cpoet.tool.util.I18nUtil;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +20,7 @@ public class Configurable implements com.intellij.openapi.options.Configurable {
 
     @Override
     public String getDisplayName() {
-        return "CPoet Tool";
+        return CommonConst.TOOL_NAME;
     }
 
     @Override
@@ -31,6 +33,7 @@ public class Configurable implements com.intellij.openapi.options.Configurable {
     public boolean isModified() {
         Setting.State state = Setting.getInstance().getState();
         return !settingComponent.getLanguage().getCode().equals(state.language)
+                || !settingComponent.getTextEncode().getCode().equals(state.textEncode)
                 || !Objects.equals(settingComponent.getPatchAssistant2JPath(), state.patchAssistant2JPath);
     }
 
@@ -43,6 +46,7 @@ public class Configurable implements com.intellij.openapi.options.Configurable {
         if (!oldLanguage.equals(state.language)) {
             I18nUtil.updateLocale();
         }
+        state.textEncode = settingComponent.getTextEncode().getCode();
         state.patchAssistant2JPath = settingComponent.getPatchAssistant2JPath();
     }
 
@@ -50,6 +54,7 @@ public class Configurable implements com.intellij.openapi.options.Configurable {
     public void reset() {
         Setting.State state = Setting.getInstance().getState();
         settingComponent.setLanguage(LanguageEnum.ofCode(state.language));
+        settingComponent.setTextEncode(TextEncodeEnum.valueOf(state.textEncode));
         settingComponent.setPatchAssistant2JPath(state.patchAssistant2JPath);
     }
 

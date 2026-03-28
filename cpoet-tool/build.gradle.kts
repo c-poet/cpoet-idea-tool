@@ -35,7 +35,7 @@ dependencies {
     intellijPlatform {
         // intellijIdea("2022.3")
         intellijIdea("2024.3")
-        // intellijIdea("2025.1")
+        // intellijIdea("2025.3")
 
         bundledPlugin("com.intellij.database")
         bundledPlugin("com.intellij.java")
@@ -56,7 +56,7 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("223")
-        untilBuild.set("252.*")
+        untilBuild.set("261.*")
     }
 
     signPlugin {

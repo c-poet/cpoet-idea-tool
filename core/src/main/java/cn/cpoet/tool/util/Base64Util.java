@@ -1,5 +1,6 @@
 package cn.cpoet.tool.util;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -13,7 +14,11 @@ public abstract class Base64Util {
     }
 
     public static String encode4str(String text) {
-        return encode(text.getBytes(StandardCharsets.UTF_8));
+        return encode4str(text, StandardCharsets.UTF_8);
+    }
+
+    public static String encode4str(String text, Charset charset) {
+        return encode(text.getBytes(charset));
     }
 
     public static String encode(byte[] bytes) {
@@ -21,7 +26,11 @@ public abstract class Base64Util {
     }
 
     public static String decode2str(String text) {
-        return new String(decode(text));
+        return decode2str(text, StandardCharsets.UTF_8);
+    }
+
+    public static String decode2str(String text, Charset charset) {
+        return new String(decode(text), charset);
     }
 
     public static byte[] decode(String text) {

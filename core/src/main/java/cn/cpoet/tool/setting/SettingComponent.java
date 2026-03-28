@@ -3,6 +3,7 @@ package cn.cpoet.tool.setting;
 import cn.cpoet.tool.compatible.CompatibleService;
 import cn.cpoet.tool.component.CustomComboBox;
 import cn.cpoet.tool.constant.LanguageEnum;
+import cn.cpoet.tool.constant.TextEncodeEnum;
 import cn.cpoet.tool.util.I18nUtil;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -20,14 +21,17 @@ public class SettingComponent {
     private final JPanel mainPanel;
 
     private final ComboBox<LanguageEnum> selectLanguageComboBox;
+    private final ComboBox<TextEncodeEnum> selectTextEncodeComboBox;
     private final TextFieldWithBrowseButton patchAssistant2JTextFieldWithBtn;
 
     public SettingComponent() {
         selectLanguageComboBox = buildSelectLanguageComboBox();
+        selectTextEncodeComboBox = buildSelectCharsetComboBox();
         patchAssistant2JTextFieldWithBtn = new TextFieldWithBrowseButton();
         cpbPatchAssistant2JTextFieldWithBtn(patchAssistant2JTextFieldWithBtn);
         mainPanel = FormBuilder.createFormBuilder().setFormLeftIndent(20)
                 .addLabeledComponent(I18nUtil.t("settings.SelectLanguage.label"), selectLanguageComboBox)
+                .addLabeledComponent(I18nUtil.t("settings.SelectTextEncode.label"), selectTextEncodeComboBox)
                 .addLabeledComponent(I18nUtil.t("settings.PatchAssistant2J.label"), patchAssistant2JTextFieldWithBtn)
                 .addComponentFillVertically(new JPanel(), 0)
                 .getPanel();
@@ -48,6 +52,15 @@ public class SettingComponent {
         return comboBox;
     }
 
+    private ComboBox<TextEncodeEnum> buildSelectCharsetComboBox() {
+        CustomComboBox<TextEncodeEnum> comboBox = new CustomComboBox<>();
+        comboBox.customText(TextEncodeEnum::getCode);
+        for (TextEncodeEnum value : TextEncodeEnum.values()) {
+            comboBox.addItem(value);
+        }
+        return comboBox;
+    }
+
     public JPanel getPanel() {
         return mainPanel;
     }
@@ -58,6 +71,14 @@ public class SettingComponent {
 
     public void setLanguage(LanguageEnum language) {
         selectLanguageComboBox.setSelectedItem(language);
+    }
+
+    public TextEncodeEnum getTextEncode() {
+        return (TextEncodeEnum) selectTextEncodeComboBox.getSelectedItem();
+    }
+
+    public void setTextEncode(TextEncodeEnum textEncode) {
+        selectTextEncodeComboBox.setSelectedItem(textEncode);
     }
 
     public String getPatchAssistant2JPath() {

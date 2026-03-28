@@ -1,5 +1,6 @@
 package cn.cpoet.tool.setting;
 
+import cn.cpoet.tool.constant.TextEncodeEnum;
 import cn.cpoet.tool.constant.CommonConst;
 import cn.cpoet.tool.constant.LanguageEnum;
 import com.intellij.openapi.application.ApplicationManager;
@@ -19,8 +20,15 @@ import org.jetbrains.annotations.NotNull;
 public final class Setting implements PersistentStateComponent<Setting.State> {
 
     public static class State {
-        /** 配置的语言 */
+        /**
+         * 配置的语言
+         */
         public String language = LanguageEnum.ZH.getCode();
+
+        /**
+         * 配置的编码
+         */
+        public String textEncode = TextEncodeEnum.UTF_8.getCode();
 
         /**
          * 替换补丁包工具所在路径

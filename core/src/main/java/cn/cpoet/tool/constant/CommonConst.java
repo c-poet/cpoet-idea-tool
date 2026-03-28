@@ -6,6 +6,14 @@ package cn.cpoet.tool.constant;
  * @author CPoet
  */
 public interface CommonConst {
-    /** 配置文件名称 */
+
+    /**
+     * 插件名称
+     */
+    String TOOL_NAME = "CPoet Tool";
+
+    /**
+     * 配置文件名称
+     */
     String SETTING_FILE_NAME = "cpoet_tool.xml";
 }
