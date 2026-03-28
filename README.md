@@ -1,26 +1,14 @@
 # CPoet Tools 🛠️
 
+<div align="center">
+
+**[中文版本](README.md)** | **[English Version](README-EN.md)**
+
+</div>
+
 **Download:** [https://plugins.jetbrains.com/plugin/29450-cpoet-tool](https://plugins.jetbrains.com/plugin/29450-cpoet-tool) ⬇️
 
-**CPoet Tools** is an IntelliJ IDEA plugin that integrates commonly used development utilities, such as generating incremental patches, Base64 encoding/decoding, calculating MD5 and SHA1 hash values, etc. 🚀
-
-## Features ✨
-
-1. **Incremental Patch Generation 📦**
-   - Select files to quickly generate ZIP format incremental patch packages 🚀
-   - Auto-generates path documentation 📄
-   - Supports MapStruct 🔄
-
-2. **Text & Encoding Utilities 🔤**
-   - Convert between camelCase and underscore_case 🔄
-   - Base64 encoding/decoding 🔐
-   - Calculate MD5/SHA1 hash values 🔢
-
-3. **Database Query Assistance 🗃️**
-   - Concatenate multiple database values for IN conditions 🔗
-   - Automatically determines whether to add single quotes based on column type 🤖
-
-**CPoet Tools** 是一个 IntelliJ IDEA 插件，集成了开发中常用的工具，比如生成增量补丁、Base64 编码和解码、计算字符串的 MD5 和 SHA1 值等。🎯
+**CPoet Tools** 是一款 IntelliJ IDEA 插件，集成了常用的开发工具，例如生成增量补丁、Base64 编码/解码、Hash 值计算等。
 
 ## 主要功能 🌟
 
@@ -62,3 +50,4 @@
 
 - [ ] ✨新增需要快速的配置项到Tools菜单中（语言、Base64编码等）
 - [ ] ✨新增快速生成get/set方法和对象Convert方法
+- [ ] 🎉补丁生成作为重要功能将单独发布插件，同时CPoet Tool也同步保留生成功能
