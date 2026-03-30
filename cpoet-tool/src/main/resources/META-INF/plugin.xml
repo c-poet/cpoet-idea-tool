@@ -12,6 +12,15 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
+        <p><b>CPoet Tools</b> is an efficiency-enhancing plugin designed for IntelliJ IDEA, integrating practical tools frequently used during development, including incremental patch generation, text encoding conversion, and hash calculation.</p>
+        <div>
+            <p><b>Main Features:</b></p>
+            <ul>
+                <li>🚀 <b>One‑Click Patch Generation</b>: Quickly generate a ZIP incremental patch package for selected files, automatically including a path description document – even MapStruct scenarios are fully supported.</li>
+                <li>⚡ <b>Text Processing Powerhouse</b>: Convert between camelCase and snake_case, Base64 encode/decode, calculate MD5/SHA1 hashes – all done in a flash.</li>
+                <li>💾 <b>SQL Writing Assistant</b>: Quickly combine multiple database field values into an IN query condition, intelligently deciding whether to add quotes – making SQL writing easier.</li>
+            </ul>
+        </div>
         <p><b>CPoet Tools</b> 是一款专为 IntelliJ IDEA 打造的效率增强插件，集成了开发过程中高频使用的实用工具，涵盖增量补丁生成、文本编码转换及哈希值计算等功能。</p>
         <div>
             <p><b>主要功能：</b></p>
