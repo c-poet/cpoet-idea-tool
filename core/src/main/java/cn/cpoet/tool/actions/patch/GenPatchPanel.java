@@ -30,9 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
-import javax.swing.text.TextAction;
-import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
@@ -105,7 +102,9 @@ public class GenPatchPanel extends JBSplitter {
             indicator.setFraction(0.3);
             indicator.setText("Wait index refresh");
             // 等待文件索引完成（特别是重新编译的情况下）
-            DumbService.getInstance(project).waitForSmartMode();
+            if (DumbService.isDumb(project)) {
+                DumbService.getInstance(project).waitForSmartMode();
+            }
             indicator.setFraction(0.35);
             GenPatchBean patch = getGenPatch(indicator);
             if (patch.isFailed()) {
@@ -155,13 +154,9 @@ public class GenPatchPanel extends JBSplitter {
 
     protected void updateBtnStatus() {
         GenPatchSetting.State state = setting.getState();
-        if (checkedCount.get() > 0
+        dialogWrapper.setOKActionEnabled(checkedCount.get() > 0
                 && StringUtils.isNotBlank(state.outputFolder)
-                && StringUtils.isNotBlank(confPanel.getFileName())) {
-            dialogWrapper.setOKActionEnabled(true);
-        } else {
-            dialogWrapper.setOKActionEnabled(false);
-        }
+                && StringUtils.isNotBlank(confPanel.getFileName()));
     }
 
 
@@ -319,23 +314,21 @@ public class GenPatchPanel extends JBSplitter {
     protected boolean buildGenPatchBefore(ProgressIndicator indicator) {
         GenPatchBuildTypeEnum buildTypeEnum = GenPatchBuildTypeEnum.ofCode(setting.getState().buildType);
         indicator.setText("Patch build type: " + buildTypeEnum.getCode());
-        boolean isOk;
-        switch (buildTypeEnum) {
-            case PROJECT:
+        boolean isOk = switch (buildTypeEnum) {
+            case PROJECT -> {
                 indicator.setText("Wait project build");
-                isOk = buildProjectGenPatch();
-                break;
-            case MODULE:
+                yield buildProjectGenPatch();
+            }
+            case MODULE -> {
                 indicator.setText("Wait module build");
-                isOk = buildModuleGenPatch();
-                break;
-            case FILE:
+                yield buildModuleGenPatch();
+            }
+            case FILE -> {
                 indicator.setText("Wait file build");
-                isOk = buildFileGenPatch();
-                break;
-            default:
-                isOk = true;
-        }
+                yield buildFileGenPatch();
+            }
+            default -> true;
+        };
         if (!isOk) {
             UITaskUtil.runUI(() -> Messages.showWarningDialog(project, I18nUtil.t("actions.patch.GenPatchPackageAction.buildFailedWarnMsg"),
                     I18nUtil.t("message.warn.title")));
