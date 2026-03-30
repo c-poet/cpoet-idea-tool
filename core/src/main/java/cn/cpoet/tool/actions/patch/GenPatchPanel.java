@@ -53,7 +53,6 @@ public class GenPatchPanel extends JBSplitter {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GenPatchPanel.class);
 
-    private Action previewAction;
     private final Project project;
     private final GenPatchSetting setting;
     private final DialogWrapper dialogWrapper;
@@ -73,7 +72,6 @@ public class GenPatchPanel extends JBSplitter {
                 setting.getState().height = getHeight();
             }
         });
-        buildPreviewAction();
         treePanel = new GenPatchTreePanel(project, selectedItems);
         setFirstComponent(treePanel);
         confPanel = new GenPatchConfPanel(project, this);
@@ -91,22 +89,6 @@ public class GenPatchPanel extends JBSplitter {
             }
         });
         updateBtnStatus();
-    }
-
-    protected void buildPreviewAction() {
-        previewAction = new TextAction(I18nUtil.t("actions.patch.GenPatchPackageAction.preview")) {
-            private static final long serialVersionUID = 1542378595944056560L;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                preview();
-            }
-        };
-        previewAction.setEnabled(false);
-    }
-
-    public Action getPreviewAction() {
-        return previewAction;
     }
 
     public void generate() {
@@ -169,9 +151,6 @@ public class GenPatchPanel extends JBSplitter {
         } catch (Exception e) {
             NotificationUtil.initBalloonError("Failed to launch PatchAssistant2J, please check if the path configuration is correct").notify(project);
         }
-    }
-
-    public void preview() {
     }
 
     protected void updateBtnStatus() {
