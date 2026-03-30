@@ -1,0 +1,30 @@
+<div>
+    <h2>V0.3.1</h2>
+    <ul>
+        <li>✨ 支持自动替换SQL中的占位符
+            <pre><code>-- 🥹 大多数日志打印出来是这样的：
+SELECT *
+ FROM DEMO
+ WHERE CREATE_USER = ?
+ AND IS_DELETED <> ?['cpoet', 1];
+
+-- 😂 使用插件可以快速替换为：
+ SELECT *
+ FROM DEMO
+ WHERE CREATE_USER = 'cpoet'
+ AND IS_DELETED <> 1;</code></pre>
+        </li>
+        <li>✨ 新增Base64配置编码和解码的编码类型（默认UTF-8）</li>
+        <li>🐛 修复补丁生成文件索引未刷新完成的问题</li>
+        <li>🐛 修复补丁生成树多层级模块的情况下显示重复问题</li>
+        <li>✨ 兼容 Idea 2022.3 至 2026.1 版本</li>
+    </ul>
+</div>
+
+<div>
+    <h2>V0.1.0</h2>
+    <ul>
+        <li>支持选择文件快速生成增量补丁包，支持从VCS中挑选文件。建议配合<a href="https://github.com/c-poet/patch-assistant-to-java">补丁助手(PatchAssistant4J)</a>使用</li>
+        <li>支持常用文本操作：Base64编码/解码、Hash值计算、UUID生成、驼峰和下划线转换等</li>
+    </ul>
+</div>

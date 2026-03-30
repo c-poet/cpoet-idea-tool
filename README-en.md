@@ -50,3 +50,6 @@
 - [ ] ✨ Add quick access to configuration options in Tools menu (language, Base64 encoding, etc.)
 - [ ] ✨ Add quick generation of getter/setter methods and object Convert methods
 - [ ] 🎉 Patch generation will be released as a standalone plugin as an important feature, while CPoet Tool will also retain the generation functionality
+
+## Change Logs
+View：[changes.html](changes.html)

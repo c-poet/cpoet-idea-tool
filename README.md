@@ -52,3 +52,6 @@
 - [ ] ✨新增需要快速的配置项到Tools菜单中（语言、Base64编码等）
 - [ ] ✨新增快速生成get/set方法和对象Convert方法
 - [ ] 🎉补丁生成作为重要功能将单独发布插件，同时CPoet Tool也同步保留生成功能
+
+## 变更日志
+查看：[changes.html](changes.html)

@@ -25,6 +25,7 @@
         <a href="https://github.com/c-poet/cpoet-idea-tool">源代码</a>&nbsp;<a href="https://www.cpoet.cn">建议与反馈</a>
     ]]>
     </description>
+
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>

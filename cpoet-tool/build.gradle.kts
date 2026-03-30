@@ -57,6 +57,9 @@ tasks {
     patchPluginXml {
         sinceBuild.set("223")
         untilBuild.set("261.*")
+        changeNotes.set(providers.provider {
+            rootProject.file("changes.html").readText()
+        })
     }
 
     signPlugin {
@@ -69,3 +72,4 @@ tasks {
         token.set(System.getenv("IDEA_PLUGIN_PUBLISH_TOKEN"))
     }
 }
+
