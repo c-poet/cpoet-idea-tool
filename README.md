@@ -26,14 +26,15 @@
    - 将多个数据库值拼接为 IN 条件 🔗
    - 根据列类型自动判断是否添加单引号 🤖
 
-## Next V0.4.x 📅
+## Next Version 📅
 
 - [ ] ✨新增需要快速的配置项到Tools菜单中（语言、Base64编码等）
 - [ ] ✨新增快速生成get/set方法和对象Convert方法
-- [ ] 🎉补丁生成作为重要功能单独发布插件（JPatcher），同时**CPoet Tool**保留生成功能
+- [ ] 🎉补丁生成作为重要功能单独发布插件（JPatcher），同时**CPoet Tool**保持依赖JPatcher
 - [ ] ✨生成补丁面板支持选择依赖的JAR包
 - [ ] ✨补丁生成说明文件（README.txt）支持设置生成模板（名称+内容）
-- [ ] ✨**CPoet Tool**配置面板按功能划分（常规、文本、补丁）
+- [ ] ✨**CPoet Tool**配置面板按功能划分（常规、文本）
+- [ ] ✨Idea插件的版本号格式统一为**年.月.修订号**进行发布
 
 ## 变更日志
 查看：[changes.html](changes.html)
