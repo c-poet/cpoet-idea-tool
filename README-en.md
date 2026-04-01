@@ -34,7 +34,7 @@
 - [ ]  ✨Generate patch panel to support selecting dependent JAR packages
 - [ ]  ✨Patch generation instruction file (README. txt) supports setting generation templates (name+content)
 - [ ]  ✨**CPoot Tool** Configuration Panel Divided by Function (General, Text)
-- [ ]  ✨The version number format of Idea plugin is uniformly **year.Annual version number.Revision number** to be published
+- [x]  ✨The version number format of Idea plugin is uniformly **year.Annual version number.Revision number** to be published
 
 ## Change Logs
 View：[changes.html](changes.html)
